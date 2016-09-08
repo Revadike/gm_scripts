@@ -1,16 +1,11 @@
 // ==UserScript==
 // @name        mpa_profit_calc
-// @namespace   mpa_profit_calc
+// @namespace    http://tampermonkey.net/
 // @description mpa profit calc
 // @include     https://*mypayingads.com/module3/position
 // @include     https://*mytrafficbux.com/module3/position
 // @icon        http://www.mypayingads.com/favicon.ico
-// @grant GM_getValue
-// @grant GM_setValue
-// @grant GM_addStyle
-// @grant GM_xmlhttpRequest
-// @grant unsafeWindow
-// @updateURL https://github.com/rusania/gm_scipts/raw/master/mpa_profit_calc.user.js
+// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/mpa_profit_calc.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/mpa_profit_calc.user.js
 // @version     2016.09.08
 // @run-at      document-end

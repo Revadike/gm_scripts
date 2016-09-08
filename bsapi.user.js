@@ -1,18 +1,15 @@
 // ==UserScript==
 // @name        bsapi
-// @namespace   bsapi
+// @namespace    http://tampermonkey.net/
 // @description bs api
 // @include     https://www.bundlestars.com/en/bundle/*
 // @include     https://www.bundlestars.com/en/orders/*
 // @icon        https://cdn.bundlestars.com/production/brand/favicon.ico
-// @grant GM_getValue
-// @grant GM_setValue
-// @grant GM_addStyle
-// @grant GM_xmlhttpRequest
-// @grant unsafeWindow
-// @updateURL https://github.com/rusania/gm_scipts/raw/master/bsapi.user.js
+// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/bsapi.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/bsapi.user.js
 // @version     2016.09.08
+// @run-at      document-end
+// @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       none
 // ==/UserScript==
 var regexp = /en\/[a-z]+/;
