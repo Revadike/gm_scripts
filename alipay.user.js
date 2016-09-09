@@ -15,7 +15,7 @@ var counter = setInterval(function () {
   if (btn.length > 0) {
     clearInterval(counter);
     //$(btn[0]).click();
-    $('#J_tLoginId').val('13606117175');
+    $('#J_tLoginId').val('test');
     $('#payPasswd_rsainput').val('test');
   }
 }, 2000);
