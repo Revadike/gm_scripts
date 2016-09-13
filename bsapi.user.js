@@ -7,9 +7,9 @@
 // @icon        https://cdn.bundlestars.com/production/brand/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scipts/raw/master/bsapi.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/bsapi.user.js
-// @version     2016.09.12
+// @version     2016.09.13
 // @run-at      document-end
-// @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
+// @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
 // ==/UserScript==
 var regexp = /en\/[a-z]+/;
@@ -32,14 +32,14 @@ if (match == 'en/bundle') {
       onload: function (response) {
         var data = JSON.parse(response.responseText);
         if (data.seo) {
-          $('.info').append('<div>Bundle Stars ' + data.seo.title + ' 慈善包上线，<span id="price"></span>刀可获得完整内容<br>[b]购买地址：[/b]<br>' + document.URL + '<br>包含<span id="g"></span>款游戏：</div>');
+          $('.info').append('<div>Bundle Stars ' + data.seo.title + ' 慈善包上线，<span id="price"></span>刀可获得完整内容<br>[b]购买地址：<br>' + document.URL + '<br><br>包含<span id="g"></span>款游戏：[/b]</div>');
           $('.info2').append('<div>&lt;FONT size=2 face=黑体&gt;&lt;P&gt;Bundle Stars ' + data.seo.title + '&amp;nbsp;慈善包&lt;/P&gt;&lt;P&gt;&lt;FONT color=#ff0000&gt;发货方式为激活码，此站不包含礼物链接&lt;/FONT&gt;&lt;/P&gt;&lt;P&gt;包含<span id="g2"></span>款STEAM游戏：&lt;/P&gt;&lt;P&gt;<span class="tb"></span>&lt;/P&gt;&lt;P&gt;&lt;/P&gt;&lt;/FONT&gt;</div>');
         }
         if (data.bundles) {
           var k = 0;
           $.each(data.bundles, function (i, item) {
             if (item.price) {
-              $('.info').append('<div>[b]支付<b>$' + item.price.USD / 100 + '</b><span id=ag' + i + '></span>获得以下游戏：[/b]<br>( <span id=cur' + i + '></span>)<br>[quote]<span id=' + i + '></span>[/quote]</div>');
+              $('.info').append('<div>[quote][b]支付<b>$' + item.price.USD / 100 + '</b><span id=ag' + i + '></span>获得以下游戏：[/b]<br>( <span id=cur' + i + '></span>)<br><span id=' + i + '></span>[/quote]</div>');
               $('#price').empty();
               $('#price').append(item.price.USD / 100);
               if (i > 0) {
@@ -56,8 +56,8 @@ if (match == 'en/bundle') {
                   var addon = 'app';
                   // game.steam.sub
                   var steam = 'http://store.steampowered.com/' + addon + '/' + id + '/';
-                  $('#' + i).append('<div id=' + id + '>' + ++k + '. [url=' + steam + ']' + game.name + '[/url]</div>');
-                  $('.tb').append('<div id=tb_' + id + '>' + k + '.&amp;nbsp;' + game.name + '</div>');
+                  $('#' + i).append('<div id=' + id + '>[url=' + steam + ']' + game.name + '[/url]</div>');
+                  $('.tb').append('<div id=tb_' + id + '>' + ++k + '.&amp;nbsp;' + game.name + '</div>');
                   $('.tb').append('<div>&lt;BR&gt;&lt;FONT color=#0055ff&gt;&amp;nbsp;&amp;nbsp;' + steam + '&lt;/FONT&gt;&lt;BR&gt;</div>');
                   //$('#' + i).append('<div>' + steam + '</div>');
                   var url = 'http://steamdb.sinaapp.com/' + addon + '/' + id + '/data.js?v=34';
