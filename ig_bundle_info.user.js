@@ -6,8 +6,8 @@
 // @exclude     https://www.indiegala.com/profile?user_id=*
 // @exclude     https://www.indiegala.com/ajaxsale?sale_id=*
 // @exclude     https://www.indiegala.com/gift?gift_id=*
-// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/ig_bundle_info.user.js
-// @downloadURL https://github.com/rusania/gm_scipts/raw/master/ig_bundle_info.user.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_info.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_info.user.js
 // @version     2016.09.13
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js

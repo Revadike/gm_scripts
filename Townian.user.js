@@ -4,8 +4,8 @@
 // @description Townian Auto
 // @include     http://worlds.townian.com/world/town.php?town=*
 // @include     http://townian.com/world/town.php?town=*
-// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/townian.user.js
-// @downloadURL https://github.com/rusania/gm_scipts/raw/master/townian.user.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/townian.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/townian.user.js
 // @version     2016.09.08
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js

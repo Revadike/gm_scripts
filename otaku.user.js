@@ -4,8 +4,8 @@
 // @description otakumaker info
 // @include     http*://*otakumaker.com/index.php/account/admin/deal/view/*
 // @icon        http://otakumaker.com/templates/rt_acacia/favicon.ico
-// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/otaku.user.js
-// @downloadURL https://github.com/rusania/gm_scipts/raw/master/otaku.user.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/otaku.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/otaku.user.js
 // @version     2016.09.12
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js

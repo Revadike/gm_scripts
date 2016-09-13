@@ -6,8 +6,8 @@
 // @include     http://17173.tv.sohu.com/*
 // @include     http://news.17173.com/content/*
 // @include     http://v.17173.com/live/*
-// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/dota_no_ads.user.js
-// @downloadURL https://github.com/rusania/gm_scipts/raw/master/dota_no_ads.user.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/dota_no_ads.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/dota_no_ads.user.js
 // @version     2016.09.08
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js

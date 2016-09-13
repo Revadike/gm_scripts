@@ -5,8 +5,8 @@
 // @include     https://www.indiegala.com/ajaxsale?sale_id=*
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @icon        http://www.indiegala.com/favicon.ico
-// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/ig_bundle_ajax.user.js
-// @downloadURL https://github.com/rusania/gm_scipts/raw/master/ig_bundle_ajax.user.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @version     2016.09.08
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js

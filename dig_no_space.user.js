@@ -4,8 +4,8 @@
 // @description dig no space
 // @include     http://*dailyindiegame.com/superbundle_*.html
 // @include     http://*dailyindiegame.com/account_page*.html
-// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/dig_no_space.user.js
-// @downloadURL https://github.com/rusania/gm_scipts/raw/master/dig_no_space.user.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/dig_no_space.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/dig_no_space.user.js
 // @version     2016.09.08
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js

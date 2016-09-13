@@ -5,8 +5,8 @@
 // @include     https://www.bundlestars.com/en/bundle/*
 // @include     https://www.bundlestars.com/en/orders/*
 // @icon        https://cdn.bundlestars.com/production/brand/favicon.ico
-// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/bsapi.user.js
-// @downloadURL https://github.com/rusania/gm_scipts/raw/master/bsapi.user.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bsapi.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/bsapi.user.js
 // @version     2016.09.13
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js

@@ -2,8 +2,8 @@
 // @name        bl2_dlc_add_to_cart
 // @namespace    http://tampermonkey.net/
 // @include     http*://store.steampowered.com/cart*
-// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/bl2_dlc_add_to_cart.user.js
-// @downloadURL https://github.com/rusania/gm_scipts/raw/master/bl2_dlc_add_to_cart.user.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bl2_dlc_add_to_cart.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/bl2_dlc_add_to_cart.user.js
 // @version     2016.09.08
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
