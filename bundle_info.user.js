@@ -429,8 +429,8 @@ if (match) {
       var href = $(this).find('a').attr('href');
       var title = $(this).find('span.name').text();
       var percent = $(this).find('.percent').text();
-      var del = $(this).find('.regular-price').text();
-      var p = $(this).find('.new-price').text();
+      var del = $.trim($(this).find('.regular-price').text());
+      var p = $.trim($(this).find('.new-price').text());
       $('.info').append('<tr><td>' + ++i + '</td><td><a href="' + href + '" target="_blank">' + title + '</a></td><td>' + del + '</td><td>' + p + '</td><td>' + percent + '</td></tr>');
     });
   });
