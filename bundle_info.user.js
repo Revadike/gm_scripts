@@ -17,9 +17,10 @@
 // @exclude     http*://www.indiegala.com/profile?user_id=*
 // @exclude     http*://www.indiegala.com/ajaxsale?sale_id=*
 // @exclude     http*://www.indiegala.com/gift?gift_id=*
+// @include     http*://www.kinguin.net/*-deals
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.09.17
+// @version     2016.09.18
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -349,7 +350,7 @@ if (match) {
     $('.info').empty();
     $('.info2').empty();
     var match = /(.*) (\d+) ([A-Za-z]+) to (\d+) ([A-Za-z]+)/.exec(document.title);
-    getGridHead('[' + mons.indexOf(match[3], 0) + '.' + match[2] + '-' + mons.indexOf(match[5], 0) + '.' + match[4] + ']OtakuMaker Bundle ' + match[1]);
+    getGridHead('[' + mons.indexOf(match[3], 0) + '.' + match[2] + '-' + mons.indexOf(match[5], 0) + '.' + match[4] + ']OtakuMaker ' + match[1]);
     $('.info').append('<div>[quote]<span id="g3"></span>[/quote]</div>');
     var games = $('.gantry-width-33');
     $('#g').append(games.length);
@@ -416,6 +417,24 @@ if (match) {
     });
   });
 } //indiegala bundle
+
+match = /kinguin.net/.exec(document.URL);
+if (match) {
+  $('.new-deal').before('<a id="btn">INFO</a>');
+  $('.new-deal').before('<table class="info"></table>');
+  $('#btn').click(function () {
+    $('.info').empty();
+    var i = 0;
+    $('.new-deal').find('.today-deal').each(function () {
+      var href = $(this).find('a').attr('href');
+      var title = $(this).find('span.name').text();
+      var percent = $(this).find('.percent').text();
+      var del = $(this).find('.regular-price').text();
+      var p = $(this).find('.new-price').text();
+      $('.info').append('<tr><td>' + ++i + '</td><td><a href="' + href + '" target="_blank">' + title + '</a></td><td>' + del + '</td><td>' + p + '</td><td>' + percent + '</td></tr>');
+    });
+  });
+} //kinguin deal
 
 var getRatio = function (c, f) {
   GM_xmlhttpRequest({
