@@ -43,7 +43,7 @@ if (match) {
       var p = $(this).find('.discount_final_price').text(); //.replace(/￥/gm, '');
       var pak = '';
       match = /addToCart\((\d+)/.exec($(this).html());
-      if (match != null) {
+      if (match) {
         pak = '<a href="http://steamdb.info/sub/' + match[1] + '/" target="_blank">' + match[1] + '</a>';
       }
       $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>' + p + '</td><td>' + discount + '</td><td>' + del + '</td><td>' + pak + '</td></tr>');
@@ -304,7 +304,7 @@ if (match) {
         // http://www.dailyindiegame.com/DIG2-getkey.php?id=1149728
         // revealKey(2,1149727);
         var match = /\d+,(\d+)/.exec($(t[4]).html());
-        if (match != null) {
+        if (match) {
           var id = match[1];
           var url = 'http://www.dailyindiegame.com/DIG2-getkey.php?id=' + id;
           $.ajax({
