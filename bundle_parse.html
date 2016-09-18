@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>bundle parse</title>
+<script src="jquery.min.js"></script>
+<script type="text/javascript">
+function okm() {
+	$('#1').empty();
+	$('#2').empty();
+	var text = $('#in').val();
+	var match = /purchasing the (.*)\n/.exec(text);
+	var title = '';
+	if (match) {
+		title = match[1];
+	}
+	
+	var keys = Array();
+	$.each(text.split('\n\n'), function (k, v) {
+		match = /\-(\d) (.*) :\n/.exec(v);
+		if (match) {
+			var id = match[1];
+			var game = match[2];
+			var re = /[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+/g;
+			match = re.exec(v);
+			var i = 0;
+			
+			while (match) {
+				$('#2').append('<tr><td>' + id + '</td><td>' + ++i + '</td><td>' + game + '</td><td>' + match + '</td><td>' + title + '</td></tr>');
+				keys.push('<tr><td id="'+ i +'">【' + id + '】【' + game + '】' + match + '</td></tr>');
+				match = re.exec(v);
+			}
+		}
+	});
+	keys.sort();
+	$.each(keys, function (k, v){
+		$('#1').append(v);
+	});
+}
+</script>
+<style type="text/css">table{border:solid 1px;border-collapse:collapse;}td{height:25px;border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;}</style>
+</head>
+<body>
+<textarea id="in"></textarea><br>
+<input id="btn" type="button" value="parse"></input>
+<script type="text/javascript">
+$('#btn').click(function(){
+	okm();
+});
+</script>
+<table>
+<tr><td id="1"></td><td id="2"></td></tr></table>
+</body>
+</html>
