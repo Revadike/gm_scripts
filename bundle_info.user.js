@@ -17,10 +17,10 @@
 // @exclude     http*://www.indiegala.com/profile?user_id=*
 // @exclude     http*://www.indiegala.com/ajaxsale?sale_id=*
 // @exclude     http*://www.indiegala.com/gift?gift_id=*
-// @include     http*://www.kinguin.net/*-deals
+// @exclude     http*://www.indiegala.com/successpay*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.09.18
+// @version     2016.09.26
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -43,7 +43,7 @@ if (match) {
       var p = $(this).find('.discount_final_price').text(); //.replace(/￥/gm, '');
       var pak = '';
       match = /addToCart\((\d+)/.exec($(this).html());
-      if (match) {
+      if (match != null) {
         pak = '<a href="http://steamdb.info/sub/' + match[1] + '/" target="_blank">' + match[1] + '</a>';
       }
       $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>' + p + '</td><td>' + discount + '</td><td>' + del + '</td><td>' + pak + '</td></tr>');
@@ -223,8 +223,7 @@ if (match) {
               });
             }
           });
-          $('#g').append(k);
-          $('#g2').append(k);
+          $('.g').append(k);
         }
       }
     });
@@ -270,6 +269,12 @@ if (match) {
     var title = $($('.DIG2-TitleOrange') [0]).text();
     var price = $('#price3').val();
     getGridHead('DailyIndieGame ' + title);
+    match = /_seconds   = (\d+);/.exec($('body').html());
+    if (match) {
+      var now = new Date();
+      var time = new Date(now.valueOf() + match[1] * 1000);
+      $('#time').append('[' + (now.getMonth() + 1) + '.' + now.getDate() + '-' + (time.getMonth() + 1) + '.' + time.getDate() + ']');
+    }
     $('#p').append(price);
     $('.info').append('<div>[quote]<span id="g3"></span>[/quote]</div>');
     $('.info').append('<div><span style="color:#32cd32;">[b][color=#32cd32]支付$' + price + '获得1份完整包[/color][/b]</span></div>');
@@ -285,8 +290,7 @@ if (match) {
       }
       getGridContent(id, 'app', t, '#g3', ++k);
     });
-    $('#g').append(k);
-    $('#g2').append(k);
+    $('.g').append(k);
   });
 } //dailyindiegame bundle
 
@@ -304,7 +308,7 @@ if (match) {
         // http://www.dailyindiegame.com/DIG2-getkey.php?id=1149728
         // revealKey(2,1149727);
         var match = /\d+,(\d+)/.exec($(t[4]).html());
-        if (match) {
+        if (match != null) {
           var id = match[1];
           var url = 'http://www.dailyindiegame.com/DIG2-getkey.php?id=' + id;
           $.ajax({
@@ -350,11 +354,11 @@ if (match) {
     $('.info').empty();
     $('.info2').empty();
     var match = /(.*) (\d+) ([A-Za-z]+) to (\d+) ([A-Za-z]+)/.exec(document.title);
-    getGridHead('[' + mons.indexOf(match[3], 0) + '.' + match[2] + '-' + mons.indexOf(match[5], 0) + '.' + match[4] + ']OtakuMaker ' + match[1]);
+    getGridHead('OtakuMaker ' + match[1]);
     $('.info').append('<div>[quote]<span id="g3"></span>[/quote]</div>');
+    $('#time').append('[' + mons.indexOf(match[3], 0) + '.' + match[2] + '-' + mons.indexOf(match[5], 0) + '.' + match[4] + ']');
     var games = $('.gantry-width-33');
-    $('#g').append(games.length);
-    $('#g2').append(games.length);
+    $('.g').append(games.length);
     var k = 0;
     games.each(function () {
       var title = $(this).find('h3').text();
@@ -395,8 +399,17 @@ if (match) {
     var i = 0;
     var bundle = $(document).attr('title').replace(' of Steam games', '');
     getGridHead(bundle);
-    $('#g').append(items.length);
-    $('#g2').append(items.length);
+    var html = $('#frame-top').html();
+    var rg = /new Date\( \d+,(\d+)\-\d+,(\d+),\d+,\d+,\d+ \)/g;
+    var d = new Array();
+    match = rg.exec(html);
+    while (match) {
+      d.push(match);
+      match = rg.exec(html);
+    }
+    if (d.length > 2) $('#early').append('前' + Math.ceil(eval(d[2][0] + '- new Date()') / 86400000) * 24 + '小时');
+    if (d.length > 1) $('#time').append('[' + (new Date().getMonth() + 1) + '.' + new Date().getDate() + '-' + d[1][1] + '.' + d[1][2] + ']');
+    $('.g').append(items.length);
     var tiers = $('.bundle_page').find('div.container');
     var k = 0;
     tiers.each(function () {
@@ -418,24 +431,6 @@ if (match) {
   });
 } //indiegala bundle
 
-match = /kinguin.net/.exec(document.URL);
-if (match) {
-  $('.new-deal').before('<a id="btn">INFO</a>');
-  $('.new-deal').before('<table class="info"></table>');
-  $('#btn').click(function () {
-    $('.info').empty();
-    var i = 0;
-    $('.new-deal').find('.today-deal').each(function () {
-      var href = $(this).find('a').attr('href');
-      var title = $(this).find('span.name').text();
-      var percent = $(this).find('.percent').text();
-      var del = $.trim($(this).find('.regular-price').text());
-      var p = $.trim($(this).find('.new-price').text());
-      $('.info').append('<tr><td>' + ++i + '</td><td><a href="' + href + '" target="_blank">' + title + '</a></td><td>' + del + '</td><td>' + p + '</td><td>' + percent + '</td></tr>');
-    });
-  });
-} //kinguin deal
-
 var getRatio = function (c, f) {
   GM_xmlhttpRequest({
     method: 'GET',
@@ -451,8 +446,8 @@ var getRatio = function (c, f) {
   });
 }; //KRWCNY,RUBCNY
 var getGridHead = function (title) {
-  $('.info').append('<div>' + title + '上线，<span id="p"></span>刀可获得完整内容<br>[b]购买地址：<br>' + document.URL + '<br><br>包含<span id="g"></span>款游戏：[/b]</div>');
-  $('.info2').append('<div>&lt;FONT size=2 face=黑体&gt;&lt;P&gt;' + title + '&amp;nbsp;慈善包&lt;/P&gt;&lt;P&gt;&lt;FONT color=#ff0000&gt;发货方式为激活码，此站不包含礼物链接&lt;/FONT&gt;&lt;/P&gt;&lt;P&gt;包含<span id="g2"></span>款STEAM游戏：&lt;/P&gt;&lt;P&gt;<span class="tb"></span>&lt;/P&gt;&lt;P&gt;&lt;/P&gt;&lt;/FONT&gt;</div>');
+  $('.info').append('<div><span id="time"></span>' + title + '上线，<span id="early"></span><span id="p"></span>刀可获完整内容<br>[b]购买地址：<br>' + document.URL + '<br><br>包含<span class="g"></span>款游戏：[/b]</div>');
+  $('.info2').append('<div>&lt;FONT size=2 face=黑体&gt;&lt;P&gt;' + title + '&amp;nbsp;慈善包&lt;/P&gt;&lt;P&gt;&lt;FONT color=#ff0000&gt;发货方式为激活码，此站不包含礼物链接&lt;/FONT&gt;&lt;/P&gt;&lt;P&gt;包含<span class="g"></span>款STEAM游戏：&lt;/P&gt;&lt;P&gt;<span class="tb"></span>&lt;/P&gt;&lt;P&gt;&lt;/P&gt;&lt;/FONT&gt;</div>');
 }; // grid head
 var getGridContent = function (id, addon, name, tier, i) {
   $(tier).append('<div id=' + id + '>[url=http://store.steampowered.com/' + addon + '/' + id + '/]' + name + '[/url]</div>');
