@@ -21,7 +21,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.09.28
+// @version     2016.09.28.8
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -408,8 +408,13 @@ if (match) {
       d.push(match);
       match = rg.exec(html);
     }
-    if (d.length > 2) $('#early').append('前' + Math.ceil(eval(d[2][0] + '- new Date()') / 86400000) * 24 + '小时');
-    if (d.length > 1) $('#time').append('[' + (new Date().getMonth() + 1) + '.' + new Date().getDate() + '-' + d[1][1] + '.' + d[1][2] + ']');
+    if (d.length > 1) {
+      var now = new Date(eval(d[0][0]).valueOf() + 86400000);
+      var flash = new Date(eval(d[2][0]).valueOf());
+      $('#time').append('[' + (now.getMonth() + 1) + '.' + now.getDate() + '-' + d[1][1] + '.' + d[1][2] + ']');
+      if (d.length > 2)
+      $('#early').append('前' + Math.ceil((flash - now) / 86400000) * 24 + '小时');
+    }
     $('.g').append(items.length);
     var tiers = $('.bundle_page').find('div.container');
     var k = 0;
