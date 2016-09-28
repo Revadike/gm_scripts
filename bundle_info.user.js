@@ -18,9 +18,10 @@
 // @exclude     http*://www.indiegala.com/ajaxsale?sale_id=*
 // @exclude     http*://www.indiegala.com/gift?gift_id=*
 // @exclude     http*://www.indiegala.com/successpay*
+// @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.09.26
+// @version     2016.09.28
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -430,6 +431,25 @@ if (match) {
     });
   });
 } //indiegala bundle
+
+match = /downloads\?key=([a-z0-9]+)/i.exec(document.URL);
+if (match) {
+  $('#headertext').append('<div><a id="btn">INFO</a></div>');
+  $('#headertext').append('<div><a id="key">KEYS</a></div>');
+  $('#headertext').append('<table id="info"></table>');
+  $('#btn').click(function () {
+    $('#info').empty();
+    var i = 0;
+    $('#steam-tab').find('.sr-key').each(function () {
+      var title = $.trim($(this).find('.sr-key-heading').text());
+      var key = $.trim($(this).find('.sr-redeemed-bubble').text());
+      $('#info').append('<tr><td>' + ++i + '</td><td>' + title + '</td><td>' + key + '</td><td>' + match[1] + '</td></tr>');
+    });
+  });
+  $('#key').click(function () {
+    $('.sr-unredeemed-button-text').click();
+  });
+} //humblebunle keys
 
 var getRatio = function (c, f) {
   GM_xmlhttpRequest({
