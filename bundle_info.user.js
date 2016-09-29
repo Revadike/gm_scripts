@@ -21,11 +21,32 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.09.28
+// @version     2016.09.29.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
 // ==/UserScript==
+var colors = [
+  '#32cd32',
+  '#ff6a00',
+  '#df0101',
+  '#b200ff'
+];
+var mons = [
+  'Month',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
 $('head').append('<style type="text/css">table{border:solid 1px;border-collapse:collapse;}td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px;}</style>');
 var match = /store.steampowered.com\/sale/.exec(document.URL);
 if (match) {
@@ -196,6 +217,11 @@ if (match) {
         if (data.seo) {
           getGridHead('Bundle Stars ' + data.seo.title);
         }
+        if (data.availability) {
+          var now = new Date(data.availability.valid_from);
+          var end = new Date(data.availability.valid_until);
+          $('#time').append('[' + (now.getMonth() + 1) + '.' + now.getDate() + '-' + (end.getMonth() + 1) + '.' + end.getDate() + ']');
+        }
         if (data.bundles) {
           var k = 0;
           $.each(data.bundles, function (i, item) {
@@ -213,13 +239,10 @@ if (match) {
             if (item.games) {
               $.each(item.games, function (j, game) {
                 if (game.steam) {
-                  var id = game.steam.id;
                   var addon = 'app';
-                  if (game.steam.sub) {
-                    addon = 'sub';
-                    id = game.steam.packages[0];
-                  }
-                  getGridContent(id, addon, game.name, '#' + i, ++k);
+                  if (game.steam.sub)
+                  addon = 'sub';
+                  getGridContent(game.steam.id, addon, game.name, '#' + i, ++k);
                 }
               });
             }
@@ -330,27 +353,6 @@ if (match) {
   $('.em_DealInfoRight').append('<div><a id="btn"><span style="color:red;font-weight:bold;">INFO</span></a></div>');
   $('.em_DealInfoRight').append('<div class="info"></div>');
   $('.em_DealInfoRight').append('<div class="info2"></div>');
-  var colors = [
-    '#32cd32',
-    '#ff6a00',
-    '#df0101',
-    '#b200ff'
-  ];
-  var mons = [
-    'Month',
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
   $('#btn').click(function () {
     $('.info').empty();
     $('.info2').empty();
@@ -391,8 +393,8 @@ if (match) {
 match = /indiegala.com/.exec(document.URL);
 if (match) {
   $($('.logo-cont') [0]).replaceWith('<li class="logo-cont"><a id="btn">Info</a></li>');
-  $('#frame-top').append('<div class="info" style="color:#ffffff"></div>');
-  $('#frame-top').append('<div class="info2" style="color:#ffffff"></div>');
+  $('.bundle_header').before('<div class="info" style="color:#ffffff"></div>');
+  $('.bundle_header').before('<div class="info2" style="color:#ffffff"></div>');
   $('#btn').click(function () {
     $('.info').empty();
     $('.info2').empty();
@@ -408,8 +410,15 @@ if (match) {
       d.push(match);
       match = rg.exec(html);
     }
-    if (d.length > 2) $('#early').append('前' + Math.ceil(eval(d[2][0] + '- new Date()') / 86400000) * 24 + '小时');
-    if (d.length > 1) $('#time').append('[' + (new Date().getMonth() + 1) + '.' + new Date().getDate() + '-' + d[1][1] + '.' + d[1][2] + ']');
+    if (d.length > 1) {
+      var now = new Date(eval(d[0][0]).valueOf() + 86400000);
+      $('#time').append('[' + (now.getMonth() + 1) + '.' + now.getDate() + '-' + d[1][1] + '.' + d[1][2] + ']');
+      if (d.length > 2) {
+        var flash = Math.ceil((new Date(eval(d[2][0]).valueOf()) - now) / 86400000) * 24;
+        if (flash > 0)
+        $('#early').append('前' + flash + '小时');
+      }
+    }
     $('.g').append(items.length);
     var tiers = $('.bundle_page').find('div.container');
     var k = 0;
@@ -429,6 +438,18 @@ if (match) {
         getGridContent(id, 'app', title, '#' + i, ++k);
       });
     });
+    var regx = /amnt > ([0-9.]+)/g;
+    text = $('#order-form-box').text();
+    i = 0;
+    var j = 1;
+    if ($('.happy-hour-link-cont').length > 0)
+    j = 4;
+    $('.info').append('<div><span style="color:#fdd915;">[color=#fdd915]欢乐时光期间选择礼物方式买一送三[/color]</span></div>');
+    match = regx.exec(text);
+    while (match) {
+      $('.info').append('<div><span style="color:' + colors[i] + ';">[color=' + colors[i++] + ']支付超过$' + match[1] + '获得' + (i + 1) * j + '份完整包（每份$' + (match[1] / (i + 1) / j).toFixed(2) + '）[/color]</span></div>');
+      match = regx.exec(text);
+    }
   });
 } //indiegala bundle
 
@@ -470,8 +491,8 @@ var getGridHead = function (title) {
   $('.info2').append('<div>&lt;FONT size=2 face=黑体&gt;&lt;P&gt;' + title + '&amp;nbsp;慈善包&lt;/P&gt;&lt;P&gt;&lt;FONT color=#ff0000&gt;发货方式为激活码，此站不包含礼物链接&lt;/FONT&gt;&lt;/P&gt;&lt;P&gt;包含<span class="g"></span>款STEAM游戏：&lt;/P&gt;&lt;P&gt;<span class="tb"></span>&lt;/P&gt;&lt;P&gt;&lt;/P&gt;&lt;/FONT&gt;</div>');
 }; // grid head
 var getGridContent = function (id, addon, name, tier, i) {
-  $(tier).append('<div id=' + id + '>[url=http://store.steampowered.com/' + addon + '/' + id + '/]' + name + '[/url]</div>');
-  $('.tb').append('<div id=tb_' + id + '>' + i + '.&amp;nbsp;' + name + '</div>');
+  $(tier).append('<div id=' + id + '>[url=http://store.steampowered.com/' + addon + '/' + id + '/]<b>' + name + '</b>[/url]</div>');
+  $('.tb').append('<div id=tb_' + id + '>' + i + '.&amp;nbsp;<b>' + name + '</b></div>');
   $('.tb').append('<div>&lt;BR&gt;&lt;FONT color=#0055ff&gt;&amp;nbsp;&amp;nbsp;http://store.steampowered.com/' + addon + '/' + id + '/&lt;/FONT&gt;&lt;BR&gt;</div>');
   getGameName(id, addon);
   getGameRate(id, addon);
@@ -489,6 +510,11 @@ var getGameName = function (id, addon) {
           $('#' + id).append(' (' + data.name_cn + ')');
           $('#tb_' + id).append(' (' + data.name_cn + ')');
         }
+        var i = data.price_history.bundles.count;
+        if (i > 0)
+        $('#' + id).append('[color=#32cd32][b]<span style="color:#32cd32;"> 进包' + i + '次</span>[/b][/color]');
+         else
+        $('#' + id).append('[color=#fdd915][b]<span style="color:#fdd915;"> 首次进包</span>[/b][/color]');
       }
     }
   });
@@ -501,18 +527,19 @@ var getGameRate = function (id, addon) {
       var res = $(response.responseText).find('span.game_review_summary');
       if (res.length > 0) {
         var review = $(res[0]).text();
-        $('#' + id).append('[color=DeepSkyBlue][b] ' + review + '[/b][/color]');
-        $('#tb_' + id).append('&lt;FONT color=#66c0f4&gt;&amp;nbsp;' + review + '&lt;/FONT&gt;');
+        $('#' + id).append('[color=DeepSkyBlue][b] <span style="color:#66c0f4;">' + review + '</span>[/b][/color]');
+        if (/好评/.exec(review))
+        $('#tb_' + id).append('&lt;FONT color=#66c0f4&gt;&amp;nbsp;<span style="color:#66c0f4;">' + review + '</span>&lt;/FONT&gt;');
       }
       var match = /集换式卡牌/.exec($(response.responseText).find('#category_block').text());
       if (match) {
-        $('#' + id).append('[color=Red][b] 有卡[/b][/color]');
-        $('#tb_' + id).append('&lt;FONT color=#ff0000&gt;&amp;nbsp;有卡&lt;/FONT&gt;');
+        $('#' + id).append('[color=Red][b] <span style="color:#ff0000;">有卡</span>[/b][/color]');
+        $('#tb_' + id).append('&lt;FONT color=#ff0000&gt;&amp;nbsp;<span style="color:#ff0000;">有卡</span>&lt;/FONT&gt;');
       }
       match = /DLC/.exec($(response.responseText).find('#category_block').text());
       if (match) {
-        $('#' + id).append('[color=#b200ff][b]（需要基础游戏才能运行）[/b][/color]');
-        $('#tb_' + id).append('&lt;FONT color=#66c0f4&gt;&amp;nbsp;（需要基础游戏才能运行）&lt;/FONT&gt;');
+        $('#' + id).append('[color=#b200ff][b]<span style="color:#b200ff;">（需要基础游戏才能运行）</span>[/b][/color]');
+        $('#tb_' + id).append('&lt;FONT color=#b200ff&gt;&amp;nbsp;<span style="color:#b200ff;">（需要基础游戏才能运行）</span>&lt;/FONT&gt;');
       }
     }
   });
