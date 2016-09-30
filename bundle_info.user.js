@@ -21,7 +21,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.09.30.1
+// @version     2016.09.30.3
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -76,19 +76,39 @@ if (match) {
 match = /sonkwo.com\/activity/.exec(document.URL);
 if (match) {
   $('#nav_bar').append('<li><a id="btn">INFO</a></li>');
-  $('.limit-game').append('<table id="info" class="sale-content"></table>');
+  $('.limit-game').append('<div id="limit"></div><br>');
+  $('.limit-game').append('<table id="info"></table>');
   $('#btn').click(function () {
     $('#info').empty();
+    $('#limit').empty();
     $('#info').append('<tr><td>序号</td><td>游戏</td><td>优惠价</td><td>折扣</td><td>原价</td></tr>');
+    $('#limit').append('[table][tr][td]游戏[/td][td]优惠价[/td][td]折扣[/td][td]杉果史低[/td][td]杉果原价[/td][td]购买地址[/td][/tr]<span id="g"></span>[/table]');
     var i = 0;
     $('.limit-game').find('li').each(function () {
       var a = $(this).find('a') [0];
       var title = $(this).find('div.limit-game-title').text();
       var link = $(a).attr('href');
-      var discount = '';//$(this).find('h5').text().replace(/OFF/gm, '');
-      var del = $(this).find('div.cost-l').text(); //.replace(/￥/gm, '');
-      var p = $(this).find('div.cost-r').text(); //.replace(/￥/gm, '');
+      var discount = ''; //$(this).find('h5').text().replace(/OFF/gm, '');
+      var del = $.trim($(this).find('div.cost-l').text().replace(/￥/gm, ''));
+      var p = $.trim($(this).find('div.cost-r').text().replace(/￥/gm, ''));
       $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>' + p + '</td><td>-' + discount + '</td><td>' + del + '</td></tr>');
+      match = /\d+/.exec(link);
+      if (match) {
+        GM_xmlhttpRequest({
+          method: 'GET',
+          url: 'http://steamdb.sinaapp.com/sonkwo/' + match + '.dat',
+          onload: function (response) {
+            var data = JSON.parse(response.responseText);
+            if (data.id) {
+              var pc = (1 - (p / data.price).toFixed(2)) * 100;
+              var low = data.price_lowest;
+              if (p < data.price_lowest)
+              low = p;
+              $('#g').append('[tr][td][url=' + data.steam + ']' + data.name + '[/url]<br>' + title + '[/td][td]' + p + '[/td][td]-' + pc + '%[/td][td]￥' + low + '[/td][td]￥' + data.price + '[/td][td][url]' + link + '[/url][/td][/tr]');
+            }
+          }
+        });
+      }
     });
     i = 0;
     $('.firm-game').find('li').each(function () {
