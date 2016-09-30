@@ -21,7 +21,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.09.29.1
+// @version     2016.09.30.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -76,22 +76,22 @@ if (match) {
 match = /sonkwo.com\/activity/.exec(document.URL);
 if (match) {
   $('#nav_bar').append('<li><a id="btn">INFO</a></li>');
-  $('.zs').before('<table id="info" class="sale-content"></table>');
+  $('.limit-game').append('<table id="info" class="sale-content"></table>');
   $('#btn').click(function () {
     $('#info').empty();
     $('#info').append('<tr><td>序号</td><td>游戏</td><td>优惠价</td><td>折扣</td><td>原价</td></tr>');
     var i = 0;
-    $('.sale-content').find('li').each(function () {
+    $('.limit-game').find('li').each(function () {
       var a = $(this).find('a') [0];
-      var title = $(a).attr('title');
+      var title = $(this).find('div.limit-game-title').text();
       var link = $(a).attr('href');
-      var discount = $(this).find('h5').text().replace(/OFF/gm, '');
-      var del = $(this).find('p.text-through').text(); //.replace(/￥/gm, '');
-      var p = $(this).find('p.text-none').text(); //.replace(/￥/gm, '');
+      var discount = '';//$(this).find('h5').text().replace(/OFF/gm, '');
+      var del = $(this).find('div.cost-l').text(); //.replace(/￥/gm, '');
+      var p = $(this).find('div.cost-r').text(); //.replace(/￥/gm, '');
       $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>' + p + '</td><td>-' + discount + '</td><td>' + del + '</td></tr>');
     });
     i = 0;
-    $('.zs').find('li').each(function () {
+    $('.firm-game').find('li').each(function () {
       var a = $(this).find('a') [0];
       var title = $(a).attr('title');
       var link = $(a).attr('href');
