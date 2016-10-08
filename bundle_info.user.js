@@ -21,7 +21,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.09.30.3
+// @version     2016.10.06.22
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -89,22 +89,56 @@ if (match) {
       var title = $(this).find('div.limit-game-title').text();
       var link = $(a).attr('href');
       var discount = ''; //$(this).find('h5').text().replace(/OFF/gm, '');
-      var del = $.trim($(this).find('div.cost-l').text().replace(/￥/gm, ''));
-      var p = $.trim($(this).find('div.cost-r').text().replace(/￥/gm, ''));
-      $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>' + p + '</td><td>-' + discount + '</td><td>' + del + '</td></tr>');
+      var list_price = $.trim($(this).find('div.cost-l').text().replace(/￥/gm, ''));
+      var sale_price = $.trim($(this).find('div.cost-r').text().replace(/￥/gm, ''));
+      $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>' + sale_price + '</td><td>-' + discount + '</td><td>' + list_price + '</td></tr>');
       match = /\d+/.exec(link);
       if (match) {
+        var id = match;
+        $('#g').append('<div id=' + id + '></div>');
+        var name_en = '';
+        var pc = 0;
+        var low = 0;
         GM_xmlhttpRequest({
           method: 'GET',
-          url: 'http://steamdb.sinaapp.com/sonkwo/' + match + '.dat',
+          url: 'http://steamdb.sinaapp.com/sonkwo/' + id + '.dat',
           onload: function (response) {
-            var data = JSON.parse(response.responseText);
-            if (data.id) {
-              var pc = (1 - (p / data.price).toFixed(2)) * 100;
-              var low = data.price_lowest;
-              if (p < data.price_lowest)
-              low = p;
-              $('#g').append('[tr][td][url=' + data.steam + ']' + data.name + '[/url]<br>' + title + '[/td][td]' + p + '[/td][td]-' + pc + '%[/td][td]￥' + low + '[/td][td]￥' + data.price + '[/td][td][url]' + link + '[/url][/td][/tr]');
+            var data = null;
+            try {
+              data = JSON.parse(response.responseText);
+              if (data) {
+                low = data.price_lowest;
+                if (sale_price < data.price_lowest)
+                low = sale_price;
+                if (data.steam)
+                name_en = '[url=' + data.steam + ']' + data.name + '[/url]';
+                 else {
+                  name_en = data.name;
+                  title += ' [color=red][b]' + data.drm + '[/b][/color]';
+                }
+                list_price = data.price;
+                pc = ((sale_price / list_price - 1).toFixed(2)) * 100;
+              }
+              $('#' + id).append('[tr][td]' + name_en + '<br>' + title + '[/td][td]' + sale_price + '[/td][td]' + pc + '%[/td][td]￥' + low + '[/td][td]￥' + list_price + '[/td][td][url]' + link + '[/url][/td][/tr]');
+            } catch (e) {
+              GM_xmlhttpRequest({
+                method: 'GET',
+                url: link,
+                onload: function (response) {
+                  var data = null;
+                  try {
+                    data = JSON.parse(response.responseText);
+                    if (data.status == 'success') {
+                      list_price = data.data.list_price;
+                      sale_price = data.data.sale_price;
+                      name_en = data.data.alias_name;
+                      pc = ((sale_price / list_price - 1).toFixed(2)) * 100;
+                      $('#' + id).append('[tr][td]' + name_en + '<br>' + title + '[/td][td]' + sale_price + '[/td][td]' + pc + '%[/td][td]￥' + low + '[/td][td]￥' + list_price + '[/td][td][url]' + link + '[/url][/td][/tr]');
+                    }
+                  } catch (e) {
+                  }
+                }
+              });
             }
           }
         });
