@@ -10,8 +10,8 @@
 // @include     http*://directgames.co.kr/game/game_page.html?product_code=*
 // @include     http*://www.bundlestars.com/en/bundle/*
 // @include     http*://www.bundlestars.com/en/orders/*
-// @include     http*://www.dailyindiegame.com/superbundle_*
-// @include     http*://www.dailyindiegame.com/account_page*
+// @include     http*://*dailyindiegame.com/superbundle_*
+// @include     http*://*dailyindiegame.com/account_page*
 // @include     http*://*otakumaker.com/index.php/account/admin/deal/view/*
 // @include     http*://www.indiegala.com/*
 // @exclude     http*://www.indiegala.com/profile?user_id=*
@@ -21,7 +21,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.10.06.22
+// @version     2016.10.09.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
