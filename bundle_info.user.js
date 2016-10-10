@@ -21,7 +21,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.10.09.1
+// @version     2016.10.10.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -411,21 +411,24 @@ if (match) {
     $('.info').empty();
     $('.info2').empty();
     var match = /(.*) (\d+) ([A-Za-z]+) to (\d+) ([A-Za-z]+)/.exec(document.title);
-    getGridHead('OtakuMaker ' + match[1]);
+    var title = match[1];
+    if (/OtakuMaker/.exec(title) == null)
+    title = 'OtakuMaker ' + title;
+    getGridHead(title);
     $('.info').append('<div>[quote]<span id="g3"></span>[/quote]</div>');
     $('#time').append('[' + mons.indexOf(match[3], 0) + '.' + match[2] + '-' + mons.indexOf(match[5], 0) + '.' + match[4] + ']');
     var games = $('.gantry-width-33');
     $('.g').append(games.length);
     var k = 0;
     games.each(function () {
-      var title = $(this).find('h3').text();
+      var t = $(this).find('h3').text();
       var href = $(this).find('a').attr('href');
       match = /app\/(\d+)/.exec(href);
       var id = '0';
       if (match) {
         id = match[1];
       }
-      getGridContent(id, 'app', title, '#g3', ++k);
+      getGridContent(id, 'app', t, '#g3', ++k);
     });
     var i = 0;
     var text = $('.em_DealInfoRight').text();
