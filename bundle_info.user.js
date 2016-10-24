@@ -21,7 +21,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.10.10.1
+// @version     2016.10.24.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -117,7 +117,7 @@ if (match) {
                   title += ' [color=red][b]' + data.drm + '[/b][/color]';
                 }
                 list_price = data.price;
-                pc = ((sale_price / list_price - 1).toFixed(2)) * 100;
+                pc = Math.round(((sale_price / list_price - 1).toFixed(2)) * 100);
               }
               $('#' + id).append('[tr][td]' + name_en + '<br>' + title + '[/td][td]' + sale_price + '[/td][td]' + pc + '%[/td][td]￥' + low + '[/td][td]￥' + list_price + '[/td][td][url]' + link + '[/url][/td][/tr]');
             } catch (e) {
@@ -219,7 +219,7 @@ if (match) {
         var del = $(m[1]).text();
         var p = /(\d+) руб/.exec($(this).text()) [1];
         var p2 = (p * r).toFixed(2);
-        var discount = ((1 - p / del).toFixed(2)) * 100;
+        var discount = Math.round(((1 - p / del).toFixed(2)) * 100);
         $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>&#8381;' + del + '</td><td>&#8381;' + p + '</td><td>&yen;' + p2 + '</td><td>-' + discount + '%</td></tr>');
       });
     };
@@ -532,14 +532,14 @@ if (match) {
 var getRatio = function (c, f) {
   GM_xmlhttpRequest({
     method: 'GET',
-    url: 'https://query.yahooapis.com/v1/public/yql?q=select * from yahoo.finance.xchange where pair in ("' + c + '")&format=json&env=store://datatables.org/alltableswithkeys',
+    url: 'http://download.finance.yahoo.com/d/quotes.csv?s=' + c + '=X&f=l1',
     onload: function (response) {
-      var data = JSON.parse(response.responseText);
-      if (data.query.results.rate) {
-        $('#ratio').empty();
-        $('#ratio').append(data.query.results.rate.Rate);
-        f();
-      }
+      var rate = 0;
+      if (response.responseText)
+      rate = response.responseText;
+      $('#ratio').empty();
+      $('#ratio').append(rate);
+      f();
     }
   });
 }; //KRWCNY,RUBCNY
