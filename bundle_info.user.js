@@ -21,7 +21,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2016.10.24.1
+// @version     2016.10.24.2
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -480,7 +480,7 @@ if (match) {
     var tiers = $('.bundle_page').find('div.container');
     var k = 0;
     tiers.each(function () {
-      var match = />\$([0-9.]+)</.exec($(this).html());
+      var match = /\$\s*<\/span>\s*([0-9.]+)/.exec($(this).html());
       if (match) {
         $('#p').empty();
         $('#p').append(match[1]);
