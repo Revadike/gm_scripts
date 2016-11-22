@@ -14,18 +14,17 @@ function okm() {
 	}
 	
 	var keys = Array();
-	$.each(text.split('\n\n'), function (k, v) {
-		match = /\-(\d) (.*) :\n/.exec(v);
+	$.each(text.split('\n\- '), function (k, v) {
+		match = /(.*) :\n/.exec(v);
 		if (match) {
-			var id = match[1];
-			var game = match[2];
+			var game = match[1];
 			var re = /[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+/g;
 			match = re.exec(v);
 			var i = 0;
 			
 			while (match) {
-				$('#2').append('<tr><td>' + id + '</td><td>' + ++i + '</td><td>' + game + '</td><td>' + match + '</td><td>' + title + '</td></tr>');
-				keys.push('<tr><td id="'+ i +'">【' + id + '】【' + game + '】' + match + '</td></tr>');
+				$('#2').append('<tr><td>' + k + '</td><td>' + ++i + '</td><td>' + game + '</td><td>' + match + '</td><td>' + title + '</td></tr>');
+				keys.push('<tr><td id="'+ i +'">【' + k + '】【' + game + '】' + match + '</td></tr>');
 				match = re.exec(v);
 			}
 		}
