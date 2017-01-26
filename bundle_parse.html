@@ -14,7 +14,7 @@ function okm() {
 	}
 	
 	var keys = Array();
-	$.each(text.split('\n\- '), function (k, v) {
+	$.each(text.split('\n\-'), function (k, v) {
 		match = /(.*) :\n/.exec(v);
 		if (match) {
 			var game = match[1];

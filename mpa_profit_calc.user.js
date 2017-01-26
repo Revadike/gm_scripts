@@ -1,18 +1,23 @@
 // ==UserScript==
 // @name        mpa_profit_calc
-// @namespace    http://tampermonkey.net/
+// @namespace   mpa_profit_calc
 // @description mpa profit calc
 // @include     https://*mypayingads.com/module3/position
-// @include     https://*mytrafficbux.com/module3/position
+// @include     http*://*mypayingcryptoads.com/module3/position
 // @icon        http://www.mypayingads.com/favicon.ico
-// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/mpa_profit_calc.user.js
-// @downloadURL https://github.com/rusania/gm_scripts/raw/master/mpa_profit_calc.user.js
-// @version     2016.09.08
+// @grant GM_getValue
+// @grant GM_setValue
+// @grant GM_addStyle
+// @grant GM_xmlhttpRequest
+// @grant unsafeWindow
+// @updateURL https://github.com/rusania/gm_scipts/raw/master/mpa_profit_calc.user.js
+// @downloadURL https://github.com/rusania/gm_scipts/raw/master/mpa_profit_calc.user.js
+// @version     2017.01.19
 // @run-at      document-end
 // @grant       none
 // ==/UserScript==
 
-$($('.membertopmenu').children()[0]).append('<li><a id="calc">CALC</li>');
+$('.membertopmenu').append('<li><a id="calc">CALC</li>');
 $('#calc').click(function(){
     var e1 = 0;
     var e2 = 0;
