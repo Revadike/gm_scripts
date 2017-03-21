@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         tb order
 // @namespace    http://tampermonkey.net/
-// @version      2017.02.15.1
+// @version      2017.03.20.01
 // @description  tb order info
 // @author       jacky
 // @match        https://trade.taobao.com/trade/detail/trade_order_detail.htm?biz_order_id=*
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
+// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/tb order.user.js
+// @downloadURL https://github.com/rusania/gm_scipts/raw/master/tb order.user.js
 // @grant       none
 // ==/UserScript==
 

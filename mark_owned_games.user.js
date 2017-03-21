@@ -7,10 +7,13 @@
 // @include     http*://*dailyindiegame.com/store_updateshowpurchased2.html
 // @include     http*://*steamcardexchange.net/index.php?boosterprices
 // @include     http*://*steamcardexchange.net/index.php?badgeprices
-// @version     2017.03.15.1
+// @include     http://wtfprice.ru*
+// @version     2017.03.21.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
+// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/mark_owned_games.user.js
+// @downloadURL https://github.com/rusania/gm_scipts/raw/master/mark_owned_games.user.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_log
 // @grant       GM_addStyle
@@ -34,14 +37,24 @@ else{
             update();
         });
         dig();
+    } else {
+        match = /steamcardexchange/.exec(document.URL);
+        if (match){
+            $('#navbar-menu').append('<div class="navbar-menu-item" id="mark"><a class="item-link">Mark</a></div>');
+            $('#mark').click(function(){
+                sce();
+            });
+        } else {
+            match = /wtfprice.ru/.exec(document.URL);
+            if (match){
+                $('#top-panel').append('<span><a id="mark">Mark</a></span>');
+                $('#mark').click(function(){
+                    wtf();
+                });
+            }
+        }
     }
-    match = /steamcardexchange/.exec(document.URL);
-    if (match){
-        $('#navbar-menu').append('<div class="navbar-menu-item" id="mark"><a class="item-link">Mark</a></div>');
-        $('#mark').click(function(){
-            sce();
-        });
-    }
+
 }
 
 function update()
@@ -74,6 +87,15 @@ function mark(r, tr, re){
     }
 }
 
+function mark_2(r, tr, id){
+    id = parseInt(id);
+    if (r["rgOwnedApps"].indexOf(id) > -1){
+        $(tr).css("background","#9CCC65");
+    } else if (r["rgWishlist"].indexOf(id) > -1){
+        $(tr).css("background","#29B6F6");
+    }
+}
+
 function dig(){
     $('#TableKeys tr').each(function(i, tr){
         mark(r, tr, /app\/(\d+)/);
@@ -86,5 +108,11 @@ function dig(){
 function sce(){
     $('tr[role="row"]').each(function(i, tr){
         mark(r, tr, /appid\-(\d+)/);
+    });
+}
+
+function wtf(){
+    $('#tbody tr').each(function(i, tr){
+        mark_2(r, tr, $(tr).attr('id'));
     });
 }
