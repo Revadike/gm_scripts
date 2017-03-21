@@ -8,12 +8,10 @@
 // @include     http*://*steamcardexchange.net/index.php?boosterprices
 // @include     http*://*steamcardexchange.net/index.php?badgeprices
 // @include     http://wtfprice.ru*
-// @version     2017.03.21.1
+// @version     2017.03.21.2
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
-// @updateURL 	https://github.com/rusania/gm_scipts/raw/master/mark_owned_games.user.js
-// @downloadURL https://github.com/rusania/gm_scipts/raw/master/mark_owned_games.user.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_log
 // @grant       GM_addStyle
@@ -47,6 +45,13 @@ else{
         } else {
             match = /wtfprice.ru/.exec(document.URL);
             if (match){
+
+                $('#top-panel').before('<span><a id="upd">Update</a></span>');
+                $('#upd').click(function(){
+                    update();
+                });
+
+
                 $('#top-panel').append('<span><a id="mark">Mark</a></span>');
                 $('#mark').click(function(){
                     wtf();
@@ -89,6 +94,10 @@ function mark(r, tr, re){
 
 function mark_2(r, tr, id){
     id = parseInt(id);
+    var td = $(tr).find('td')[0];
+    var b = '<a target="_blank" href="https://tryit-forfree.rhcloud.com/package.php?id=' + id +'">'+ $(td).text() +'</a>';
+    $(td).replaceWith(b);
+
     if (r["rgOwnedApps"].indexOf(id) > -1){
         $(tr).css("background","#9CCC65");
     } else if (r["rgWishlist"].indexOf(id) > -1){
