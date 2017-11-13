@@ -1,14 +1,17 @@
 // ==UserScript==
-// @name        mark owned games
-// @namespace   http://tampermonkey.net/
+// @name        mark_owned_games
+// @namespace   mark_owned_games
 // @description mark owned games
 // @author      jacky
 // @include     http*://*dailyindiegame.com/account_digstore.html
 // @include     http*://*dailyindiegame.com/store_updateshowpurchased2.html
+// @include     http*://*dailyindiegame.com/account_trades.html
 // @include     http*://*steamcardexchange.net/index.php?boosterprices
 // @include     http*://*steamcardexchange.net/index.php?badgeprices
 // @include     http://wtfprice.ru*
-// @version     2017.03.21.2
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/mark_owned_games.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/mark_owned_games.user.js
+// @version     2017.09.28.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
