@@ -3,8 +3,8 @@
 // @namespace   http://tampermonkey.net/
 // @description bundle games info
 // @include     http*://store.steampowered.com/sale/*
-// @include     http*://www.sonkwo.com/operation_activities/*
-// @include     http*://www.sonkwo.com/store/search*
+// @include     http://www.sonkwo.com/operation_activities/*
+// @include     http://www.sonkwo.com/store/search*
 // @include     http*://*.activity.sonkwo.com/*/index.html
 // @include     http*://yuplay.ru/news/*
 // @include     http*://yuplay.ru/product/*
@@ -13,6 +13,8 @@
 // @include     http*://www.bundlestars.com/en/bundle/*
 // @include     http*://www.bundlestars.com/en/game/*
 // @exclude     http*://www.bundlestars.com/en/orders/*
+// @include     http*://*dailyindiegame.com/superbundle_*
+// @include     http*://*dailyindiegame.com/account_page*
 // @include     http*://*otakumaker.com/index.php/account/admin/deal/view/*
 // @include     http*://www.indiegala.com/*
 // @exclude     http*://www.indiegala.com/profile?user_id=*
@@ -20,13 +22,13 @@
 // @exclude     http*://www.indiegala.com/gift?gift_id=*
 // @exclude     http*://www.indiegala.com/successpay*
 // @exclude     https://tryit-forfree.rhcloud.com/*
+// @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2017.10.20.1
+// @version     2017.01.26.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
-// @grant       GM_addStyle
 // ==/UserScript==
 var colors = [
     '#32cd32',
@@ -49,9 +51,7 @@ var mons = [
     'November',
     'December'
 ];
-
-//GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
-//GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px !important;}");
+$('head').append('<style type="text/css">table{border:solid 1px;border-collapse:collapse;}td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px;}</style>');
 var match = /store.steampowered.com\/sale/.exec(document.URL);
 if (match) {
     $('.supernav_container').append('<a class="menuitem" id="btn">INFO</a>');
@@ -80,7 +80,7 @@ if (match) {
 match = /operation_activities\/(\d+)/.exec(document.URL);
 if (match) {
     $('#nav_bar').append('<li><a id="btn">INFO</a></li>');
-    $('#nav_bar').append('<li><a target="_blank" href="http://173.82.212.166/sonkwo.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a></li>');
+    $('#nav_bar').append('<li><a target="_blank" href="https://tryit-forfree.rhcloud.com/sonkwo.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a></li>');
     $('.firm-game').after('<div id="limit"></div><br>');
     $('.firm-game').after('<table id="info"></table>');
     $('#btn').click(function () {
@@ -171,7 +171,7 @@ if (match) {
             q = 'g';
         var key = $(k[0]).attr('data-key');
         var p = $('.active').text();
-        var url = 'http://173.82.212.166/sonkwo.php?o=html&cc=cn&p=' + p + '&' + q + '=' + key;
+        var url = 'https://tryit-forfree.rhcloud.com/sonkwo.php?o=html&cc=cn&p=' + p + '&' + q + '=' + key;
         $('.search-keys').append('<span class="key-block"><a target="_blank" href="'+url+'">TRY IT</a></span>');
     }
 } //sonkwo search
@@ -180,7 +180,7 @@ match = /directgames.co.kr\/event/.exec(document.URL);
 if (match) {
     $('.navbar-nav').append('<li class="mega" data-level="1"><a itemprop="url" id="btn">INFO</a></li>');
     $('#system-message-container').append('<div>实时汇率：<span id="ratio">0</ratio></div>');
-    $('#system-message-container').append('<a target="_blank" href="http://173.82.212.166/dg.php?v=0">TRY IT</a>');
+    $('#system-message-container').append('<a target="_blank" href="https://tryit-forfree.rhcloud.com/dg.php?v=0">TRY IT</a>');
     $('#system-message-container').append('<table id="info"></table>');
     $('#btn').click(function () {
         $('#info').empty();
@@ -225,7 +225,7 @@ match = /ru\/news\/(\d+)/.exec(document.URL);
 if (match) {
     $($('.navi').children() [0]).append('<li><a id="btn">INFO</a></li>');
     $('.section-main').append('<div>实时汇率：<span id="ratio">0</ratio></div>');
-    $('.section-main').append('<a target="_blank" href="http://173.82.212.166/yuplay.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a>');
+    $('.section-main').append('<a target="_blank" href="https://tryit-forfree.rhcloud.com/yuplay.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a>');
     $('.section-main').append('<table id="info"></table>');
     $('#btn').click(function () {
         $('#info').empty();
@@ -393,6 +393,36 @@ if (match) {
     });
 } //dailyindiegame bundle
 
+match = /com\/account_page/.exec(document.URL);
+if (match) {
+    $('<div><a class="DIG2-TitleOrange" id="claim">CLAIM</a></div>').insertBefore('#TableKeys');
+    $('<div id="keys"></div>').insertBefore('#TableKeys');
+    $('#claim').click(function () {
+        $($('#TableKeys').children() [0]).find('tr').each(function () {
+            var t = $(this).find('td');
+            var name = $(t[2]).text();
+            var key = $(t[4]).text();
+            var id = '0';
+            if (key.search('Reveal key') > 0) {
+                // http://www.dailyindiegame.com/DIG2-getkey.php?id=1149728
+                // revealKey(2,1149727);
+                var match = /\d+,(\d+)/.exec($(t[4]).html());
+                if (match != null) {
+                    var id = match[1];
+                    var url = 'http://www.dailyindiegame.com/DIG2-getkey.php?id=' + id;
+                    $.ajax({
+                        url: url
+                    }).done(function (data) {
+                        $('#' + id).empty();
+                        $('#' + id).append(data);
+                    });
+                }
+            }
+            $('#keys').append('<tr><td>【' + name + '】<span id="' + id + '">' + key + '</span></td></tr>');
+        });
+    });
+} //dailyindiegame account
+
 match = /admin\/deal\/view/.exec(document.URL);
 if (match) {
     $('.em_DealInfoRight').append('<div><a id="btn"><span style="color:red;font-weight:bold;">INFO</span></a></div>');
@@ -447,7 +477,7 @@ if (match) {
 
 match = /indiegala.com/.exec(document.URL);
 if (match) {
-    $('#libdLogo').after('<li class="logo-cont"><a id="btn">Info</a></li>');
+    $($('.logo-cont') [0]).replaceWith('<li class="logo-cont"><a id="btn">Info</a></li>');
     $('.bundle_header').before('<div class="info" style="color:#ffffff"></div>');
     $('.bundle_header').before('<div class="info2" style="color:#ffffff"></div>');
     $('#btn').click(function () {
@@ -507,6 +537,25 @@ if (match) {
         }
     });
 } //indiegala bundle
+
+match = /downloads\?key=([a-z0-9]+)/i.exec(document.URL);
+if (match) {
+    $('#headertext').append('<div><a id="btn">INFO</a></div>');
+    $('#headertext').append('<div><a id="key">KEYS</a></div>');
+    $('#headertext').append('<table id="info"></table>');
+    $('#btn').click(function () {
+        $('#info').empty();
+        var i = 0;
+        $('#steam-tab').find('.sr-key').each(function () {
+            var title = $.trim($(this).find('.sr-key-heading').text());
+            var key = $.trim($(this).find('.sr-redeemed-bubble').text());
+            $('#info').append('<tr><td>' + ++i + '</td><td>' + title + '</td><td>' + key + '</td><td>' + match[1] + '</td></tr>');
+        });
+    });
+    $('#key').click(function () {
+        $('.sr-unredeemed-button-text').click();
+    });
+} //humblebunle keys
 
 var getRatio = function (c, f) {
     GM_xmlhttpRequest({

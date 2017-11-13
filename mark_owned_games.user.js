@@ -46,7 +46,7 @@ else{
             match = /wtfprice.ru/.exec(document.URL);
             if (match){
 
-                $('#top-panel').append('<span><a id="upd">Update</a></span>');
+                $('#top-panel').before('<span><a id="upd">Update</a></span>');
                 $('#upd').click(function(){
                     update();
                 });
