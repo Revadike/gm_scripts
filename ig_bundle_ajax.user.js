@@ -7,25 +7,47 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2017.11.12.1
+// @version     2017.11.15.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
+// @grant       GM_log
 // @grant       GM_addStyle
+// @grant       GM_getValue
+// @grant       GM_setValue
 // ==/UserScript==
 
 GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
 GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-family:simsun !important;}");
 GM_addStyle("div{font-family:simsun !important;}");
 
+/*
+var body = $('body');
+body.append('<button id="ck">CK</button>');
+$('#ck').click(function () {
+    var x = body.text();
+    if (body.text() == 'CK'){
+        var y= GM_getValue("cookie", '');
+        if (GM_getValue("cookie", '') != '')
+            GM_setValue("cookie", '');
+    }
+});
+*/
+
 var how = $('#header-title');
 if(how.length == 0)
     how = $('.left');
-how.after('<table id="area"></table><div id="area2"></div>');
-how.after('<button id="redeem">KEYS</button>');
-showkey();
-$('#redeem').click(function () {
+if (how.length > 0){
+    how.after('<table id="area"></table><div id="area2"></div>');
+    how.after('<button id="redeem">KEYS</button>');
+    how.after('<button id="rest">RESTORE</button>');
     showkey();
-});
+    $('#redeem').click(function () {
+        showkey();
+    });
+    $('#rest').click(function () {
+        restore();
+    });
+}
 
 var bk = $('.title-bundle-kind');
 if(bk.length > 0){
@@ -38,6 +60,13 @@ if(bk.length > 0){
     $('#gift_btn').click(function () {
         showgift();
     });
+}
+
+function chgcookie()
+{
+    var m = /auth="([^=;"]+)"/.exec(document.cookie);
+    if (m)
+        GM_setValue("cookie", m[1]);
 }
 
 function showkey()
@@ -101,17 +130,19 @@ function showgift()
         }
     });
     if(na.length > 0){
+        var cp = na.length;
+        chgcookie();
+        document.cookie = 'auth=""';
         $.each(na, function(k, v){
             var i = k;
             $('#area_na').append('<tr><td>' + v + '</td><td id="' + i + '">-</td></tr>');
             $.ajax({
                 url: v,
                 type: "GET",
-                success: function( data, status, xhr ){
+                complete: function( data, status, xhr ){
                     $('#' + i).append(status);
-                },
-                error: function( data, status, xhr ){
-                    $('#' + i).append(status);
+                    if (cp-- == 1)
+                        restore();
                 }
             });
         });
@@ -121,4 +152,12 @@ function showgift()
             $('#area_gifts').append(e);
         });
     }
+}
+
+function restore(){
+    document.cookie = 'auth="' + GM_getValue("cookie", '') + '"';
+    setTimeout(function () {
+        //alert(GM_getValue("cookie", ''));
+        window.location.reload();
+    },1000);
 }

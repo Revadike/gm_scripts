@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundles_link.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundles_link.user.js
-// @version     2017.11.12.1
+// @version     2017.11.15.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       none
@@ -22,7 +22,7 @@ if (tp.length > 0){
 }
 document.body.innerHTML = document.body.innerHTML.replace(/\\r|\\n|\\t/ig, '');
 document.body.innerHTML = document.body.innerHTML.replace(/\\&quot;/ig, '');
-
+$('#collapseGiveaway').empty();
 var bl = $('#bundles-list');
 if (bl.length > 0){
     bl.before('<table id="bl">AA</table>');
