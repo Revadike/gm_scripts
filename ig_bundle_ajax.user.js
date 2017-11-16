@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2017.11.15.1
+// @version     2017.11.15.2
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -39,13 +39,9 @@ if(how.length == 0)
 if (how.length > 0){
     how.after('<table id="area"></table><div id="area2"></div>');
     how.after('<button id="redeem">KEYS</button>');
-    how.after('<button id="rest">RESTORE</button>');
     showkey();
     $('#redeem').click(function () {
         showkey();
-    });
-    $('#rest').click(function () {
-        restore();
     });
 }
 
@@ -56,9 +52,13 @@ if(bk.length > 0){
         dv = $('.title-bundle-kind');
     dv.after('<table id="area_gifts"></table><table id="area_na"></table>');
     dv.after('<button id="gift_btn">GIFTS</button>');
+    dv.after('<button id="rest">RESTORE</button>');
     showgift();
     $('#gift_btn').click(function () {
         showgift();
+    });
+    $('#rest').click(function () {
+        restore();
     });
 }
 
@@ -109,7 +109,7 @@ function showgift()
 {
     $('#area_gifts').empty();
     var gifts = Array();
-    var na = Array();
+    var na = Array();;
     $('.gift-links-box').each(function () {
         var num = '';
         var m = /link (\d+)/.exec($(this).find('.title-gift').text());
@@ -151,6 +151,23 @@ function showgift()
         gifts.forEach(function (e) {
             $('#area_gifts').append(e);
         });
+        var dt = $('.profile_list').attr('id');
+        var s = '';
+        m = /id=(\d+)/.exec(document.URL);
+        if (m)
+            s = m[1];
+        bk.append('<form id="f" action="http://173.82.212.166/ig_sale.php?c=gift&s=' + s + '&d=' + dt + '" method="post" target="_blank"></form>');
+        $('#area_gifts tr').each(function () {
+            var t = $(this).find('td');
+            var g = '';
+            m = /id=([0-9a-f]+)/.exec($(t[0]).text());
+            if (m)
+                g = m[1];
+            var pwd = $(t[1]).text();
+            var dx = $(t[2]).text();
+            $('#f').append('<input type="hidden" name="' + g + '" value="' + pwd + ',' + dx + '" />');
+        });
+        $('#f').append('<input type="submit" value="Submit" />');
     }
 }
 
