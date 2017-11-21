@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2017.11.16.1
+// @version     2017.11.21.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -26,7 +26,6 @@ if(how.length == 0)
 if (how.length > 0){
     how.after('<table id="area"></table><div id="area2"></div>');
     how.after('<button id="redeem">KEYS</button>');
-    showkey();
     $('#redeem').click(function () {
         showkey();
     });
