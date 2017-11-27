@@ -26,6 +26,7 @@ if(how.length == 0)
 if (how.length > 0){
     how.after('<table id="area"></table><div id="area2"></div>');
     how.after('<button id="redeem">KEYS</button>');
+    //showkey();
     $('#redeem').click(function () {
         showkey();
     });
@@ -36,9 +37,11 @@ if(bk.length > 0){
     var dv = $('#area2');
     if (dv.length == 0)
         dv = $('.title-bundle-kind');
+    var id = $('.profile_list').attr('id');
     dv.after('<table id="area_gifts"></table><table id="area_na"></table>');
     dv.after('<button id="gift_btn">GIFTS</button>');
     dv.after('<button id="rest">RESTORE</button>');
+    dv.after('<div>' + id + '</div>');
     showgift();
     $('#gift_btn').click(function () {
         showgift();

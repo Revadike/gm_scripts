@@ -1,8 +1,10 @@
 // ==UserScript==
 // @name        nuuvem_promo
-// @namespace   nuuvem_promo
+// @namespace   http://tampermonkey.net/
 // @description nuuvem promo info
 // @include     https://www.nuuvem.com/catalog/price/promo*
+// @match        file:///E:/nuuvem.html
+// @include     https://www.nuuvem.com/promo*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/nuuvem_promo.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/nuuvem_promo.user.js
 // @version     2017.09.07.01
@@ -15,7 +17,7 @@
 GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
 GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px !important;}");
 
-$('#catalog').before('<div id="g"><a id="btn">BTN</a>&nbsp;<a id="info">INFO</a></div>');
+$('#nvm-content').after('<div id="g"><a id="btn">BTN</a>&nbsp;<a id="info">INFO</a></div>');
 // {&quot;current_page&quot;:1,&quot;total_pages&quot;:59,&quot;total_count&quot;:1173}"
 
 $('#btn').click(function(){
@@ -33,6 +35,7 @@ $('#btn').click(function(){
 $('#g').append('<table id="tb"></table>');
 $('#info').click(function(){
     var ar = new Array();
+    var ar2 = new Array();
     $('.product-card--grid').each(function(){
         var p = $(this).find('.product-card__cover')[0];
         var id = $(p).attr('data-product-id');
@@ -63,8 +66,12 @@ $('#info').click(function(){
 
         var drm = $(a).find('.product-drm-info li span').text();
         $('#tb').append('<tr><td>'+ id +'</td><td>'+ sku +'</td><td>'+ title +'</td><td>'+ href +'</td><td>'+ price +'</td><td>'+ sale +'</td><td>'+ pc +'</td><td>'+ time +'</td><td>'+ drm +'</td></tr>');
-        var r = [id, sku, title, href, price, sale, time, drm];
+        var r = [id, sku, title, href, price, sale, drm];
         ar.push(r);
+        var r2 = [sku,price,sale];
+        ar2.push(r2.join());
     });
     $('#g').append(JSON.stringify(ar));
+    $('#g').append('<br>');
+    $('#g').append(ar2.join(';'));
 });

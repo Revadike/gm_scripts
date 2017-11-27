@@ -3,13 +3,13 @@
 // @namespace   http://tampermonkey.net/
 // @description bundle games info
 // @include     http*://store.steampowered.com/sale/*
-// @include     http*://www.sonkwo.com/operation_activities/*
+// @include     http*://www.sonkwo.com/operation_activities*/*
 // @include     http*://www.sonkwo.com/store/search*
 // @include     http*://*.activity.sonkwo.com/*/index.html
 // @include     http*://yuplay.ru/news/*
 // @include     http*://yuplay.ru/product/*
-// @include     http*://directgames.co.kr/event/event.html
-// @include     http*://directgames.co.kr/game/game_page.html?product_code=*
+// @include     http*://directg.net/event/event.html
+// @include     http*://directg.net/game/game_page.html?product_code=*
 // @include     http*://www.bundlestars.com/en/bundle/*
 // @include     http*://www.bundlestars.com/en/game/*
 // @exclude     http*://www.bundlestars.com/en/orders/*
@@ -22,7 +22,7 @@
 // @exclude     https://tryit-forfree.rhcloud.com/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2017.10.20.1
+// @version     2017.11.23.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -176,7 +176,7 @@ if (match) {
     }
 } //sonkwo search
 
-match = /directgames.co.kr\/event/.exec(document.URL);
+match = /directg.net\/event/.exec(document.URL);
 if (match) {
     $('.navbar-nav').append('<li class="mega" data-level="1"><a itemprop="url" id="btn">INFO</a></li>');
     $('#system-message-container').append('<div>实时汇率：<span id="ratio">0</ratio></div>');
@@ -200,7 +200,7 @@ if (match) {
                 $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>&#8361;' + p + '</td><td>&yen;' + p2 + '</td><td>-' + discount + '</td></tr>');
             });
         };
-        getRatio('KRWCNY', f);
+        getRatio('KRW', 'CNY', f);
     });
 } //directgames event
 
@@ -508,14 +508,16 @@ if (match) {
     });
 } //indiegala bundle
 
-var getRatio = function (c, f) {
+var getRatio = function (a, b, f) {
     GM_xmlhttpRequest({
         method: 'GET',
-        url: 'http://download.finance.yahoo.com/d/quotes.csv?s=' + c + '=X&f=l1',
+        url: 'https://api.fixer.io/latest?base=' + a + '&symbols=' + b,
         onload: function (response) {
             var rate = 0;
-            if (response.responseText)
-                rate = response.responseText;
+            if (response.responseText){
+                var j = JSON.parse(response.responseText);
+                rate = j.rates[b];
+            }
             $('#ratio').empty();
             $('#ratio').append(rate);
             f();
