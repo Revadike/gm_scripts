@@ -5,7 +5,7 @@
 // @include     https://store.steampowered.com/account/registerkey
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_redeam_keys.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_redeam_keys.user.js
-// @version     2017.11.21.1
+// @version     2017.11.30.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -33,7 +33,7 @@ function regkey()
     $('#re').empty();
     var text = $('#ks').val();
     var ks = Array();
-    var re = /[A-Z0-9]{5}\-[A-Z0-9]{5}-[A-Z0-9]{5}/ig;
+    var re = /[A-Z0-9]{5}\-[A-Z0-9]{5}\-[A-Z0-9]{5}\-[A-Z0-9]{5}\-[A-Z0-9]{5}|[A-Z0-9]{5}\-[A-Z0-9]{5}\-[A-Z0-9]{5}|[0-9A-Z]{15} \d+/ig;
     var m = re.exec(text);
     while (m) {
         ks.push(m[0]);
