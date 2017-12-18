@@ -8,6 +8,7 @@
 // @include     http*://*.activity.sonkwo.com/*/index.html
 // @include     http*://yuplay.ru/news/*
 // @include     http*://yuplay.ru/product/*
+// @include     http*://www.bunchkeys.com*
 // @include     http*://directg.net/event/event.html
 // @include     http*://directg.net/game/game_page.html?product_code=*
 // @include     http*://www.bundlestars.com/en/bundle/*
@@ -22,7 +23,7 @@
 // @exclude     https://tryit-forfree.rhcloud.com/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2017.11.23.1
+// @version     2017.12.12.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -76,6 +77,37 @@ if (match) {
         });
     });
 } //steam sale
+
+match = /bunchkeys/.exec(document.URL);
+if (match) {
+    GM_addStyle(".r{font-size:16px !important;}");
+    $('#SITE_CONTAINER').after('<a class="r" id="a">INFO</a>');
+    $('#a').click(function(){
+        $('#a').before('<div class="r info"></div>');
+        $('#a').before('<div class="r info2"></div>');
+        var bundle = $($('h4')[0]).text();
+        $('#b').append('<p>' + bundle + '</p>');
+        getGridHead(bundle);
+        var i = 0;
+        var k = 0;
+        $('.info').append('<div>[quote]获得以下游戏：[/b]<br><span id=' + i + '></span>[/quote]</div>');
+        $('.wp2link').each(function(){
+            var h = $(this).attr('href');
+            var m = /(app|sub)\/(\d+)/.exec(h);
+            if (m){
+                h = 'http://store.steampowered.com/' + m[1] + '/' + m[2] + '/';
+                var t = $($(this).find('img')[0]).attr('alt');
+                m2 = /(.*)\s*game/.exec(t);
+                if (m2){
+                    getGridContent(m[2], m[1], m2[1], '#' + i, ++k);
+                    //$('#b').append('<p>' + (i++) + '.&nbsp;' + m2[1] + '<br>&nbsp;&nbsp;&nbsp;' + h +'</p>');
+                }
+            }
+        });
+        $('.g').append(k);
+    });
+}
+
 
 match = /operation_activities\/(\d+)/.exec(document.URL);
 if (match) {
@@ -447,18 +479,17 @@ if (match) {
 
 match = /indiegala.com/.exec(document.URL);
 if (match) {
-    $('#libdLogo').after('<li class="logo-cont"><a id="btn">Info</a></li>');
+    $('.libd-box-social').prev().append('<li><a id="btn" class="libd-group-item libd-bounce libd-group-item-icon ">Info</a></li>');
     $('.bundle_header').before('<div class="info" style="color:#ffffff"></div>');
     $('.bundle_header').before('<div class="info2" style="color:#ffffff"></div>');
     $('#btn').click(function () {
         $('.info').empty();
         $('.info2').empty();
-        var items = $('.bundle_page').find('div.bundle-item-cont-responsive');
         var i = 0;
         var bundle = $(document).attr('title').replace(' of Steam games', '');
         getGridHead(bundle);
         var html = $('#frame-top').html();
-        var rg = /new Date\( \d+,(\d+)\-\d+,(\d+),\d+,\d+,\d+ \)/g;
+        var rg = /Date.UTC\( \d+,(\d+)\-\d+,(\d+),\d+,\d+,\d+ \)/g;
         var d = new Array();
         match = rg.exec(html);
         while (match) {
@@ -474,8 +505,7 @@ if (match) {
                     $('#early').append('前' + flash + '小时');
             }
         }
-        $('.g').append(items.length);
-        var tiers = $('.bundle_page').find('div.container');
+        var tiers = $('.bundle_page').find('section');
         var k = 0;
         tiers.each(function () {
             var match = /\$\s*<\/span>\s*([0-9.]+)/.exec($(this).html());
@@ -487,12 +517,16 @@ if (match) {
                     $('#ag' + i).append('再');
                 }
             }
-            $(this).find('div.bundle-item-cont-responsive').each(function () {
-                var title = $(this).find('h3').text();
-                var id = /\d+\/(\d+)\.jpg/.exec($(this).find('img').attr('src')) [1];
-                getGridContent(id, 'app', title, '#' + i, ++k);
+            $(this).find('.bundle-single-game').each(function () {
+                var title = $($(this).find('h1')[0]).text();
+                var hr = $(this).find('.game-steam-url').attr('href');
+                match = /(app|sub|bundle)\/(\d+)/.exec(hr);
+                if (match)
+                    getGridContent(match[2], match[1], title, '#' + i, ++k);
+
             });
         });
+        $('.g').append(k);
         var regx = /amnt > ([0-9.]+)/g;
         text = $('#order-form-box').text();
         i = 0;
@@ -526,14 +560,14 @@ var getRatio = function (a, b, f) {
 }; //KRWCNY,RUBCNY
 var getGridHead = function (title) {
     $('.info').append('<div><span id="time"></span>' + title + '上线，<span id="early"></span><span id="p"></span>刀可获完整内容<br>[b]购买地址：<br>' + document.URL + '<br><br>包含<span class="g"></span>款游戏：[/b]</div>');
-    $('.info2').append('<div>&lt;FONT size=2 face=黑体&gt;&lt;P&gt;' + title + '&amp;nbsp;慈善包&lt;/P&gt;&lt;P&gt;&lt;FONT color=#ff0000&gt;发货方式为激活码，此站不包含礼物链接&lt;/FONT&gt;&lt;/P&gt;&lt;P&gt;包含<span class="g"></span>款STEAM游戏：&lt;/P&gt;&lt;P&gt;<span class="tb"></span>&lt;/P&gt;&lt;P&gt;&lt;/P&gt;&lt;/FONT&gt;</div>');
+    $('.info2').append('<div>&lt;FONT size=2 face=黑体&gt;&lt;P&gt;' + title + '&amp;nbsp;慈善包&lt;/P&gt;&lt;P&gt;&lt;FONT color=#ff0000&gt;发货方式为激活码/礼物链接&lt;/FONT&gt;&lt;/P&gt;&lt;P&gt;包含<span class="g"></span>款STEAM游戏：&lt;/P&gt;&lt;P&gt;<span class="tb"></span>&lt;/P&gt;&lt;P&gt;&lt;/P&gt;&lt;/FONT&gt;</div>');
 }; // grid head
 var getGridContent = function (id, addon, name, tier, i) {
     $(tier).append('<div id=' + id + '>[url=http://store.steampowered.com/' + addon + '/' + id + '/]<b>' + name + '</b>[/url]</div>');
     $('.tb').append('<div id=tb_' + id + '>' + i + '.&amp;nbsp;<b>' + name + '</b></div>');
     $('.tb').append('<div>&lt;BR&gt;&lt;FONT color=#0055ff&gt;&amp;nbsp;&amp;nbsp;http://store.steampowered.com/' + addon + '/' + id + '/&lt;/FONT&gt;&lt;BR&gt;</div>');
-    getGameName(id, addon);
-    getGameRate(id, addon);
+    //getGameName(id, addon);
+    //getGameRate(id, addon);
 }; // grid content
 var getGameName = function (id, addon) {
     var url = 'http://steamdb.sinaapp.com/' + addon + '/' + id + '/data.js?v=34';
