@@ -5,7 +5,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2017.04.10.02
+// @version     2017.12.23.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -46,7 +46,7 @@ $('#btn').click(function () {
     var i = 0;
     $('#steam-tab').find('.sr-key').each(function () {
         var title = $.trim($(this).find('.sr-key-heading').text());
-        var key = $.trim($(this).find('.sr-redeemed-bubble').text());
+        var key = $.trim($(this).find('.keyfield-text').text());
         $('#info').append('<tr><td>' + (++i) + '</td><td>' + title + '</td><td>' + key + '</td></tr>');
     });
 });

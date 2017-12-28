@@ -6,7 +6,7 @@
 // @include		http*://store.steampowered.com/explore*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_queue.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_queue.user.js
-// @version     2016.09.08
+// @version     2017.12.27
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       none
@@ -15,6 +15,7 @@ var match = /agecheck/.exec(location.href);
 if (match) {
   $('#ageYear').val('1988');
   $('#agecheck_form').submit();
+  $('.btn_next_in_queue').click();
 } 
 else {
   match = /explore/.exec(location.href);
