@@ -24,7 +24,7 @@ function okm() {
 			
 			while (match) {
 				$('#2').append('<tr><td>' + k + '</td><td>' + ++i + '</td><td>' + game + '</td><td>' + match + '</td><td>' + title + '</td></tr>');
-				keys.push('<tr><td id="'+ i +'">【' + k + '】【' + game + '】' + match + '</td></tr>');
+				keys.push('<tr><td id="'+ i +'">【' + k + '】【' + game + '】&nbsp' + match + '</td></tr>');
 				match = re.exec(v);
 			}
 		}

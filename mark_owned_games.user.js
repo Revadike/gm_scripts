@@ -12,9 +12,10 @@
 // @include     http*://*steamcn.com/t*
 // @include     http*://*steamcn.com/forum.php?mod=viewthread*
 // @include     http://wtfprice.ru*
-// @version     2018.01.09.1
+// @version     2018.01.09.2
 // @run-at      document-end
 // @connect     store.steampowered.com
+// @connect     steamcardexchange.net
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/mark_owned_games.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/mark_owned_games.user.js
@@ -45,12 +46,15 @@ const cardIcon = "&#x1F0A1"; // HTML entity code for '🂡' (default).
 const cardColor = "blue"; // Color of the icon for cards.
 const userRefreshInterval = 60 * 24; // Number of minutes to wait to refesh cached userdata. 0 = always stay up-to-date.
 const decommissionedRefreshInterval = 60 * 24; // Number of minutes to wait to refesh cached userdata. 0 = always stay up-to-date.
-const cardRefreshInterval = 60 * 24 * 2; // Number of minutes to wait to refesh cached trading card data. 0 = always stay up-to-date.
+const cardRefreshInterval = 60 * 24 * 7; // Number of minutes to wait to refesh cached trading card data. 0 = always stay up-to-date.
 // ==/Configuration==
 
 var txt = GM_getValue("steam_info", "{}");
 var dt = GM_getValue("last_upd", 0);
+var txt2 = GM_getValue("card_info", null);
+var dt2 = GM_getValue("card_upd", 0);
 var r = JSON.parse(txt);
+var r2 = JSON.parse(txt2);
 var ignoredApps = r.rgIgnoredApps;
 var ownedApps = r.rgOwnedApps;
 var ownedPackages = r.rgOwnedPackages;
@@ -64,6 +68,28 @@ if (Date.now() - dt > userRefreshInterval * 60000 || ownedApps===undefined){
             GM_setValue("steam_info", response.responseText);
             GM_setValue("last_upd", Date.now());
             alert("complete");
+        }
+    });
+}
+
+if (wantCards && (Date.now() - dt2 >= cardRefreshInterval * 60000 || !r2 || Object.keys(r2).length < 7000)) {
+    GM_xmlhttpRequest({
+        method: "GET",
+        url: "https://www.steamcardexchange.net/api/request.php?GetBadgePrices_Guest",
+        onload: function(response) {
+            var json = null;
+            try {
+                json = {};
+                JSON.parse(response.responseText).data.forEach(function(item) {
+                    json[item[0][0]] = item[1];
+                });
+                if (Object.keys(json).length > 7000) { // sanity check
+                    GM_setValue("card_info", JSON.stringify(json));
+                    GM_setValue("card_upd", Date.now());
+                }
+                alert("complete");
+            } catch(error) {
+            }
         }
     });
 }
@@ -85,6 +111,7 @@ function mark(a){
         if (m){
             id = parseInt(m[3]);
             var html = '';
+            var card = '';
             if (m[1]=='app') {
                 if ($.inArray(id, ownedApps) > -1)
                     html = '<span style="color: ' + ownedColor + '; cursor: help;">&nbsp' + ownedIcon + '</span>';
@@ -93,6 +120,11 @@ function mark(a){
                         html = '<span style="color: ' + wishlistColor + '; cursor: help;">&nbsp' + wishlistIcon + '</span>';
                     else
                         html = '<span style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
+                }
+
+                if (wantCards && r2.hasOwnProperty(id)){
+                    card = '<span style="color: ' + cardColor + '; cursor: help;">&nbsp' + cardIcon + '</span>';
+                    $(this).after(card);
                 }
             } else {
                 if ($.inArray(id, ownedPackages) > -1)

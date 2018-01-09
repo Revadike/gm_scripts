@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        dig_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2017.11.10
+// @version      2018.01.10.1
 // @description  dig game keys
 // @author       jacky
 // @include     http*://*dailyindiegame.com/superbundle_*
@@ -33,7 +33,7 @@ $('#claim').click(function () {
         var id = '0';
         var i = num % 6;
         ar.push(key);
-        $('#keys').append('<tr><td class="zd">' + bundle + '</td><td class="zd">' + i + '</td><td class="zd">' + num + '</td><td class="zd">【' + name + '】<span id="' + id + '">' + key + '</span></td></tr>');
+        $('#keys').append('<tr><td class="zd">' + bundle + '</td><td class="zd">' + i + '</td><td class="zd">' + num + '</td><td class="zd">【' + name + '】&nbsp<span id="' + id + '">' + key + '</span></td></tr>');
         if (i==0){
             i = 6;
             $('#keys').append('<tr><td class="zd">' + Math.floor(num / 6) + '</td><td class="zd">-</td><td class="zd">-</td><td class="zd">ASF格式：!redeem ' + ar.join(',') + '</td></tr>');

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.01.03.1
+// @version      2018.01.10.1
 // @description  otk_gg_game_keys
 // @author       You
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -37,7 +37,7 @@ $('legend').each(function(){
             var c = [];
             for (j=0; j < js; j++) {
                 var k = b[a[j]][i];
-                var key = '<div>【' + (j+1) + '】【' + a[j]  +'】' + k + '</div>';
+                var key = '<div>【' + (j+1) + '】【' + a[j]  +'】&nbsp' + k + '</div>';
                 c.push(k);
                 $('#k').append(key);
             }
