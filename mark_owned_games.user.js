@@ -4,12 +4,15 @@
 // @description mark_owned_games
 // @author      jacky
 // @include     http*://*dailyindiegame.com/account_digstore.html
+// @include     http*://*dailyindiegame.com/account_trades.html
 // @include     http*://*dailyindiegame.com/store_updateshowpurchased2.html
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http*://*steamcardexchange.net/index.php?boosterprices
 // @include     http*://*steamcardexchange.net/index.php?badgeprices
+// @include     http*://*steamcn.com/t*
+// @include     http*://*steamcn.com/forum.php?mod=viewthread*
 // @include     http://wtfprice.ru*
-// @version     2017.09.16.1
+// @version     2018.01.09.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
@@ -22,109 +25,82 @@
 // @grant       GM_setValue
 // ==/UserScript==
 
-GM_addStyle(".o{background-color:#9CCC65 !important;}");
-GM_addStyle(".w{background-color:#29B6F6 !important;}");
+// ==Configuration==
+const prefix = false; // Prefix (true) instead of suffix (false) position icon.
+const wantIgnores = true; // Wether (true) or not (false) you want to display an extra icon for ignored (not interested) apps.
+const wantDecommissioned = true; // Wether (true) or not (false) you want to display an extra icon for removed or delisted (decommissioned) apps.
+const wantCards = true; // Whether (true) or not (false) you want to display an extra icon for apps with cards.
+const linkCardIcon = true; // Link the card icon to SteamCardExchange.net
+const ignoredIcon = "&#128683;&#xFE0E;"; // HTML entity code for '🛇' (default).
+const ignoredColor = "grey"; // Color of the icon for ignored (not interested) apps.
+const wishlistIcon = "&#10084;"; // HTML entity code for '❤' (default).
+const wishlistColor = "blue"; // Color of the icon for wishlisted apps.
+const ownedIcon = "&#10004;"; // HTML entity code for '✔' (default).
+const ownedColor = "green"; // Color of the icon for owned apps and subs.
+const unownedIcon = "&#10008;"; // HTML entity code for '✘' (default).
+const unownedColor = "red"; // Color of the icon for unowned apps and subs.
+const decommissionedIcon = "&#128465;"; // HTML entity code for '🗑' (default).
+const decommissionedColor = "initial"; // Color of the icon for removed or delisted apps and subs.
+const cardIcon = "&#x1F0A1"; // HTML entity code for '🂡' (default).
+const cardColor = "blue"; // Color of the icon for cards.
+const userRefreshInterval = 60 * 24; // Number of minutes to wait to refesh cached userdata. 0 = always stay up-to-date.
+const decommissionedRefreshInterval = 60 * 24; // Number of minutes to wait to refesh cached userdata. 0 = always stay up-to-date.
+const cardRefreshInterval = 60 * 24 * 2; // Number of minutes to wait to refesh cached trading card data. 0 = always stay up-to-date.
+// ==/Configuration==
+
 var txt = GM_getValue("steam_info", "{}");
+var dt = GM_getValue("last_upd", 0);
 var r = JSON.parse(txt);
-if (r["rgOwnedApps"]===undefined){
-    update();
-}
-else{
-    var match = /dailyindiegame/.exec(document.URL);
-    if (match){
-        $('#DIG2TableGray').before('<input type="button" id="upd" value="upd" />');
-        $('#DIG2TableGray').before('<input type="button" id="hide" value="hide" />');
-        $('#upd').click(function(){
-            update();
-        });
-        dig();
-    } else {
-        match = /steamcardexchange/.exec(document.URL);
-        if (match){
-            $('#navbar-menu').append('<div class="navbar-menu-item" id="mark"><a class="item-link">Mark</a></div>');
-            $('#mark').click(function(){
-                sce();
-            });
-        } else {
-            match = /wtfprice.ru/.exec(document.URL);
-            if (match){
+var ignoredApps = r.rgIgnoredApps;
+var ownedApps = r.rgOwnedApps;
+var ownedPackages = r.rgOwnedPackages;
+var wishlist = r.rgWishlist;
 
-                $('#top-panel').before('<span><a id="upd">Update</a></span>');
-                $('#upd').click(function(){
-                    update();
-                });
-
-
-                $('#top-panel').append('<span><a id="mark">Mark</a></span>');
-                $('#mark').click(function(){
-                    wtf();
-                });
-            }
-        }
-    }
-
-}
-
-function update()
-{
+if (Date.now() - dt > userRefreshInterval * 60000 || ownedApps===undefined){
     GM_xmlhttpRequest({
         method: "GET",
         url: "http://store.steampowered.com/dynamicstore/userdata/?l=english",
         onload: function(response) {
             GM_setValue("steam_info", response.responseText);
+            GM_setValue("last_upd", Date.now());
             alert("complete");
         }
     });
 }
 
-function mark(r, tr, re){
-    var a = $(tr).find('a') [0];
-    var steam = $(a).attr('href');
-    match = re.exec(steam);
-    var id = -1;
-    if (match) {
-        id = parseInt(match[1]);
-        var b = '<a target="_blank" href="http://steamcommunity.com/market/search?q=&category_753_Game%5B0%5D=tag_app_' + id + '&category_753_item_class%5B0%5D=tag_item_class_2&category_753_item_class%5B1%5D=tag_item_class_5&appid=753#p1_price_asc"></a>';
-        var td = $(tr).find('.time')[0];
-        $(td).wrapInner(b);
-        if (r["rgOwnedApps"].indexOf(id) > -1){
-            $(tr).css("background","#9CCC65");
-        } else if (r["rgWishlist"].indexOf(id) > -1){
-            $(tr).css("background","#29B6F6");
+var a = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
+var t = 1;
+if (a.length == 0)
+    t =15;
+
+setTimeout(function() {
+    a = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
+    mark(a);
+}, t * 1000);
+
+function mark(a){
+    a.each(function(i, v){
+        var h = $(this).attr('href');
+        var m = /(app|sub)(\/|id\-)(\d+)/.exec(h);
+        if (m){
+            id = parseInt(m[3]);
+            var html = '';
+            if (m[1]=='app') {
+                if ($.inArray(id, ownedApps) > -1)
+                    html = '<span style="color: ' + ownedColor + '; cursor: help;">&nbsp' + ownedIcon + '</span>';
+                else {
+                    if ($.inArray(id, wishlist) > -1)
+                        html = '<span style="color: ' + wishlistColor + '; cursor: help;">&nbsp' + wishlistIcon + '</span>';
+                    else
+                        html = '<span style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
+                }
+            } else {
+                if ($.inArray(id, ownedPackages) > -1)
+                    html = '<span style="color: ' + ownedColor + '; cursor: help;">&nbsp' + ownedIcon + '</span>';
+                else
+                    html = '<span style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
+            }
+            $(this).after(html);
         }
-    }
-}
-
-function mark_2(r, tr, id){
-    id = parseInt(id);
-    var td = $(tr).find('td')[0];
-    var b = '<a target="_blank" href="https://tryit-forfree.rhcloud.com/package.php?id=' + id +'">'+ $(td).text() +'</a>';
-    $(td).replaceWith(b);
-
-    if (r["rgOwnedApps"].indexOf(id) > -1){
-        $(tr).css("background","#9CCC65");
-    } else if (r["rgWishlist"].indexOf(id) > -1){
-        $(tr).css("background","#29B6F6");
-    }
-}
-
-function dig(){
-    $('#TableKeys tr').each(function(i, tr){
-        mark(r, tr, /app\/(\d+)/);
-    });
-    $('#TableKeys').prev().prev().each(function(i, tr){
-        mark(r, tr, /app\/(\d+)/);
-    });
-}
-
-function sce(){
-    $('tr[role="row"]').each(function(i, tr){
-        mark(r, tr, /appid\-(\d+)/);
-    });
-}
-
-function wtf(){
-    $('#tbody tr').each(function(i, tr){
-        mark_2(r, tr, $(tr).attr('id'));
     });
 }
