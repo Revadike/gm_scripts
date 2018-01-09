@@ -1,17 +1,20 @@
 // ==UserScript==
-// @name        mark owned games
+// @name        mark_owned_games
 // @namespace   http://tampermonkey.net/
-// @description mark owned games
+// @description mark_owned_games
 // @author      jacky
 // @include     http*://*dailyindiegame.com/account_digstore.html
 // @include     http*://*dailyindiegame.com/store_updateshowpurchased2.html
+// @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http*://*steamcardexchange.net/index.php?boosterprices
 // @include     http*://*steamcardexchange.net/index.php?badgeprices
 // @include     http://wtfprice.ru*
-// @version     2017.03.21.2
+// @version     2017.09.16.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/mark_owned_games.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/mark_owned_games.user.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_log
 // @grant       GM_addStyle
@@ -46,7 +49,7 @@ else{
             match = /wtfprice.ru/.exec(document.URL);
             if (match){
 
-                $('#top-panel').append('<span><a id="upd">Update</a></span>');
+                $('#top-panel').before('<span><a id="upd">Update</a></span>');
                 $('#upd').click(function(){
                     update();
                 });

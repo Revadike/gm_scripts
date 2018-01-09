@@ -1,13 +1,16 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2017.12.17.1
+// @version      2018.01.03.1
 // @description  otk_gg_game_keys
 // @author       You
-// @match        https://gogobundle.com/latest/bundles/order/show/*
-// @match        https://otakubundle.com/account/order/show/*
+// @match        http*://*gogobundle.com/*/order/show/*
+// @include      http*://*gogobundle.com/*/order/show/*
+// @match        http*://*otakubundle.com/*/order/show/*
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/otk_gg_game_keys.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/otk_gg_game_keys.user.js
 // @grant       none
 // ==/UserScript==
 

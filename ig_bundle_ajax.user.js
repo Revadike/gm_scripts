@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2017.12.28.1
+// @version     2017.12.15.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -36,11 +36,9 @@ if(bk.length > 0){
     var dv = $('#area2');
     if (dv.length == 0)
         dv = $('.title-bundle-kind');
-	var id = $('.profile_list').attr('id');
     dv.after('<table id="area_gifts"></table><table id="area_na"></table>');
     dv.after('<button id="gift_btn">GIFTS</button>');
     dv.after('<button id="rest">RESTORE</button>');
-	dv.after('<div>' + id + '</div>');
     showgift();
     $('#gift_btn').click(function () {
         showgift();
@@ -151,7 +149,7 @@ function showgift()
         m = /id=(\d+)/.exec(document.URL);
         if (m)
             s = m[1];
-        bk.append('<form id="f" action="http://167.88.168.94/ig_sale.php?c=gift&s=' + s + '&d=' + dt + '" method="post" target="_blank"></form>');
+        bk.append('<form id="f" action="http://173.82.212.166/ig_sale.php?c=gift&s=' + s + '&d=' + dt + '" method="post" target="_blank"></form>');
         $('#area_gifts tr').each(function () {
             var t = $(this).find('td');
             var g = '';
