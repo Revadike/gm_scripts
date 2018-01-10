@@ -12,7 +12,7 @@
 // @include     http*://*steamcn.com/t*
 // @include     http*://*steamcn.com/forum.php?mod=viewthread*
 // @include     http://wtfprice.ru*
-// @version     2018.01.09.2
+// @version     2018.01.10.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -60,7 +60,28 @@ var ownedApps = r.rgOwnedApps;
 var ownedPackages = r.rgOwnedPackages;
 var wishlist = r.rgWishlist;
 
-if (Date.now() - dt > userRefreshInterval * 60000 || ownedApps===undefined){
+$('body').append('<a id="upd">UPDATE</a>');
+$('body').append('<a id="card">CARDS</a>');
+$('#upd').click(function(){update();});
+$('#card').click(function(){upcard();});
+
+if (Date.now() - dt > userRefreshInterval * 60000 || ownedApps===undefined)
+    update();
+
+if (wantCards && (Date.now() - dt2 >= cardRefreshInterval * 60000 || !r2 || Object.keys(r2).length < 7000))
+    upcard();
+
+var a = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
+var t = 1;
+if (a.length == 0)
+    t =15;
+
+setTimeout(function() {
+    a = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
+    mark(a);
+}, t * 1000);
+
+function update(){
     GM_xmlhttpRequest({
         method: "GET",
         url: "http://store.steampowered.com/dynamicstore/userdata/?l=english",
@@ -72,7 +93,7 @@ if (Date.now() - dt > userRefreshInterval * 60000 || ownedApps===undefined){
     });
 }
 
-if (wantCards && (Date.now() - dt2 >= cardRefreshInterval * 60000 || !r2 || Object.keys(r2).length < 7000)) {
+function upcard(){
     GM_xmlhttpRequest({
         method: "GET",
         url: "https://www.steamcardexchange.net/api/request.php?GetBadgePrices_Guest",
@@ -93,16 +114,6 @@ if (wantCards && (Date.now() - dt2 >= cardRefreshInterval * 60000 || !r2 || Obje
         }
     });
 }
-
-var a = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
-var t = 1;
-if (a.length == 0)
-    t =15;
-
-setTimeout(function() {
-    a = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
-    mark(a);
-}, t * 1000);
 
 function mark(a){
     a.each(function(i, v){
