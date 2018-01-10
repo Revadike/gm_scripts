@@ -13,6 +13,7 @@
 // @include     http*://*steamcn.com/forum.php?mod=viewthread*
 // @include     http://wtfprice.ru*
 // @include     http://167.88.168.94/*
+// @exclude     https://steamcn.com/forum.php
 // @version     2018.01.10.3
 // @run-at      document-end
 // @connect     store.steampowered.com
@@ -65,8 +66,15 @@ $('body').append('<div id="ru"></div>');
 $('#ru').append('<a id="upd" style="cursor: default;" title="'+ (new Date(dt)).toLocaleString() +'">UPDATE</a>');
 $('#ru').append('&nbsp;&nbsp;');
 $('#ru').append('<a id="card" style="cursor: default;" title="'+ (new Date(dt2)).toLocaleString() +'">CARDS</a>');
+$('#ru').append('&nbsp;&nbsp;');
+$('#ru').append('<a id="mark" style="cursor: default;">MARK</a>');
 $('#upd').click(function(){update();});
 $('#card').click(function(){upcard();});
+$('#mark').click(function(){
+    $('.ruc').remove();
+    var b = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
+    mark(b);
+});
 
 if (Date.now() - dt > userRefreshInterval * 60000 || ownedApps===undefined)
     update();
@@ -128,23 +136,23 @@ function mark(a){
             var card = '';
             if (m[1]=='app') {
                 if ($.inArray(id, ownedApps) > -1)
-                    html = '<span style="color: ' + ownedColor + '; cursor: help;">&nbsp' + ownedIcon + '</span>';
+                    html = '<span class="ruc" style="color: ' + ownedColor + '; cursor: help;">&nbsp' + ownedIcon + '</span>';
                 else {
                     if ($.inArray(id, wishlist) > -1)
-                        html = '<span style="color: ' + wishlistColor + '; cursor: help;">&nbsp' + wishlistIcon + '</span>';
+                        html = '<span class="ruc" style="color: ' + wishlistColor + '; cursor: help;">&nbsp' + wishlistIcon + '</span>';
                     else
-                        html = '<span style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
+                        html = '<span class="ruc" style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
                 }
 
                 if (wantCards && r2.hasOwnProperty(id)){
-                    card = '<span style="color: ' + cardColor + '; cursor: help;">&nbsp' + cardIcon + '</span>';
+                    card = '<span class="ruc" style="color: ' + cardColor + '; cursor: help;">&nbsp' + cardIcon + '</span>';
                     $(this).after(card);
                 }
             } else {
                 if ($.inArray(id, ownedPackages) > -1)
-                    html = '<span style="color: ' + ownedColor + '; cursor: help;">&nbsp' + ownedIcon + '</span>';
+                    html = '<span class="ruc" style="color: ' + ownedColor + '; cursor: help;">&nbsp' + ownedIcon + '</span>';
                 else
-                    html = '<span style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
+                    html = '<span class="ruc" style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
             }
             $(this).after(html);
         }
