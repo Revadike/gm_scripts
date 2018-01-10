@@ -12,7 +12,8 @@
 // @include     http*://*steamcn.com/t*
 // @include     http*://*steamcn.com/forum.php?mod=viewthread*
 // @include     http://wtfprice.ru*
-// @version     2018.01.10.1
+// @include     http://167.88.168.94/*
+// @version     2018.01.10.3
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -60,8 +61,10 @@ var ownedApps = r.rgOwnedApps;
 var ownedPackages = r.rgOwnedPackages;
 var wishlist = r.rgWishlist;
 
-$('body').append('<a id="upd">UPDATE</a>');
-$('body').append('<a id="card">CARDS</a>');
+$('body').append('<div id="ru"></div>');
+$('#ru').append('<a id="upd" style="cursor: default;" title="'+ (new Date(dt)).toLocaleString() +'">UPDATE</a>');
+$('#ru').append('&nbsp;&nbsp;');
+$('#ru').append('<a id="card" style="cursor: default;" title="'+ (new Date(dt2)).toLocaleString() +'">CARDS</a>');
 $('#upd').click(function(){update();});
 $('#card').click(function(){upcard();});
 
