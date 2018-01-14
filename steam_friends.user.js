@@ -2,10 +2,10 @@
 // @name        steam_friends
 // @namespace   steam_friends
 // @description steam_friends
-// @include     https://steamcommunity.com/profiles/*/friends*
+// @include     https://steamcommunity.com/*/friends*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_friends.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_friends.user.js
-// @version     2018.01.07.1
+// @version     2018.01.14.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log

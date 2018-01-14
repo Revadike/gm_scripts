@@ -3,18 +3,17 @@
 // @namespace   http://tampermonkey.net/
 // @description mark_owned_games
 // @author      jacky
-// @include     http*://*dailyindiegame.com/account_digstore.html
-// @include     http*://*dailyindiegame.com/account_trades.html
-// @include     http*://*dailyindiegame.com/store_updateshowpurchased2.html
+// @include     http*://*dailyindiegame.com/*
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http*://*steamcardexchange.net/index.php?boosterprices
 // @include     http*://*steamcardexchange.net/index.php?badgeprices
 // @include     http*://*steamcn.com/t*
 // @include     http*://*steamcn.com/forum.php?mod=viewthread*
+// @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http://wtfprice.ru*
 // @include     http://167.88.168.94/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.01.10.3
+// @version     2018.01.14.2
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -62,12 +61,14 @@ var ownedApps = r.rgOwnedApps;
 var ownedPackages = r.rgOwnedPackages;
 var wishlist = r.rgWishlist;
 
-$('body').append('<div id="ru"></div>');
+$('body').append('<center><div id="ru"></div></center>');
 $('#ru').append('<a id="upd" style="cursor: default;" title="'+ (new Date(dt)).toLocaleString() +'">UPDATE</a>');
 $('#ru').append('&nbsp;&nbsp;');
 $('#ru').append('<a id="card" style="cursor: default;" title="'+ (new Date(dt2)).toLocaleString() +'">CARDS</a>');
 $('#ru').append('&nbsp;&nbsp;');
 $('#ru').append('<a id="mark" style="cursor: default;">MARK</a>');
+$('#ru').append('&nbsp;&nbsp;');
+$('#ru').append('<a id="umark" style="cursor: default;">UMARK</a>');
 $('#upd').click(function(){update();});
 $('#card').click(function(){upcard();});
 $('#mark').click(function(){
@@ -76,11 +77,25 @@ $('#mark').click(function(){
     mark(b);
 });
 
+$('#umark').click(function(){
+    $('.ruc').remove();
+});
+
 if (Date.now() - dt > userRefreshInterval * 60000 || ownedApps===undefined)
     update();
 
 if (wantCards && (Date.now() - dt2 >= cardRefreshInterval * 60000 || !r2 || Object.keys(r2).length < 7000))
     upcard();
+
+if (/content_digaccount/.exec(document.URL)){
+    $('#TableKeys2 tr').each(function(){
+        var m = /(app|sub)\/(\d+)/.exec($(this).html());
+        if (m){
+            var td = $(this).children('td')[2];
+            $(td).wrapInner('<a href="http://store.steampowered.com/' + m[0] +'/" target=_blank></a>');
+        }
+    });
+}
 
 var a = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
 var t = 1;

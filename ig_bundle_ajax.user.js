@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2018.01.10.1
+// @version     2018.01.14.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -61,13 +61,16 @@ function showkey()
     $('#area2').empty();
     var i = 1;
     var keys = Array();
+
+    var t = $('#indie_gala_2 div:first').text();
     $('.game-key-string').each(function () {
         var steam = $(this).find('.game-steam-url');
         var href = steam.attr('href');
-        var id = /(\d+)/.exec(href) [1];
+        var ma = /(app|sub)\/(\d+)/.exec(href);
+        var id = ma[1];
         var key = $(this).find('.input-block-level').val();
         keys.push(key);
-        $('#area').append('<tr><td>' + steam.text() + '</td><td id="' + id + '">' + key + '</td></tr>');
+        $('#area').append('<tr><td><a href="http://store.steampowered.com/'+ ma[0] +'/">' + steam.text() + '</a></td><td id="' + id + '">' + key + '</td><td>' + i + '</td><td>' + t + '</td></tr>');
         $('#area2').append('【' + i++ + '】【' + steam.text() + '】&nbsp' + key+'<br>');
         var code = '';
         var m = /serial_([A-F0-9]+)/.exec($(this).html());
@@ -149,7 +152,7 @@ function showgift()
         m = /id=(\d+)/.exec(document.URL);
         if (m)
             s = m[1];
-        bk.append('<form id="f" action="http://173.82.212.166/ig_sale.php?c=gift&s=' + s + '&d=' + dt + '" method="post" target="_blank"></form>');
+        bk.append('<form id="f" action="http://167.88.168.94/ig_sale.php?c=gift&s=' + s + '&d=' + dt + '" method="post" target="_blank"></form>');
         $('#area_gifts tr').each(function () {
             var t = $(this).find('td');
             var g = '';
