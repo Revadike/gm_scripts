@@ -13,7 +13,7 @@
 // @include     http://wtfprice.ru*
 // @include     http://167.88.168.94/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.01.14.2
+// @version     2018.01.22.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -112,10 +112,21 @@ function update(){
         method: "GET",
         url: "http://store.steampowered.com/dynamicstore/userdata/?l=english",
         onload: function(response) {
-            GM_setValue("steam_info", response.responseText);
-            GM_setValue("last_upd", Date.now());
-            alert("complete");
-        }
+            if (/rgWishlist/.exec(response.responseText)){
+                GM_setValue("steam_info", response.responseText);
+                GM_setValue("last_upd", Date.now());
+                alert("complete");
+            } else {
+                alert("error");
+            }
+
+        },
+        onerror:  function(response) {
+            alert(response.statusText);
+        },
+        ontimeout:  function(response) {
+            alert(response.statusText);
+        },
     });
 }
 
