@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         cubic_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.01.14.1
+// @version      2018.01.22.1
 // @description  cubic_game_keys
 // @author       jacky
-// @match        https://cubicbundle.com/profile*
+// @match        https://cubicbundle.com/*profile*
 // @run-at       document-end
 // @require      http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @updateURL 	 https://github.com/rusania/gm_scripts/raw/master/cubic_game_keys.user.js

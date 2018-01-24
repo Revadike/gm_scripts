@@ -23,7 +23,7 @@
 // @exclude     https://tryit-forfree.rhcloud.com/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2017.12.23.1
+// @version     2018.01.21.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -109,10 +109,10 @@ if (match) {
 }
 
 
-match = /operation_activities_part\/(\d+)/.exec(document.URL);
+match = /operation_activities\/(\d+)/.exec(document.URL);
 if (match) {
-    $('.SK-nav-ul').after('<li><a id="btn">INFO</a></li>');
-    $('.SK-nav-ul').after('<li><a target="_blank" href="http://38.141.47.226/sonkwo.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a></li>');
+    $('#nav_bar').append('<li><a id="btn">INFO</a></li>');
+    $('#nav_bar').append('<li><a target="_blank" href="http://167.88.168.94/sonkwo.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a></li>');
     $('.firm-game').after('<div id="limit"></div><br>');
     $('.firm-game').after('<table id="info"></table>');
     $('#btn').click(function () {
@@ -203,7 +203,7 @@ if (match) {
             q = 'g';
         var key = $(k[0]).attr('data-key');
         var p = $('.active').text();
-        var url = 'http://173.82.212.166/sonkwo.php?o=html&cc=cn&p=' + p + '&' + q + '=' + key;
+        var url = 'http://167.88.168.94/sonkwo.php?o=html&cc=cn&p=' + p + '&' + q + '=' + key;
         $('.search-keys').append('<span class="key-block"><a target="_blank" href="'+url+'">TRY IT</a></span>');
     }
 } //sonkwo search
@@ -212,7 +212,7 @@ match = /directg.net\/event/.exec(document.URL);
 if (match) {
     $('.navbar-nav').append('<li class="mega" data-level="1"><a itemprop="url" id="btn">INFO</a></li>');
     $('#system-message-container').append('<div>实时汇率：<span id="ratio">0</ratio></div>');
-    $('#system-message-container').append('<a target="_blank" href="http://38.141.47.226/dg.php?v=0">TRY IT</a>');
+    $('#system-message-container').append('<a target="_blank" href="http://167.88.168.94/dg.php?v=0">TRY IT</a>');
     $('#system-message-container').append('<table id="info"></table>');
     $('#btn').click(function () {
         $('#info').empty();
@@ -257,7 +257,7 @@ match = /ru\/news\/(\d+)/.exec(document.URL);
 if (match) {
     $($('.navi').children() [0]).append('<li><a id="btn">INFO</a></li>');
     $('.section-main').append('<div>实时汇率：<span id="ratio">0</ratio></div>');
-    $('.section-main').append('<a target="_blank" href="http://38.141.47.226/yuplay.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a>');
+    $('.section-main').append('<a target="_blank" href="http://167.88.168.94/yuplay.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a>');
     $('.section-main').append('<table id="info"></table>');
     $('#btn').click(function () {
         $('#info').empty();
@@ -276,7 +276,7 @@ if (match) {
                 $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>&#8381;' + del + '</td><td>&#8381;' + p + '</td><td>&yen;' + p2 + '</td><td>-' + discount + '%</td></tr>');
             });
         };
-        getRatio('RUBCNY', f);
+        getRatio('RUB', 'CNY', f);
     });
 } //yuplay news
 
@@ -292,14 +292,11 @@ if (match) {
                 var q = (pr * r).toFixed(2);
                 $(this).append('<span style="color:red; font-weight: bold;">&yen;' + q + '</span>');
             });
-            var p = $('.list-character p:last-child');
-            if (p.html().search('SUB_ID') > 0) {
-                var s = p.find('span');
-                var url = 'http://steamdb.sinaapp.com/sub/' + s.text() + '/tooltip';
-                s.append('<a target="_blank" href="http://steamdb.info/sub/' + s.text() + '/">API</a>');
-            }
+            var p = $(":contains('SUB_ID') > span");
+            if (p.length > 0)
+                p.after('<a target="_blank" href="http://steamdb.info/sub/' + p.text() + '/">API</a>');
         };
-        getRatio('RUBCNY', f);
+        getRatio('RUB', 'CNY', f);
     });
 } //yuplay product
 

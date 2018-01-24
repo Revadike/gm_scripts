@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.01.10.1
+// @version      2018.01.23.1
 // @description  otk_gg_game_keys
 // @author       You
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -24,11 +24,14 @@ $('legend').each(function(){
             var d = $(this).find('td');
             var n = $(d[0]).text();
             var s = $(d[1]).text();
-            if ($.inArray(n, a) < 0){
-                a.push(n);
-                b[n]= [];
+            var m = /Coupon/.exec(n);
+            if (!m){
+                if ($.inArray(n, a) < 0){
+                    a.push(n);
+                    b[n]= [];
+                }
+                b[n].push(s);
             }
-            b[n].push(s);
         });
         $(this).after('<div id="k"></div>');
         var ks = b[a[0]].length;
@@ -37,7 +40,7 @@ $('legend').each(function(){
             var c = [];
             for (j=0; j < js; j++) {
                 var k = b[a[j]][i];
-                var key = '<div>【' + (j+1) + '】【' + a[j]  +'】&nbsp' + k + '</div>';
+                var key = '<div>【' + (j+1) + '】【' + a[j]  +'】&nbsp;' + k + '</div>';
                 c.push(k);
                 $('#k').append(key);
             }
