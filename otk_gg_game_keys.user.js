@@ -1,7 +1,11 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
+<<<<<<< HEAD
 // @version      2018.01.25.2
+=======
+// @version      2018.01.23.1
+>>>>>>> origin/master
 // @description  otk_gg_game_keys
 // @author       jacky
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -28,9 +32,13 @@ $('legend').each(function(){
             var n = $(d[0]).text();
             var s = $(d[1]).text();
             var m = /Coupon/.exec(n);
+<<<<<<< HEAD
             if (m){
                 $('#k').append('<span style="color:red">' + n + '：' + s + '</span>');
             } else {
+=======
+            if (!m){
+>>>>>>> origin/master
                 if ($.inArray(n, a) < 0){
                     a.push(n);
                     b[n]= [];
