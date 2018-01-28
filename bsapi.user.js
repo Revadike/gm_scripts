@@ -17,7 +17,7 @@
 // ==/UserScript==
 
 GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
-GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;text-align:right;font-family:simsun !important;}");
+GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;text-align:left;font-family:simsun !important;}");
 GM_addStyle("div{font-family:simsun !important;}");
 
 $('#root').before('<li><a id ="fetch" href="#"><span style="color:green;font-weight:bold;">FETCH</span></a></li>');
