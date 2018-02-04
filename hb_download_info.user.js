@@ -2,11 +2,11 @@
 // @name        hb_download_info
 // @namespace   http://tampermonkey.net/
 // @description hb download info
-// @include     http*://www.humblebundle.com/*?key=*
+// @include     http*://www.humblebundle.com/*
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.02.04.1
+// @version     2018.02.04.2
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
