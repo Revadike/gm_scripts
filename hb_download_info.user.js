@@ -6,7 +6,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.02.04.2
+// @version     2018.02.04.3
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -19,8 +19,7 @@ GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;paddi
 
 var m = /current_country': "([^"]+)",/.exec(document.body.innerHTML);
 if (m) {
-    $('.navbar-unlock-timer').append('<div id="cd"></div>');
-    $('#cd').after(m[1]);
+    $('.tabs-navbar-item').append('<div class="navbar-item button-title">' + m[1] + '</div>');
 }
 
 m = /key==/.exec(document.URL);
