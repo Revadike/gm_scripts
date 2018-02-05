@@ -6,7 +6,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.02.04.3
+// @version     2018.02.05.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -22,7 +22,7 @@ if (m) {
     $('.tabs-navbar-item').append('<div class="navbar-item button-title">' + m[1] + '</div>');
 }
 
-m = /key==/.exec(document.URL);
+m = /downloads/.exec(document.URL);
 if (m){
 	var r = /var data = ({"keys".*});/.exec(document.body.innerHTML);
 	if (r){
@@ -41,9 +41,11 @@ if (m){
 			$('#reg').append('<tr><td>' + item.steamAppId + '</td><td>' + item.machineName + '</td>' + exc + dis+'</tr>');
 		});
 	}
+    /*
 	r = /data.countryCode = "([^"]+)";/.exec(document.body.innerHTML);
 	if (r)
 		$('#headertext').append('<div><b>' + r[1] + '</b></div>');
+    */
 
 	$('#headertext').append('<div><a id="btn">INFO</a></div>');
 	$('#headertext').append('<div><a id="key">KEYS</a></div>');
