@@ -13,7 +13,7 @@
 // @include     http://wtfprice.ru*
 // @include     http://167.88.168.94/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.01.22.1
+// @version     2018.02.08.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -73,12 +73,14 @@ $('#upd').click(function(){update();});
 $('#card').click(function(){upcard();});
 $('#mark').click(function(){
     $('.ruc').remove();
-    var b = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
+    $('.dbc').remove();
+    var b = $("a:not(.db)[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
     mark(b);
 });
 
 $('#umark').click(function(){
     $('.ruc').remove();
+    $('.dbc').remove();
 });
 
 if (Date.now() - dt > userRefreshInterval * 60000 || ownedApps===undefined)
@@ -103,7 +105,7 @@ if (a.length == 0)
     t =15;
 
 setTimeout(function() {
-    a = $("a[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
+    a = $("a:not(.db)[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
     mark(a);
 }, t * 1000);
 
@@ -180,6 +182,9 @@ function mark(a){
                 else
                     html = '<span class="ruc" style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
             }
+            ma = /steamdb.info/.exec(h);
+            if (!ma)
+                $(this).after('<a class="dbc" target=_blank href="https://steamdb.info/' + m[0] + '/">DB</a>');
             $(this).after(html);
         }
     });
