@@ -23,7 +23,7 @@
 // @exclude     https://tryit-forfree.rhcloud.com/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2018.01.21.1
+// @version     2018.02.10.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -91,13 +91,13 @@ if (match) {
         var i = 0;
         var k = 0;
         $('.info').append('<div>[quote]获得以下游戏：[/b]<br><span id=' + i + '></span>[/quote]</div>');
-        $('.wp2link').each(function(){
+        $(".wp2link[href*='/app/'],[href*='/sub/']").each(function(){
             var h = $(this).attr('href');
             var m = /(app|sub)\/(\d+)/.exec(h);
             if (m){
                 h = 'http://store.steampowered.com/' + m[1] + '/' + m[2] + '/';
                 var t = $($(this).find('img')[0]).attr('alt');
-                m2 = /(.*)\s*game/.exec(t);
+                m2 = /(.*)\s*game/i.exec(t);
                 if (m2){
                     getGridContent(m[2], m[1], m2[1], '#' + i, ++k);
                     //$('#b').append('<p>' + (i++) + '.&nbsp;' + m2[1] + '<br>&nbsp;&nbsp;&nbsp;' + h +'</p>');
@@ -557,7 +557,7 @@ var getRatio = function (a, b, f) {
 }; //KRWCNY,RUBCNY
 var getGridHead = function (title) {
     $('.info').append('<div><span id="time"></span>' + title + '上线，<span id="early"></span><span id="p"></span>刀可获完整内容<br>[b]购买地址：<br>' + document.URL + '<br><br>包含<span class="g"></span>款游戏：[/b]</div>');
-    $('.info2').append('<div>&lt;FONT size=2 face=黑体&gt;&lt;P&gt;' + title + '&amp;nbsp;慈善包&lt;/P&gt;&lt;P&gt;&lt;FONT color=#ff0000&gt;发货方式为激活码/礼物链接&lt;/FONT&gt;&lt;/P&gt;&lt;P&gt;包含<span class="g"></span>款STEAM游戏：&lt;/P&gt;&lt;P&gt;<span class="tb"></span>&lt;/P&gt;&lt;P&gt;&lt;/P&gt;&lt;/FONT&gt;</div>');
+    $('.info2').append('<div>&lt;FONT size=2 face=黑体&gt;&lt;P&gt;' + title + '&amp;nbsp;慈善包&lt;/P&gt;&lt;P&gt;&lt;FONT color=#ff0000&gt;发货方式为激活码/礼物链接/包含ASF格式&lt;/FONT&gt;&lt;/P&gt;&lt;P&gt;包含<span class="g"></span>款STEAM游戏：&lt;/P&gt;&lt;P&gt;<span class="tb"></span>&lt;/P&gt;&lt;P&gt;&lt;/P&gt;&lt;/FONT&gt;</div>');
 }; // grid head
 var getGridContent = function (id, addon, name, tier, i) {
     $(tier).append('<div id=' + id + '>[url=http://store.steampowered.com/' + addon + '/' + id + '/]<b>' + name + '</b>[/url]</div>');
