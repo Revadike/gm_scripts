@@ -2,14 +2,14 @@
 // @name        nuuvem_promo
 // @namespace   http://tampermonkey.net/
 // @description nuuvem promo info
-// @include     https://www.nuuvem.com/catalog/price/promo*
+// @include     https://www.nuuvem.com/catalog/*promo*
 // @match        file:///E:/nuuvem.html
 // @include     https://www.nuuvem.com/promo*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/nuuvem_promo.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/nuuvem_promo.user.js
-// @version     2017.09.07.01
+// @version     2018.02.09.1
 // @run-at      document-end
-// @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
+// @require     https://code.jquery.com/jquery-3.3.1.min.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_addStyle
 // ==/UserScript==
