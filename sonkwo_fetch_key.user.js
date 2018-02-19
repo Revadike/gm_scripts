@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         sonkwo_fetch_key
 // @namespace    http://tampermonkey.net/
-// @version      2018.02.12.1
-// @description  try to take over the world!
-// @author       You
+// @version      2018.02.18.1
+// @description  sonkwo fetch key
+// @author       jacky
 // @match        https://www.sonkwo.com/products/*
+// @updateURL 	https://github.com/rusania/gm_scripts/raw/master/sonkwo_fetch_key.user.js
+// @downloadURL https://github.com/rusania/gm_scripts/raw/master/sonkwo_fetch_key.user.js
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -12,6 +14,10 @@
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
+
+GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
+GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-family:simsun !important;}");
+GM_addStyle(".d{font-size:16px;color:white !important;}");
 
 var u = "rusania@gmail.com";
 var p = "11111122a";
@@ -61,8 +67,11 @@ function getKey(g){
         url: '/api/game_key.json?game_id=' + g + '?&access_token=' + token,
         type: 'GET'
     }).done(function (data) {
-        alert(JSON.stringify(data));
+        $('.main-content').before('<table class="d"></table>');
+        $.each(data.game_keys, function (i, item) {
+            $('.d').append('<tr><td>' + item.id + '</td><td>' + item.code + '</td><td>' + item.type_desc +'</td></tr>');
+        });
     }).fail(function (jqxhr) {
-        alert(jqxhr);
+        alert(JSON.stringify(jqxhr));
     });
 }
