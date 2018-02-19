@@ -6,8 +6,6 @@
 // @include     http*://www.sonkwo.com/operation_activities*/*
 // @include     http*://www.sonkwo.com/store/search*
 // @include     http*://*.activity.sonkwo.com/*/index.html
-// @include     http*://yuplay.ru/news/*
-// @include     http*://yuplay.ru/product/*
 // @include     http*://www.bunchkeys.com*
 // @include     http*://directg.net/event/event.html
 // @include     http*://directg.net/game/game_page.html?product_code=*
@@ -23,7 +21,7 @@
 // @exclude     https://tryit-forfree.rhcloud.com/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2018.02.10.1
+// @version     2018.02.19.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -252,53 +250,6 @@ if (match) {
         getRatio('KRWCNY', f);
     });
 } //directgames game_page
-
-match = /ru\/news\/(\d+)/.exec(document.URL);
-if (match) {
-    $($('.navi').children() [0]).append('<li><a id="btn">INFO</a></li>');
-    $('.section-main').append('<div>实时汇率：<span id="ratio">0</ratio></div>');
-    $('.section-main').append('<a target="_blank" href="http://167.88.168.94/yuplay.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a>');
-    $('.section-main').append('<table id="info"></table>');
-    $('#btn').click(function () {
-        $('#info').empty();
-        $('#info').append('<tr><td>序号</td><td>游戏</td><td>原价</td><td>优惠价</td><td>人民币</td><td>折扣</td></tr>');
-        var f = function () {
-            var i = 0;
-            var r = $('#ratio').text();
-            $('.section-main').find('li').each(function () {
-                var m = $(this).children();
-                var title = $(m[0]).text();
-                var link = $(m[0]).attr('href');
-                var del = $(m[1]).text();
-                var p = /(\d+) руб/.exec($(this).text()) [1];
-                var p2 = (p * r).toFixed(2);
-                var discount = Math.round(((1 - p / del).toFixed(2)) * 100);
-                $('#info').append('<tr><td>' + ++i + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>&#8381;' + del + '</td><td>&#8381;' + p + '</td><td>&yen;' + p2 + '</td><td>-' + discount + '%</td></tr>');
-            });
-        };
-        getRatio('RUB', 'CNY', f);
-    });
-} //yuplay news
-
-match = /ru\/product/.exec(document.URL);
-if (match) {
-    $($('.navi').children() [0]).append('<li><a id="btn">INFO</a></li>');
-    $('.good-title').append('<div>实时汇率：<span id="ratio">0</span></div>');
-    $('#btn').click(function () {
-        var f = function () {
-            var r = $('#ratio').text();
-            $('.price').each(function () {
-                var pr = (/(\d+)\s*<sp/.exec($(this).html())) [1];
-                var q = (pr * r).toFixed(2);
-                $(this).append('<span style="color:red; font-weight: bold;">&yen;' + q + '</span>');
-            });
-            var p = $(":contains('SUB_ID') > span");
-            if (p.length > 0)
-                p.after('<a target="_blank" href="http://steamdb.info/sub/' + p.text() + '/">API</a>');
-        };
-        getRatio('RUB', 'CNY', f);
-    });
-} //yuplay product
 
 match = /bundlestars\.com\/en\/(game|bundle)/.exec(document.URL);
 if (match) {
