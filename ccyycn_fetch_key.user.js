@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ccyycn_fetch_key
 // @namespace    http://tampermonkey.net/
-// @version      2018.02.20.1
+// @version      2018.02.20.2
 // @description  ccyycn_fetch_key
 // @author       jacky
 // @match        http://bundle.ccyycn.com/order/id/*
@@ -35,7 +35,7 @@ if (m) {
         }
     });
 }else{
-    $('.carousel.slide').before('<div style="font-size:16px;" id="b"></div>');
+    $('.carousel.slide').before('<div style="font-family:simsun;margin-left:150px;font-size:20px;" id="b"></div>');
     $('.row.games').each(function(){
         var t = $($(this).find('span')[0]).text();
         $('#b').append('<p>' + t + '</p>');
