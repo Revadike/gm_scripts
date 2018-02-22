@@ -14,7 +14,7 @@
 // @include     http://167.88.168.94/*
 // @include     http://bundle.ccyycn.com/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.02.20.1
+// @version     2018.02.22.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -118,6 +118,11 @@ function update(){
             if (/rgWishlist/.exec(response.responseText)){
                 GM_setValue("steam_info", response.responseText);
                 GM_setValue("last_upd", Date.now());
+                r = JSON.parse(response.responseText);
+                ignoredApps = r.rgIgnoredApps;
+                ownedApps = r.rgOwnedApps;
+                ownedPackages = r.rgOwnedPackages;
+                wishlist = r.rgWishlist;
                 alert("complete");
             } else {
                 alert("error");
