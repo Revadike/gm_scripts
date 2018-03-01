@@ -12,9 +12,10 @@
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http://wtfprice.ru*
 // @include     http://167.88.168.94/*
+// @include     http://steamcn.edu.pl/*
 // @include     http://bundle.ccyycn.com/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.02.22.1
+// @version     2018.03.01.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -123,7 +124,7 @@ function update(){
                 ownedApps = r.rgOwnedApps;
                 ownedPackages = r.rgOwnedPackages;
                 wishlist = r.rgWishlist;
-                alert("complete");
+                //alert("complete");
             } else {
                 alert("error");
             }
