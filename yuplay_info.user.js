@@ -7,7 +7,7 @@
 // @include     https://yuplay.ru/orders/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
-// @version     2018.02.19.1
+// @version     2018.03.18.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -73,9 +73,7 @@ match = /yuplay.ru\/orders/.exec(document.URL);
 if (match) {
     $('.orders_id').after('<table id="t"></table>');
     $('.orders_id').after('<div id="b"></div>');
-    $('#b').append('<p>' + $('.number b').text() + '</p>');
-    $('#b').append('<p>' + $('.number small').text() + '</p>');
-    $('#b').append('<p>' + $.trim($('td.total').text()) + '</p>');
+    $('#b').append('<p>' + $('.number b').text() + '<br>' + $('.number small').text() + '<br>' + $.trim($('td.total').text()) + '</p>');
     $('.product-info').each(function(i, v){
         var t = $.trim($(v).find('.name').text());
         var k = $(v).next('.keys').find('input').val();
