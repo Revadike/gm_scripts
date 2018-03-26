@@ -21,7 +21,7 @@
 // @exclude     https://tryit-forfree.rhcloud.com/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2018.02.19.1
+// @version     2018.03.26.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -194,16 +194,27 @@ if (match) {
 
 match = /sonkwo.com\/store\/search/.exec(document.URL);
 if (match) {
-    var k = $('.key-block').find('span');
-    if (k){
-        var q = $(k[0]).attr('data-attr');
-        if (q=='tags[]')
-            q = 'g';
-        var key = $(k[0]).attr('data-key');
-        var p = $('.active').text();
-        var url = 'http://167.88.168.94/sonkwo.php?o=html&cc=cn&p=' + p + '&' + q + '=' + key;
+    setTimeout(function () {
+        var url = 'http://167.88.168.94/sonkwo.php?o=html';
+        var k = /tag%5B%5D=(\d+)/.exec(document.URL);
+        var q = '';
+        if (k)
+            q = '&g=' + k[1];
+        else {
+          k = /keyword=([^=&?]+)/.exec(document.URL);
+            if (k)
+                q = '&q=' + k[1];
+        }
+        if (q)
+            url += q;
+        var p = '';
+        k = /page=(\d+)/.exec(document.URL);
+        if (k)
+            p = '&p=' + k[1];
+        if (p)
+            url += p;
         $('.search-keys').append('<span class="key-block"><a target="_blank" href="'+url+'">TRY IT</a></span>');
-    }
+    }, 5000);
 } //sonkwo search
 
 match = /directg.net\/event/.exec(document.URL);
