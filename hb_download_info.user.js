@@ -7,7 +7,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.03.28.1
+// @version     2018.03.30.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -34,7 +34,7 @@ if (m){
 
     $('#r').click(function () {
         $('#reg').empty();
-        $('#reg').append('<tr><td>App</td><td>machineName</td><td>exclusive</td><td>disallowed</td></tr>');
+        $('#reg').append('<tr><td>App</td><td>machineName</td><td>app</td><td>sub</td><td>exclusive</td><td>disallowed</td></tr>');
         var m = /key=([0-9A-Z]+)/i.exec(document.URL);
         var url = 'https://www.humblebundle.com/api/v1/order/' + m[1] + '?all_tpkds=true';
         $.ajax({
@@ -42,13 +42,19 @@ if (m){
             type: "GET",
             success: function(data){
                 $.each(data.tpkd_dict.all_tpks, function (i, item) {
+                    var app = '<td></td>';
+                    if (item.steam_app_id)
+                        app = '<td><a target=_blank href="https://steamdb.info/app/' + item.steam_app_id + '/">' + item.steam_app_id + '</a></td>';
+                    var sub = '<td></td>';
+                    if (item.steam_package_id)
+                        sub = '<td><a target=_blank href="https://steamdb.info/sub/' + item.steam_package_id + '/">' + item.steam_package_id + '</a></td>';
                     var exc = '<td>-</td>';
                     if (item.exclusive_countries.length)
                         exc = '<td title="' + item.exclusive_countries + '">List</td>';
                     var dis = '<td>-</td>';
                     if (item.disallowed_countries.length)
                         dis = '<td title="' + item.disallowed_countries + '">List</td>';
-                    $('#reg').append('<tr><td>' + (++i) + '</td><td>' + item.machine_name + '</td>' + exc + dis + '</tr>');
+                    $('#reg').append('<tr><td>' + (++i) + '</td><td>' + item.machine_name + '</td>' + app + sub + exc + dis + '</tr>');
                 });
             },
             error: function(data){
@@ -67,7 +73,7 @@ if (m){
         });
     });
     $('#key').click(function () {
-        $('.keyfield not(.redeemed)').find('span').click();
+        $('.keyfield').click();
     });
     $('#gift').click(function () {
         $('.giftfield').click();

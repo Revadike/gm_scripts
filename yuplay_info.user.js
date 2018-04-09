@@ -1,13 +1,16 @@
 // ==UserScript==
 // @name        yuplay_info
 // @namespace   http://tampermonkey.net/
-// @description yuplay games info
+// @description yuplay gamazavr games info
 // @include     http*://yuplay.ru/news/*
 // @include     http*://yuplay.ru/product/*
-// @include     https://yuplay.ru/orders/*
+// @include     http*://yuplay.ru/orders/*
+// @include     http*://gamazavr.ru/news/*
+// @include     http*://gamazavr.ru/product/*
+// @include     http*://gamazavr.ru/orders/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
-// @version     2018.03.26.1
+// @version     2018.04.06.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -23,7 +26,7 @@
 var r = GM_getValue("r", 0.0);
 var dt = GM_getValue("dt", 0);
 
-match = /ru\/news\/(\d+)/.exec(document.URL);
+var match = /ru\/news\/(\d+)/.exec(document.URL);
 if (match) {
     $($('.navi').children() [0]).append('<li><a id="btn">INFO</a></li>');
     $('.section-main').append('<div>实时汇率：<span id="r"></ratio></div>');
@@ -69,14 +72,21 @@ if (match) {
     });
 } //yuplay product
 
-match = /yuplay.ru\/orders/.exec(document.URL);
+match = /orders/.exec(document.URL);
 if (match) {
-    $('.orders_id').after('<table id="t"></table>');
-    $('.orders_id').after('<div id="b"></div>');
+    $('div.orders_id').after('<table id="t"></table>');
+    $('div.orders_id').after('<div id="b"></div>');
     $('#b').append('<p>' + $.trim($('td.total').text()) + '<br>' + $('.number small').text() + '<br>' + $('.number b').text() + '</p>');
     $('.product-info').each(function(i, v){
         var t = $.trim($(v).find('.name').text());
         var k = $(v).next('.keys').find('input').val();
+        $('#t').append('<tr><td>' + i + '</td><td>' + t + '</td><td>' + k + '</td></tr>');
+        $('#b').append('<p>' + t + '<br>' + k + '</p>');
+    });
+
+    $('div.orders_id').children('.gameHead').each(function(i, v){
+        var t = $.trim($(v).text().replace(/–\s1\sшт./, ''));
+        var k = $(v).next('.messageContent').find('input').val();
         $('#t').append('<tr><td>' + i + '</td><td>' + t + '</td><td>' + k + '</td></tr>');
         $('#b').append('<p>' + t + '<br>' + k + '</p>');
     });
