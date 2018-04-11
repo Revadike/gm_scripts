@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.04.11.1
+// @version      2018.04.11.2
 // @description  otk_gg_game_keys
 // @author       jacky
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -72,7 +72,7 @@ $('legend').each(function(){
             for (var n=0; n < 5; n++){
                 hash += c[0].charCodeAt(n).toString(16);
             }
-            var asf = '<div>ASF格式(' + hash + ')：{r}!redeem&nbsp;' + c.join(',') + '</div>';
+            var asf = '<div>********************{r}ASF格式(' + hash + ')：{r}{r}!redeem&nbsp;' + c.join(',') + '</div>';
             $('#k').append(asf);
         }
     }
