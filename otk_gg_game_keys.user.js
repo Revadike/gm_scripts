@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.02.15.1
+// @version      2018.04.11.1
 // @description  otk_gg_game_keys
 // @author       jacky
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -41,15 +41,16 @@ $('legend').each(function(){
 
         var ks = b[a[0]].length;
         var js = a.length;
-        for (i=0; i < ks; i++) {
+        for (var i=0; i < ks; i++) {
             var c = [];
-            for (j=0; j < js; j++) {
+            for (var j=0; j < js; j++) {
                 var k = b[a[j]][i];
                 var key = '<div>【' + (j+1) + '】【' + a[j]  +'】&nbsp;' + k + '</div>';
                 c.push(k);
                 $('#k').append(key);
             }
 
+            /*
             if (c.length > 10) {
                 var n = 0;
                 var size = 8;
@@ -60,13 +61,18 @@ $('legend').each(function(){
                     var z = n + size;
                     if (z > c.length)
                         z = c.length;
-                    c[n] = '<div>ASF格式(' + y + '-' + z + ')：!redeem ' + c[n];
+                    c[n] = '<div>ASF格式(' + y + '-' + z + ')：{r}!redeem ' + c[n];
                     n = z;
                 }
             } else {
-                c[0] = '<div>ASF格式：!redeem ' + c[0];
+                c[0] = '<div>ASF格式：{r}!redeem ' + c[0];
             }
-            var asf = c.join(',') + '</div>';
+            */
+            var hash = '';
+            for (var n=0; n < 5; n++){
+                hash += c[0].charCodeAt(n).toString(16);
+            }
+            var asf = '<div>ASF格式(' + hash + ')：{r}!redeem&nbsp;' + c.join(',') + '</div>';
             $('#k').append(asf);
         }
     }
