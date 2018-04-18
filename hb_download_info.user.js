@@ -7,7 +7,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.03.30.1
+// @version     2018.04.18.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -26,6 +26,7 @@ if (m) {
 m = /downloads/.exec(document.URL);
 if (m){
     $('#headertext').append('<table id="reg"></table>');
+    $('#headertext').append('<div id="info2" class="d"></div>');
     $('#headertext').append('<div><a id="r">LOCK</a></div>');
     $('#headertext').append('<div><a id="btn">INFO</a></div>');
     $('#headertext').append('<div><a id="key">KEYS</a></div>');
@@ -34,13 +35,18 @@ if (m){
 
     $('#r').click(function () {
         $('#reg').empty();
+        $('#info2').empty();
         $('#reg').append('<tr><td>App</td><td>machineName</td><td>app</td><td>sub</td><td>exclusive</td><td>disallowed</td></tr>');
         var m = /key=([0-9A-Z]+)/i.exec(document.URL);
-        var url = 'https://www.humblebundle.com/api/v1/order/' + m[1] + '?all_tpkds=true';
+        var url = 'https://www.humblebundle.com/api/v1/order/' + m[1] + '?wallet_data=true&all_tpkds=true';
         $.ajax({
             url: url,
             type: "GET",
             success: function(data){
+                $('#info2').append(data.amount_spent + '<br>');
+                $('#info2').append(data.gamekey + '<br>');
+                $('#info2').append(data.uid + '<br>');
+                $('#info2').append(data.created + '<br>');
                 $.each(data.tpkd_dict.all_tpks, function (i, item) {
                     var app = '<td></td>';
                     if (item.steam_app_id)
