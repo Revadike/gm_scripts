@@ -5,7 +5,7 @@
 // @include     https://store.steampowered.com/account/registerkey*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_redeam_keys.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_redeam_keys.user.js
-// @version     2018.01.14.1
+// @version     2018.04.18.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -20,9 +20,12 @@ GM_addStyle("div{font-family:simsun !important;}");
 
 var le = $('.leftcol');
 if(le.length > 0) {
-    le.append('<div><textarea id="ks" rows="12" cols="12" maxlength="1080"></textarea></div>');
+    le.append('<div><textarea id="ks" style="margin: 0px; width: 100%; height: 100px;" maxlength="1080"></textarea></div>');
     le.append('<div><input id="btn" type="button" value="REDEAM" /></div>');
     le.append('<table id ="re"></table>');
+    var k = $('#product_key').val();
+    if (k)
+        $('#ks').append(k);
     $('#btn').click(function(){
         regkey();
     });
