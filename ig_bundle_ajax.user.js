@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2018.01.24.1
+// @version     2018.04.23.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -91,13 +91,7 @@ function showkey()
             }
         }
     });
-    if (keys.length  > 10){
-        keys[0] = '<div>ASF格式(1-8)：!redeem ' + keys[0];
-        keys[8] = '<div>ASF格式(9-' + keys.length + ')：!redeem ' + keys[8];
-    } else {
-        keys[0] = '<div>ASF格式：!redeem ' + keys[0];
-    }
-    var asf = keys.join(',') + '</div>';
+    var asf = '<div>【ASF格式】</div><div>!redeem&nbsp;' + keys.join(',') + '</div>';
     $('#area2').append(asf);
 }
 
