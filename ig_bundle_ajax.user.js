@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2018.04.23.1
+// @version     2018.04.25.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -68,20 +68,21 @@ function showkey()
         var href = steam.attr('href');
         var ma = /(app|sub)\/(\d+)/.exec(href);
         var id = ma[2];
-        var key = $(this).find('.input-block-level').val();
+        var k = $(this).find('.input-block-level')[0];
+        var key = k.value;
         keys.push(key);
         $('#area').append('<tr><td><a href="http://store.steampowered.com/'+ ma[0] +'/">' + steam.text() + '</a></td><td id="' + id + '">' + key + '</td><td>' + i + '</td><td>' + t + '</td></tr>');
-        $('#area2').append('【' + i++ + '】【' + steam.text() + '】&nbsp;' + key+'<br>');
+        $('#area2').append('<div>【' + (i++) + '】【' + steam.text() + '】&nbsp;<span id="' + id + '">' + key+'</span></div>');
         var code = '';
-        var m = /serial_([A-F0-9]+)/.exec($(this).html());
+        var m = /serial_n_([A-F0-9]+)/.exec(k.id);
         if (m){
             code = m[1];
             var link = 'https://www.indiegala.com/myserials/syncget?code=' + code + '&cache=false&productId=' + id;
             if (key.length == 0) {
-                var input = $(this).find('.info_key_text');
                 $.getJSON(link, function (data) {
                     if (data.status == 'success') {
-                        $(input).val(data.serial_number);
+                        keys.push(key);
+                        k.value = data.serial_number;
                         document.getElementById(id).innerHTML = data.serial_number;
                         $('<input value=' + data.entity_id + '/>').insertAfter($(input));
                     } else {
