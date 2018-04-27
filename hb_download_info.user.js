@@ -7,7 +7,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.04.18.1
+// @version     2018.04.27.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -32,7 +32,7 @@ if (m){
     $('#headertext').append('<div><a id="key">KEYS</a></div>');
     $('#headertext').append('<div><a id="gift">GIFT</a></div>');
     $('#headertext').append('<table id="info"></table>');
-
+    $('#headertext').append('<div id="info2"></div>');
     $('#r').click(function () {
         $('#reg').empty();
         $('#info2').empty();
@@ -76,6 +76,7 @@ if (m){
             var title = $.trim($(this).find('h4').text().replace('In your Steam library.', ''));
             var key = $.trim($(this).find('.keyfield-value').text());
             $('#info').append('<tr><td>' + (++i) + '</td><td>' + title + '</td><td>' + key + '</td></tr>');
+            $('#info2').append('<p>' + title + '<br>' + key + '</p>');
         });
     });
     $('#key').click(function () {
