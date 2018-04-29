@@ -7,7 +7,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.04.27.2
+// @version     2018.04.29.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -26,6 +26,7 @@ if (m) {
 m = /downloads/.exec(document.URL);
 if (m){
     $('#headertext').append('<table id="reg"></table>');
+    $('#headertext').append('<table id="reg2"></table>');
     $('#headertext').append('<div id="info2" class="d"></div>');
     $('#headertext').append('<div><a id="r">LOCK</a></div>');
     $('#headertext').append('<div><a id="btn">INFO</a></div>');
@@ -33,12 +34,17 @@ if (m){
     $('#headertext').append('<div><a id="gift">GIFT</a></div>');
     $('#headertext').append('<table id="info"></table>');
     $('#headertext').append('<div id="info3" class-"d"></div>');
+
+    m = /key=([0-9A-Z]+)/i.exec(document.URL);
+    var url = 'https://www.humblebundle.com/api/v1/order/' + m[1] + '?wallet_data=true&all_tpkds=true';
+    $('#info2').append('<a target=_blank href="' + url + '">JSON</a><br>');
+
     $('#r').click(function () {
         $('#reg').empty();
+        $('#reg2').empty();
         $('#info2').empty();
         $('#reg').append('<tr><td>App</td><td>machineName</td><td>app</td><td>sub</td><td>exclusive</td><td>disallowed</td></tr>');
-        var m = /key=([0-9A-Z]+)/i.exec(document.URL);
-        var url = 'https://www.humblebundle.com/api/v1/order/' + m[1] + '?wallet_data=true&all_tpkds=true';
+
         $.ajax({
             url: url,
             type: "GET",
@@ -47,6 +53,7 @@ if (m){
                 $('#info2').append(data.gamekey + '<br>');
                 $('#info2').append(data.uid + '<br>');
                 $('#info2').append(data.created + '<br>');
+                $('#info2').append('<a target=_blank href="' + url + '">JSON</a><br>');
                 $.each(data.tpkd_dict.all_tpks, function (i, item) {
                     var app = '<td></td>';
                     if (item.steam_app_id)
@@ -61,6 +68,9 @@ if (m){
                     if (item.disallowed_countries.length)
                         dis = '<td title="' + item.disallowed_countries + '">List</td>';
                     $('#reg').append('<tr><td>' + (++i) + '</td><td>' + item.machine_name + '</td>' + app + sub + exc + dis + '</tr>');
+                    var key = item.redeemed_key_val ? item.redeemed_key_val : '';
+                    var king = '<td><a target=_blank href="http://steamcn.edu.pl/king.php?q=' + item.human_name.replace(/ /g, '+').replace(/[^a-z0-9+]/ig, '') + '">KING</a></td>';
+                    $('#reg2').append('<tr><td>' + i + '</td><td>' + item.human_name + '</td><td>' + key + '</td>' + sub + king + '</tr>');
                 });
             },
             error: function(data){
@@ -71,10 +81,11 @@ if (m){
 
     $('#btn').click(function () {
         $('#info').empty();
+        $('#info3').empty();
         var i = 0;
         $('.key-redeemer').each(function () {
             var title = $.trim($(this).find('h4').text().replace('In your Steam library.', ''));
-            var key = $.trim($(this).find('.keyfield-value').text());
+            var key = $.trim($(this).find('.keyfield-value').text().replace('Reveal your Steam key', ''));
             $('#info').append('<tr><td>' + (++i) + '</td><td>' + title + '</td><td>' + key + '</td></tr>');
             $('#info3').append('<p>' + title + '<br>' + key + '</p>');
         });
