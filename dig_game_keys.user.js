@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        dig_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.05.03.1
+// @version      2018.05.03.2
 // @description  dig game keys
 // @author       jacky
 // @include     http*://*dailyindiegame.com/superbundle_*
@@ -62,6 +62,7 @@ $('#bundle').click(function () {
 
 $('#single').click(function () {
     $('#keys').empty();
+    var ar = new Array();
     $($('#TableKeys').children() [0]).find('tr').each(function () {
         var t = $(this).find('td');
         var num = $(t[0]).text();
@@ -70,9 +71,8 @@ $('#single').click(function () {
             return;
         var name = $(t[2]).text();
         var key = $.trim($(t[4]).text());
-        var id = '0';
+        ar.push(key);
         $('#keys').append('<tr><td class="zd">' + key + '</td></tr>');
-
         if (key.search('Reveal key') > -1) {
             // http://www.dailyindiegame.com/DIG2-getkey.php?id=1149728
             // revealKey(2,1149727);
@@ -89,4 +89,5 @@ $('#single').click(function () {
             }
         }
     });
+    $('#keys').append('<tr><td><a download="serial.csv" id="download-link" href="data:text/csv;charset=utf-8,' + ar.join("%0A") + '" target="_blank">Download</a></td></tr>');
 });
