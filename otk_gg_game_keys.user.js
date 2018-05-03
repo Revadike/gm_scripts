@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.04.11.4
+// @version      2018.05.03.1
 // @description  otk_gg_game_keys
 // @author       jacky
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -21,15 +21,15 @@ $('legend').each(function(){
         var a = [];
         var b = [];
 
-        $(this).after('<div id="c"></div>');
-        $(this).after('<div id="k"></div>');
+        $(this).after('<div id="c"></div');
+        $(this).after('<table id="b"></table>');
         t.each(function(){
             var d = $(this).find('td');
             var n = $(d[0]).text();
             var s = $(d[1]).text();
             var m = /Coupon/.exec(n);
             if (m){
-                $('#k').append('<span style="color:red">' + n + '：' + s + '</span>');
+                $('#c').append('<span style="color:red">' + n + '：' + s + '</span>');
             } else {
                 if ($.inArray(n, a) < 0){
                     a.push(n);
@@ -45,9 +45,8 @@ $('legend').each(function(){
             var c = [];
             for (var j=0; j < js; j++) {
                 var k = b[a[j]][i];
-                var key = '<div>【' + (j+1) + '】【' + a[j]  +'】&nbsp;' + k + '</div>';
                 c.push(k);
-                $('#k').append(key);
+                $('#b').append('<tr><td>' + a[j] + '</td><td>' + k + '</td><td>【' + (j+1) + '】【' + a[j]  + '】&nbsp;' + k + '</td></tr>');
             }
 
             /*
@@ -68,8 +67,7 @@ $('legend').each(function(){
                 c[0] = '<div>ASF格式：{r}!redeem ' + c[0];
             }
             */
-            var asf = '<div>********************{r}【ASF格式】{r}{r}!redeem&nbsp;' + c.join(',') + '</div>';
-            $('#k').append(asf);
+            $('#b').append('<tr><td>' + (i+1) + '</td><td>-</td><td>********************{r}【ASF格式】{r}{r}!redeem&nbsp;' + c.join(',') + '</td></tr>');
         }
     }
 });
