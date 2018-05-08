@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name        dig_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.05.03.2
+// @version      2018.05.08.1
 // @description  dig game keys
 // @author       jacky
 // @include     http*://*dailyindiegame.com/superbundle_*
 // @include     http*://*dailyindiegame.com/account_*
+// @include     http://www.dailyindiegame.com/account_digstore.html
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/dig_game_keys.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/dig_game_keys.user.js
 // @run-at      document-end
@@ -14,14 +15,22 @@
 // @grant       GM_addStyle
 // ==/UserScript==
 
-GM_addStyle(".zd{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px !important;}");
 
-$('#form2 select').append('<option value="300">Games per page: 300</option>');
-$('<div><a class="DIG2-TitleOrange" id="bundle">BUNDLE</a></div>').insertBefore('#TableKeys');
-$('#bundle').after('<div><a class="DIG2-TitleOrange" id="single">SINGLE</a></div>');
-$('<div id="keys"></div>').insertBefore('#TableKeys');
+var m = /account_digstore/.exec(document.URL);
+if (m){
+    var a = $("a:not(.db)[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
+    a.each(function(){
+        $(this).after('<form name="formsearch" method="post" target=_blank action="account_tradesXT.html"><input name="search" type="hidden" value="'+ $(this).text() +'"><input type="submit" name="button" value="SEARCH"></form>');
+    });
+}
+else {
+    GM_addStyle(".zd{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px !important;}");
 
-$('#bundle').click(function () {
+    $('#form2 select').append('<option value="300">Games per page: 300</option>');
+    $('<div><a class="DIG2-TitleOrange" id="bundle">BUNDLE</a></div>').insertBefore('#TableKeys');
+    $('#bundle').after('<div><a class="DIG2-TitleOrange" id="single">SINGLE</a></div>');
+    $('<div id="keys"></div>').insertBefore('#TableKeys');
+    $('#bundle').click(function () {
     $('#keys').empty();
     var ar = new Array();
     $($('#TableKeys').children() [0]).find('tr').each(function () {
@@ -78,7 +87,7 @@ $('#single').click(function () {
             // revealKey(2,1149727);
             var match = /\d+,(\d+)/.exec($(t[4]).html());
             if (match != null) {
-                id = match[1];
+                var id = match[1];
                 var url = 'http://www.dailyindiegame.com/DIG2-getkey.php?id=' + id;
                 $.ajax({
                     url: url
@@ -91,3 +100,4 @@ $('#single').click(function () {
     });
     $('#keys').append('<tr><td><a download="serial.csv" id="download-link" href="data:text/csv;charset=utf-8,' + ar.join("%0A") + '" target="_blank">Download</a></td></tr>');
 });
+}
