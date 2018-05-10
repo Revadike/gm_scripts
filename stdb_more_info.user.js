@@ -9,15 +9,17 @@
 // @match        http*://steamdb.info/search/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
-// @version     2018.03.16.01
+// @version     2018.05.10.01
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // ==/UserScript==
 
 if (/freepackages/.exec(document.URL)){
+    $('h1').after('<table id="b"></table>');
     $('h1').after('<a id="rm">REMOVE</a>');
     $('#rm').click(function(){
         $('.package').each(function(){
+            //$('#b').append('<tr><td>'+ $(this).attr('data-subid') + '</td><td>' + $(this).attr('data-appid') + '</td><td>' +  '</td></tr>');
             if (/Trailer|Demo|Trial/ig.exec($(this).html())){
                 $(this).children('button').click();
             }
@@ -29,6 +31,7 @@ var p = $('.package');
 if (p.length > 0){
     $('.app-links').append('<a id="cmp">Cmp</a>');
     $('.app-links').append('<a id="pkg" target="_target" href="http://167.88.168.94/package.php?id=' + m[2] + '">Pkg</a>');
+    $('.app-links').append('<a id="help" target="_target" href="https://help.steampowered.com/en/wizard/HelpWithGameIssue/?issueid=123&appid=' + m[2] + '">Help</a>');
     p.each(function(){
         var id = $(this).attr('data-subid');
         $(this).append('<td><input type="checkbox" value="' + id + '">sub/' + id + '</td>');
