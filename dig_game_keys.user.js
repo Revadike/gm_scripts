@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        dig_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.05.08.1
+// @version      2018.05.16.1
 // @description  dig game keys
 // @author       jacky
 // @include     http*://*dailyindiegame.com/superbundle_*
@@ -16,7 +16,7 @@
 // ==/UserScript==
 
 
-var m = /account_digstore/.exec(document.URL);
+var m = /digstore/.exec(document.URL);
 if (m){
     var a = $("a:not(.db)[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
     a.each(function(){
@@ -24,6 +24,30 @@ if (m){
     });
 }
 else {
+    m = /transactionhistory/.exec(document.URL);
+    if (m){
+        $('<div id="po"></div>').insertBefore('#TableKeys');
+        var x = [];
+        var y = [];
+        $('#TableKeys tbody tr').each(function(){
+            m = /\s+(\d+)\s*DIG\s*trade: (.*)/.exec($(this).text());
+            if (m){
+                 if ($.inArray(m[2], x) < 0){
+                     x.push(m[2]);
+                     y[m[2]] = [];
+                 }
+                y[m[2]].push(parseInt(m[1]));
+            }
+        });
+        $.each(x, function(k,v){
+            var p = 0;
+            $.each(y[v], function(r,w){
+                p += w;
+            });
+            $('#po').append(`<p>${v}&#9;${p}</p>`);
+        });
+    }
+
     GM_addStyle(".zd{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px !important;}");
 
     $('#form2 select').append('<option value="300">Games per page: 300</option>');
