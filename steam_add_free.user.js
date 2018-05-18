@@ -6,7 +6,7 @@
 // @grant unsafeWindow
 // @updateURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
-// @version     2018.05.14.3
+// @version     2018.05.18.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @connect     steamdb.info
@@ -18,7 +18,8 @@
 // ==/UserScript==
 $('h2.pageheader').after( '<div id="box" style="margin-top: 10px; margin-bottom: -20px; color: #8f98a0;"></div>');
 $('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:addman();void(0);" style="float: right;"><span>Add</span></a>');
-$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:userdata();void(0);javascript:update();void(0);" style="float: right;"><span>Update</span></a>');
+$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:update();void(0);" style="float: right;"><span>Update</span></a>');
+$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:userdata();void(0);" style="float: right;"><span>USER</span></a>');
 $('#box').append('<span id="su"></span>');
 
 var ignoredApps = {};
@@ -60,6 +61,7 @@ unsafeWindow.userdata = function() {
                 ownedApps = r.rgOwnedApps;
                 ownedPackages = r.rgOwnedPackages;
                 wishlist = r.rgWishlist;
+                 $('#su').append('<p>更新完毕</p>');
             },
            error:function(xhr,status,error){
                alert(status);
@@ -75,13 +77,17 @@ unsafeWindow.update = function(){
         onload: function(response) {
             var a = [];
             $(response.responseText).find('.package').each(function(){
-                var b = $(this).attr('data-subid');
-                var c = $(this).attr('data-appid');
+                var b = parseInt($(this).attr('data-subid'));
+                var c = parseInt($(this).attr('data-appid'));
                 var m = /Trailer|Demo|Trial/ig.exec($(this).html());
                 //if (a.length>100)
                 //    return false;
-                if (!m && $.inArray(c, ownedApps) < 0 && $.inArray(b, ownedPackages) < 0){
-                    a.push(b);
+                if (!m){
+                    var t = $.trim($(this).text());
+                if ($.inArray(c, ownedApps) > -1 ||$.inArray(b, ownedPackages) > -1)
+                    $('#su').append(`<p><span style="color:white;">${t}</span></p>`);
+                else
+                   a.push(b);
                 }
             });
 
