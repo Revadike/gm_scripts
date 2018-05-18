@@ -7,7 +7,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.04.29.1
+// @version     2018.05.18.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -36,8 +36,9 @@ if (m){
     $('#headertext').append('<div id="info3" class-"d"></div>');
 
     m = /key=([0-9A-Z]+)/i.exec(document.URL);
-    var url = 'https://www.humblebundle.com/api/v1/order/' + m[1] + '?wallet_data=true&all_tpkds=true';
-    $('#info2').append('<a target=_blank href="' + url + '">JSON</a><br>');
+    var id = m[1];
+    var url = `https://www.humblebundle.com/api/v1/order/${id}?wallet_data=true&all_tpkds=true`;
+    $('#info2').append(`<a target=_blank href="${url}">JSON</a><br>`);
 
     $('#r').click(function () {
         $('#reg').empty();
@@ -53,24 +54,33 @@ if (m){
                 $('#info2').append(data.gamekey + '<br>');
                 $('#info2').append(data.uid + '<br>');
                 $('#info2').append(data.created + '<br>');
-                $('#info2').append('<a target=_blank href="' + url + '">JSON</a><br>');
+                $('#info2').append(`<a target=_blank href="${url}">JSON</a><br>`);
                 $.each(data.tpkd_dict.all_tpks, function (i, item) {
                     var app = '<td></td>';
-                    if (item.steam_app_id)
-                        app = '<td><a target=_blank href="https://steamdb.info/app/' + item.steam_app_id + '/">' + item.steam_app_id + '</a></td>';
+                    id = item.steam_app_id;
+                    if (id)
+                        app = `<td><a target=_blank href="https://steamdb.info/app/${id}/">${id}</a></td>`;
                     var sub = '<td></td>';
+                    id = item.steam_package_id;
                     if (item.steam_package_id)
-                        sub = '<td><a target=_blank href="https://steamdb.info/sub/' + item.steam_package_id + '/">' + item.steam_package_id + '</a></td>';
+                        sub = `<td><a target=_blank href="https://steamdb.info/sub/${id}/">${id}</a></td>`;
                     var exc = '<td>-</td>';
-                    if (item.exclusive_countries.length)
-                        exc = '<td title="' + item.exclusive_countries + '">List</td>';
+                    if (item.exclusive_countries.length){
+                        id = item.exclusive_countries;
+                        exc = `<td title="${id}">List</td>`;
+                    }
                     var dis = '<td>-</td>';
-                    if (item.disallowed_countries.length)
-                        dis = '<td title="' + item.disallowed_countries + '">List</td>';
-                    $('#reg').append('<tr><td>' + (++i) + '</td><td>' + item.machine_name + '</td>' + app + sub + exc + dis + '</tr>');
+                    if (item.disallowed_countries.length){
+                        id = item.disallowed_countries;
+                        dis = `<td title="${id}">List</td>`;
+                    }
+                    var j = ++i;
+                    id = item.machine_name;
+                    $('#reg').append(`<tr><td>${j}</td><td>${id}</td>${app}${sub}${exc}${dis}</tr>`);
                     var key = item.redeemed_key_val ? item.redeemed_key_val : '';
-                    var king = '<td><a target=_blank href="http://steamcn.edu.pl/king.php?q=' + item.human_name.replace(/ /g, '+').replace(/[^a-z0-9+]/ig, '') + '">KING</a></td>';
-                    $('#reg2').append('<tr><td>' + i + '</td><td>' + item.human_name + '</td><td>' + key + '</td>' + sub + king + '</tr>');
+                    var human = item.human_name;
+                    var king = item.human_name.replace(/ /g, '+').replace(/[^a-z0-9+]/ig, '');
+                    $('#reg2').append(`<tr><td>${i}</td><td>${human}</td><td>${key}</td>${sub}<td><a target=_blank href="http://steamcn.edu.pl/king.php?q=${king}">KING</a></td></tr>`);
                 });
             },
             error: function(data){
@@ -86,8 +96,9 @@ if (m){
         $('.key-redeemer').each(function () {
             var title = $.trim($(this).find('h4').text().replace('In your Steam library.', ''));
             var key = $.trim($(this).find('.keyfield-value').text().replace('Reveal your Steam key', ''));
-            $('#info').append('<tr><td>' + (++i) + '</td><td>' + title + '</td><td>' + key + '</td></tr>');
-            $('#info3').append('<p>' + title + '<br>' + key + '</p>');
+            var j = ++i;
+            $('#info').append(`<tr><td>${j}</td><td>${title}</td><td>${key}</td></tr>`);
+            $('#info3').append(`<p>${title}<br>${key}</p>`);
         });
     });
     $('#key').click(function () {
