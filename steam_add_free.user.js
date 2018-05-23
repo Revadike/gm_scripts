@@ -6,7 +6,7 @@
 // @grant unsafeWindow
 // @updateURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
-// @version     2018.05.18.1
+// @version     2018.05.23.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @connect     steamdb.info
@@ -17,9 +17,10 @@
 
 // ==/UserScript==
 $('h2.pageheader').after( '<div id="box" style="margin-top: 10px; margin-bottom: -20px; color: #8f98a0;"></div>');
-$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:addman();void(0);" style="float: right;"><span>Add</span></a>');
-$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:update();void(0);" style="float: right;"><span>Update</span></a>');
-$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:userdata();void(0);" style="float: right;"><span>USER</span></a>');
+$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:void(0);" onclick="addman();" style="float: right;"><span>Add</span></a>');
+$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:void(0);" onclick="nocost();" style="float: right;"><span>NoCost</span></a>');
+$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:void(0);" onclick="free();" style="float: right;"><span>Free</span></a>');
+$('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:void(0);" onclick="userdata();" style="float: right;"><span>USER</span></a>');
 $('#box').append('<span id="su"></span>');
 
 var ignoredApps = {};
@@ -69,7 +70,59 @@ unsafeWindow.userdata = function() {
         });
 };
 
-unsafeWindow.update = function(){
+unsafeWindow.nocost = function(){
+    $('#su').empty();
+    GM_xmlhttpRequest({
+        method: "GET",
+        url: "https://steamdb.info/search/?a=sub_keynames&keyname=1&operator=3&keyvalue=0",
+        onload: function(response) {
+            var a = [];
+            $(response.responseText).find('.package').each(function(){
+                var b = parseInt($(this).attr('data-subid'));
+                var t = $.trim($($(this).find('td')[1]).text());
+                if ($.inArray(b, ownedPackages) > -1)
+                    $('#su').append(`<p><span style="color:white;">${t}</span></p>`);
+                else
+                   a.push(b);
+            });
+
+            $.each(a, function (k, v) {
+                var j = k;
+                var b = v;
+                $('#su').append(`<p id="${j}">${j}&#9;${b}&#9;</p>`);
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'text',
+                    url: '//store.steampowered.com/checkout/addfreelicense',
+                    data: {
+                        action: 'add_to_cart',
+                        sessionid: g_sessionID,
+                        subid: b
+                    },
+                    success:function(result){
+                        var r = $(result).find('.add_free_content_success_area p:first,.error');
+                        if (r.length > 0)
+                            $(`#${j}`).append($(r).text());
+                        else
+                            $(`#${j}`).append('Error');
+                    },
+                    error:function(xhr,status,error){
+                        $(`#${j}`).append(status);
+                    }
+                });
+
+            });
+        },
+        onerror:  function(response) {
+            alert(response.statusText);
+        },
+        ontimeout:  function(response) {
+            alert(response.statusText);
+        },
+    });
+}
+
+unsafeWindow.free = function(){
     $('#su').empty();
     GM_xmlhttpRequest({
         method: "GET",
