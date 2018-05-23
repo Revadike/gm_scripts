@@ -9,9 +9,6 @@
 // @include     http*://www.bunchkeys.com*
 // @include     http*://directg.net/event/event.html
 // @include     http*://directg.net/game/game_page.html?product_code=*
-// @include     http*://www.bundlestars.com/en/bundle/*
-// @include     http*://www.bundlestars.com/en/game/*
-// @exclude     http*://www.bundlestars.com/en/orders/*
 // @include     http*://*otakumaker.com/index.php/account/admin/deal/view/*
 // @include     http*://www.indiegala.com/*
 // @exclude     http*://www.indiegala.com/profile?user_id=*
@@ -21,7 +18,7 @@
 // @exclude     https://tryit-forfree.rhcloud.com/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2018.03.26.1
+// @version     2018.05.23.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -261,64 +258,6 @@ if (match) {
         getRatio('KRWCNY', f);
     });
 } //directgames game_page
-
-match = /bundlestars\.com\/en\/(game|bundle)/.exec(document.URL);
-if (match) {
-    var url = document.URL.replace(/en\/(game|bundle)/, 'api/products');
-    var li = $('#navbarBundles').parent().parent();
-    li.append('<li><a target="_blank" href="' + url + '"><span style="color:red;font-weight:bold;">API</span></a></li>');
-    li.append('<li><a id="btn">INFO</a></li>');
-    $('#btn').click(function () {
-        if ($('.product-bg-color').find('.info').length > 0) {
-            $('.info').remove();
-            $('.info2').remove();
-        }
-        $('.product-bg-color').append('<div class="info"></div>');
-        $('.product-bg-color').append('<div class="info2"></div>');
-        GM_xmlhttpRequest({
-            method: 'GET',
-            url: url,
-            onload: function (response) {
-                var data = JSON.parse(response.responseText);
-                if (data.seo) {
-                    getGridHead('Bundle Stars ' + data.seo.title);
-                }
-                if (data.availability) {
-                    var now = new Date(data.availability.valid_from);
-                    var end = new Date(data.availability.valid_until);
-                    $('#time').append('[' + (now.getMonth() + 1) + '.' + now.getDate() + '-' + (end.getMonth() + 1) + '.' + end.getDate() + ']');
-                }
-                if (data.bundles) {
-                    var k = 0;
-                    $.each(data.bundles, function (i, item) {
-                        if (item.price) {
-                            $('.info').append('<div>[quote][b]支付<b>$' + item.price.USD / 100 + '</b><span id=ag' + i + '></span>获得以下游戏：[/b]<br>( <span id=cur' + i + '></span>)<br><span id=' + i + '></span>[/quote]</div>');
-                            $('#p').empty();
-                            $('#p').append(item.price.USD / 100);
-                            if (i > 0) {
-                                $('#ag' + i).append('再');
-                            }
-                            $.each(item.price, function (key, price) {
-                                $('#cur' + i).append(key + ':' + price / 100 + ' ');
-                            });
-                        }
-                        if (item.games) {
-                            $.each(item.games, function (j, game) {
-                                if (game.steam) {
-                                    var addon = 'app';
-                                    if (game.steam.sub)
-                                        addon = 'sub';
-                                    getGridContent(game.steam.id, addon, game.name, '#' + i, ++k);
-                                }
-                            });
-                        }
-                    });
-                    $('.g').append(k);
-                }
-            }
-        });
-    });
-} //bundlestars bundle
 
 match = /bundlestars\.com\/en\/orders/.exec(document.URL);
 if (match) {
