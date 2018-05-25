@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.05.03.1
+// @version      2018.05.24.1
 // @description  otk_gg_game_keys
 // @author       jacky
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -29,7 +29,7 @@ $('legend').each(function(){
             var s = $(d[1]).text();
             var m = /Coupon/.exec(n);
             if (m){
-                $('#c').append('<span style="color:red">' + n + '：' + s + '</span>');
+                $('#b').before(`<span style="color:red">${n}：${s}</span>`);
             } else {
                 if ($.inArray(n, a) < 0){
                     a.push(n);
@@ -41,12 +41,16 @@ $('legend').each(function(){
 
         var ks = b[a[0]].length;
         var js = a.length;
+        var l = 0;
+        var asf = '';
         for (var i=0; i < ks; i++) {
             var c = [];
             for (var j=0; j < js; j++) {
                 var k = b[a[j]][i];
                 c.push(k);
-                $('#b').append('<tr><td>' + a[j] + '</td><td>' + k + '</td><td>【' + (j+1) + '】【' + a[j]  + '】&nbsp;' + k + '</td></tr>');
+                var name = a[j];
+                l = j+1;
+                $('#b').append(`<tr><td>${name}</td><td>${k}</td><td>【${l}】【${name}】&nbsp;${k}</td></tr>`);
             }
 
             /*
@@ -60,14 +64,18 @@ $('legend').each(function(){
                     var z = n + size;
                     if (z > c.length)
                         z = c.length;
-                    c[n] = '<div>ASF格式(' + y + '-' + z + ')：{r}!redeem ' + c[n];
+                    asf = c[n];
+                    c[n] = `<div>ASF格式(${y}-${z})：{r}!redeem&nbsp;${asf}`;
                     n = z;
                 }
             } else {
-                c[0] = '<div>ASF格式：{r}!redeem ' + c[0];
+                asf = c[0];
+                c[0] = `<div>ASF格式：{r}!redeem&nbsp;${asf}`;
             }
             */
-            $('#b').append('<tr><td>' + (i+1) + '</td><td>-</td><td>********************{r}【ASF格式】{r}{r}!redeem&nbsp;' + c.join(',') + '</td></tr>');
+            l = i+1;
+            asf = c.join(',');
+            $('#b').append(`<tr><td>${l}</td><td>-</td><td>********************{r}【ASF格式】{r}{r}!redeem&nbsp;${asf}</td></tr>`);
         }
     }
 });
