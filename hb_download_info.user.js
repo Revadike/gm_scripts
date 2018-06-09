@@ -7,7 +7,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.05.18.1
+// @version     2018.06.09.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -107,45 +107,67 @@ if (m){
     $('#gift').click(function () {
         $('.giftfield').click();
     });
-} else {
-    m = /games|mobile/.exec(document.URL);
-    if (m){
-        $('.base-main-wrapper').before('<div class="d" id="a1"></div>');
-        m = /BundleMain.init\(({.*}), {"CHANNEL_PREAMBLE"/.exec(document.body.innerHTML);
-        if (m){
-            var j = JSON.parse(m[1]);
-            if (j) {
-                $('#a1').append('<p>' + j.product_human_name + '</p>');
-                $('#a1').append('<p>' + j.hero_tile.machine_name + '</p>');
-                $('#a1').append('<p>' + j.hero_tile.tile_stamp + '</p>');
-                $('#a1').append('<p>' + j.order_form.product_json.start + '</p>');
-                $('#a1').append('<p>' + j.order_form.product_json.end + '</p>');
-                var f = j.order_form.checkout_tiers;
-                f.forEach(function (e) {
-                    // is_bta
-                    // is_initial_tier
-                    // is_fixed
-                    // is_free
-                    // top_header_text
-                    $('#a1').append('<p>' + e.price + '</p>');
-                });
-                f = j.slideout_data.display_items;
-                $('#a1').append('<table id="b"></table>');
-                var i = 1;
-                for (var k in f)
-                {
-                    if (f[k].availability_icons){
-                        var g = [];
-                        f[k].availability_icons.delivery_icons.forEach(function (v) {
-                            g.push(v.replace('hb-', ''));
-                        });
-                        $('#b').append('<tr><td>' + (i++) + '</td><td>' + f[k].machine_name + '</td><td>' + f[k].human_name + '</td><td>' +  g.join() +  '</td></tr>');
-                    }
+}
 
+m = /games|mobile/.exec(document.URL);
+if (m){
+    $('.base-main-wrapper').before('<div class="d" id="a1"></div>');
+    m = /BundleMain.init\(({.*}), {"CHANNEL_PREAMBLE"/.exec(document.body.innerHTML);
+    if (m){
+        var j = JSON.parse(m[1]);
+        if (j) {
+            $('#a1').append('<p>' + j.product_human_name + '</p>');
+            $('#a1').append('<p>' + j.hero_tile.machine_name + '</p>');
+            $('#a1').append('<p>' + j.hero_tile.tile_stamp + '</p>');
+            $('#a1').append('<p>' + j.order_form.product_json.start + '</p>');
+            $('#a1').append('<p>' + j.order_form.product_json.end + '</p>');
+            var f = j.order_form.checkout_tiers;
+            f.forEach(function (e) {
+                // is_bta
+                // is_initial_tier
+                // is_fixed
+                // is_free
+                // top_header_text
+                $('#a1').append('<p>' + e.price + '</p>');
+            });
+            f = j.slideout_data.display_items;
+            $('#a1').append('<table id="b"></table>');
+            var i = 1;
+            for (var k in f)
+            {
+                if (f[k].availability_icons){
+                    var g = [];
+                    f[k].availability_icons.delivery_icons.forEach(function (v) {
+                        g.push(v.replace('hb-', ''));
+                    });
+                    $('#b').append('<tr><td>' + (i++) + '</td><td>' + f[k].machine_name + '</td><td>' + f[k].human_name + '</td><td>' +  g.join() +  '</td></tr>');
                 }
+
             }
         }
     }
 }
 
+m = /home\/keys/.exec(document.URL);
+if (m){
+    $('.tabs-navbar-item').append('<div class="navbar-item button-title"><a id="k">KEY</A></div>');
+    $('#k').click(function(){
+        var l = $('#b').length;
+        if (l)
+            $('#b').remove();
+        $('.container').after('<table id="b"></table>');
+        $('.unredeemed-keys-table tbody').find('tr').each(function(){
+            var d = $(this).find('td');
+            var game = $(d[1]).find('h4').text();
+            var a = $(d[1]).find('a');
+            var bundle = $(a).text();
+            var ke = '';
+            m = /key=([A-Za-z0-9]{16})/.exec($(a).attr('href'));
+            if (m)
+                ke = m[1];
+            var serial = $(d[2]).find('.keyfield-value').text().replace('Reveal your Steam key', '');
+            $('#b').append(`<tr><td>${game}</td><td>${serial}</td><td>${bundle}</td><td>${ke}</td></tr>`);
+        });
+    });
+}
 
