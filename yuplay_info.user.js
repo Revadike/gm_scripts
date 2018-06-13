@@ -10,8 +10,9 @@
 // @include     http*://gamazavr.ru/orders/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
-// @version     2018.04.06.1
+// @version     2018.06.11.1
 // @run-at      document-end
+// @connect     free.currencyconverterapi.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_log
@@ -93,15 +94,17 @@ if (match) {
 }
 
 var getRatio = function (a, b, f) {
-    if (Date.now() - dt > 60 * 1 * 60000 || r === 0.0)
+    if (Date.now() - dt > 60 * 6 * 60000 || r === 0.0)
     {
+        var c = `${a}_${b}`;
+        var url = `https://free.currencyconverterapi.com/api/v5/convert?compact=ultra&q=${c}`;
         GM_xmlhttpRequest({
             method: 'GET',
-            url: 'https://api.fixer.io/latest?base=' + a + '&symbols=' + b,
+            url: url,
             onload: function (response) {
                 if (response.responseText){
                     var j = JSON.parse(response.responseText);
-                    r = j.rates[b];
+                    r = j[c];
                     GM_setValue("r", r);
                     GM_setValue("dt", Date.now());
                 }
