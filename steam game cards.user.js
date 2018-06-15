@@ -7,7 +7,7 @@
 // @icon        http://steamcommunity.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_game_cards.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_game_cards.user.js
-// @version     2018.05.17.1
+// @version     2018.06.15.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       unsafeWindow
@@ -27,7 +27,15 @@ if (m){
         $('.profile_small_header_text').append('&nbsp;Exp:&nbsp;' + xp);
         var cd = Math.ceil(xp/100) - $('.badge_craft_button').length;
         $('.profile_small_header_text').append('&nbsp;Card:&nbsp;' + cd);
+
+        $('.profile_xp_block').before('<table id="b"></table>');
+        $('.badge_craft_button').each(function(k, v){
+            m = /gamecards\/(\d+)/.exec($(v).attr('href'));
+            $('#b').append(`<tr><td>${k}</td><td><a class="car" href="javascript:void(0);" onclick="craftcard('${m[1]}');">${m[1]}</a></td><td id="${m[1]}"></td></tr>`);
+        });
     }
+
+
 } else {
     var match = /sessionid=([a-z0-9]+);/.exec(document.cookie);
     match = /gamecards\/(\d+)/.exec(location.href);
@@ -137,5 +145,40 @@ unsafeWindow.getbuyorderstatus = function(buy_orderid, w){
             $(w).append(data);
     }).fail(function (jqxhr) {
         alert(jqxhr);
+    });
+}
+
+unsafeWindow.craftcard = function(id){
+    var w = '#' + id;
+    var da = {
+        appid: id,
+        series: 1,
+        border_color: 0,
+        sessionid: g_sessionID
+    };
+    $(w).empty();
+    $.ajax({
+        url: 'https://steamcommunity.com/profiles/76561198104311295/ajaxcraftbadge/',
+        type: 'POST',
+        data: da
+    }).done(function (data) {
+        if (data.success === 1)
+        {
+            if (data.Badge){
+                $(w).append(`<div>${data.Badge.game}&#9;${data.Badge.title}</div>`);
+            }
+            $.each(data.rgDroppedItems, function(i, v){
+                if (v.level)
+                    $(w).append(`<div>${v.level}</div>`);
+                else
+                    $(w).append(`<div>${v.title}</div>`);
+            });
+        }
+        else
+        {
+            $(w).append(JSON.stringify(data));
+        }
+    }).fail(function (jqxhr) {
+        $('#'+id).append(jqxhr);
     });
 }
