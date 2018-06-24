@@ -10,7 +10,7 @@
 // @include     http*://gamazavr.ru/orders/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
-// @version     2018.06.11.1
+// @version     2018.06.24.1
 // @run-at      document-end
 // @connect     free.currencyconverterapi.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
@@ -56,7 +56,8 @@ if (match) {
 match = /ru\/product/.exec(document.URL);
 if (match) {
     $($('.navi').children() [0]).append('<li><a id="btn">INFO</a></li>');
-    $('.good-title').append('<div>实时汇率：<span id="ratio">0</span></div>');
+    $($('.navi').children() [0]).append('<li><a id="ru">RU</a></li>');
+    $('.good-title').append('<div>实时汇率：<span id="r">0</span></div>');
     $('#btn').click(function () {
         var f = function () {
             $('.ru').remove();
@@ -72,6 +73,30 @@ if (match) {
         getRatio('RUB', 'CNY', f);
     });
 } //yuplay product
+
+$('#ru').click(function(){
+    var csrf = $( "input[name^='csrfmiddlewaretoken']" ).val();
+    $.ajax({
+        url: document.URL,
+        type: "POST",
+        data: {
+            csrfmiddlewaretoken: csrf,
+            action: "cart_add"
+        },
+        headers: {
+            "X-Forwarded-For":"37.0.123.66",
+            "CLIENT-IP":"37.0.123.66"
+        },
+        success: function( data, status, xhr ){
+            if (/form-cart/.exec(data))
+                alert('Done');
+            else
+                alert('Failed');
+        },
+        fail: function( data, status, xhr ){
+        }
+    });
+});
 
 match = /orders/.exec(document.URL);
 if (match) {
