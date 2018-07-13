@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.05.24.1
+// @version      2018.07.13.1
 // @description  otk_gg_game_keys
 // @author       jacky
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -12,7 +12,7 @@
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/otk_gg_game_keys.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/otk_gg_game_keys.user.js
-// @grant       none
+// @grant       GM_setClipboard
 // ==/UserScript==
 
 $('legend').each(function(){
@@ -21,8 +21,19 @@ $('legend').each(function(){
         var a = [];
         var b = [];
 
-        $(this).after('<div id="c"></div');
         $(this).after('<table id="b"></table>');
+        $(this).after('<div id="c"></div');
+        $(this).after('<a id="p">COPY</a>');
+        $('#p').click(function(){
+            var txt = '';
+            $('#b tr').each(function(){
+                $(this).children('td').each(function(){
+                    txt += $(this).text() + '\t';
+                });
+                txt += '\n';
+            });
+            GM_setClipboard(txt);
+        });
         t.each(function(){
             var d = $(this).find('td');
             var n = $(d[0]).text();
