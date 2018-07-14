@@ -7,7 +7,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.06.09.1
+// @version     2018.07.08.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -18,7 +18,7 @@ GM_addStyle("table{border:solid 1px;border-collapse:collapse;font-size:16px !imp
 GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px !important;}");
 GM_addStyle(".d{font-size:16px;color:white !important;}");
 
-var m = /current_country': "([^"]+)",/.exec(document.body.innerHTML);
+var m = /country_code: "([^"]+)/.exec(document.head.innerHTML);
 if (m) {
     $('.tabs-navbar-item').append('<div class="navbar-item button-title">' + m[1] + '</div>');
 }
