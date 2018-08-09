@@ -9,13 +9,14 @@
 // @include     http*://*steamcardexchange.net/index.php?badgeprices
 // @include     http*://*steamcn.com/t*
 // @include     http*://*steamcn.com/forum.php?mod=viewthread*
+// @include     https://steamcommunity.com/sharedfiles/filedetails/?id=*
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http://wtfprice.ru*
 // @include     http://167.88.168.94/*
 // @include     http://steamcn.edu.pl/*
 // @include     http://bundle.ccyycn.com/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.03.01.1
+// @version     2018.08.09.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -46,7 +47,7 @@ const unownedColor = "red"; // Color of the icon for unowned apps and subs.
 const decommissionedIcon = "&#128465;"; // HTML entity code for '🗑' (default).
 const decommissionedColor = "initial"; // Color of the icon for removed or delisted apps and subs.
 const cardIcon = "&#x1F0A1"; // HTML entity code for '🂡' (default).
-const cardColor = "blue"; // Color of the icon for cards.
+const cardColor = "DodgerBlue"; // Color of the icon for cards.
 const userRefreshInterval = 60 * 24; // Number of minutes to wait to refesh cached userdata. 0 = always stay up-to-date.
 const decommissionedRefreshInterval = 60 * 24; // Number of minutes to wait to refesh cached userdata. 0 = always stay up-to-date.
 const cardRefreshInterval = 60 * 24 * 7; // Number of minutes to wait to refesh cached trading card data. 0 = always stay up-to-date.
@@ -96,7 +97,7 @@ if (/content_digaccount/.exec(document.URL)){
         var m = /(app|sub)\/(\d+)/.exec($(this).html());
         if (m){
             var td = $(this).children('td')[2];
-            $(td).wrapInner('<a href="http://store.steampowered.com/' + m[0] +'/" target=_blank></a>');
+            $(td).wrapInner(`<a href="http://store.steampowered.com/${m[0]}/" target=_blank></a>`);
         }
     });
 }
@@ -128,7 +129,6 @@ function update(){
             } else {
                 alert("error");
             }
-
         },
         onerror:  function(response) {
             alert(response.statusText);
@@ -166,32 +166,32 @@ function mark(a){
         var h = $(this).attr('href');
         var m = /(app|sub)(\/|id\-)(\d+)/.exec(h);
         if (m){
-            id = parseInt(m[3]);
+            var id = parseInt(m[3]);
             var html = '';
             var card = '';
+            var color = unownedColor;
+            var icon = unownedIcon;
             if (m[1]=='app') {
-                if ($.inArray(id, ownedApps) > -1)
-                    html = '<span class="ruc" style="color: ' + ownedColor + '; cursor: help;">&nbsp' + ownedIcon + '</span>';
-                else {
-                    if ($.inArray(id, wishlist) > -1)
-                        html = '<span class="ruc" style="color: ' + wishlistColor + '; cursor: help;">&nbsp' + wishlistIcon + '</span>';
-                    else
-                        html = '<span class="ruc" style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
+                if ($.inArray(id, ownedApps) > -1){
+                    color = ownedColor;
+                    icon = ownedIcon;
                 }
-
+                else if ($.inArray(id, wishlist) > -1){
+                    color = wishlistColor;
+                    icon = wishlistIcon;
+                }
                 if (wantCards && r2.hasOwnProperty(id)){
-                    card = '<span class="ruc" style="color: ' + cardColor + '; cursor: help;">&nbsp' + cardIcon + '</span>';
+                    card = `<span class="ruc" style="color: ${cardColor}; cursor: help;">&nbsp${cardIcon}</span>`;
                     $(this).after(card);
                 }
-            } else {
-                if ($.inArray(id, ownedPackages) > -1)
-                    html = '<span class="ruc" style="color: ' + ownedColor + '; cursor: help;">&nbsp' + ownedIcon + '</span>';
-                else
-                    html = '<span class="ruc" style="color: ' + unownedColor + '; cursor: help;">&nbsp' + unownedIcon + '</span>';
+            } else if ($.inArray(id, ownedPackages) > -1){
+                color = ownedColor;
+                icon = ownedIcon;
             }
-            ma = /steamdb.info/.exec(h);
+            html = `<span class="ruc" style="color: ${color}; cursor: help;">&nbsp${icon}</span>`;
+            var ma = /steamdb.info/.exec(h);
             if (!ma)
-                $(this).after('<a class="dbc" target=_blank href="https://steamdb.info/' + m[0] + '/">DB</a>');
+                $(this).after(`<a class="dbc" target=_blank href="https://steamdb.info/${m[0]}/" target=_blank>&#8684;</a>`);
             $(this).after(html);
         }
     });

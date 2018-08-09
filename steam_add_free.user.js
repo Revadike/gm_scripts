@@ -27,6 +27,8 @@ var ignoredApps = {};
 var ownedApps = {};
 var ownedPackages = {};
 var wishlist = {};
+var error = {};
+var success = {};
 
 unsafeWindow.addman = function() {
     var sID = prompt( 'Enter Free subID to add to account:' );
@@ -132,16 +134,16 @@ unsafeWindow.free = function(){
             $(response.responseText).find('.package').each(function(){
                 var b = parseInt($(this).attr('data-subid'));
                 var c = parseInt($(this).attr('data-appid'));
-                var m = /Trailer|Demo|Trial/ig.exec($(this).html());
+                //var m = /Trailer|Demo|Trial/ig.exec($(this).html());
                 //if (a.length>100)
                 //    return false;
-                if (!m){
+                //if (!m){
                     var t = $.trim($(this).text());
                 if ($.inArray(c, ownedApps) > -1 ||$.inArray(b, ownedPackages) > -1)
                     $('#su').append(`<p><span style="color:white;">${t}</span></p>`);
                 else
                    a.push(b);
-                }
+                //}
             });
 
             $.each(a, function (k, v) {
