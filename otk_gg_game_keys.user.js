@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.07.13.1
+// @version      2018.08.09.1
 // @description  otk_gg_game_keys
 // @author       jacky
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -61,7 +61,7 @@ $('legend').each(function(){
                 c.push(k);
                 var name = a[j];
                 l = j+1;
-                $('#b').append(`<tr><td>${name}</td><td>${k}</td><td>【${l}】【${name}】&nbsp;${k}</td></tr>`);
+                $('#b').append(`<tr><td>${name}</td><td>${k}</td><td>【${l}】【${name}】 ${k}</td></tr>`);
             }
 
             /*
@@ -86,7 +86,7 @@ $('legend').each(function(){
             */
             l = i+1;
             asf = c.join(',');
-            $('#b').append(`<tr><td>${l}</td><td>-</td><td>********************{r}【ASF格式】{r}{r}!redeem&nbsp;${asf}</td></tr>`);
+            $('#b').append(`<tr><td>${l}</td><td>-</td><td>********************{r}【ASF格式】{r}{r}!redeem ${asf}</td></tr>`);
         }
     }
 });
