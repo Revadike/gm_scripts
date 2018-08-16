@@ -4,16 +4,16 @@
 // @include     https://help.steampowered.com/en/wizard/HelpWithGameIssue/*appid=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_package.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_package.user.js
-// @version     2018.06.21.1
+// @version     2018.08.14.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
-// @grant       none
+// @grant unsafeWindow
 // ==/UserScript==
 
 var m = /appid=(\d+)/.exec(document.URL);
 var app = m[1];
 
-var remove = function(a){
+unsafeWindow.remove = function(a){
         var sub = $(a).attr('id');
     $.ajax({
         url: '/en/wizard/AjaxDoPackageRemove',
@@ -40,7 +40,7 @@ var remove = function(a){
     });
 }
 
-var restore = function(a){
+unsafeWindow.restore = function(a){
         var sub = $(a).attr('id');
     $.ajax({
         url: '/en/wizard/AjaxDoPackageRestore',
@@ -88,7 +88,7 @@ if (hp.length > 0){
         }
     });
 } else {
-
+    $('.help_hide_for_create_request').after('<a id="rm">REMOVE</a>');
 }
 
 $('#rm').click(function(){

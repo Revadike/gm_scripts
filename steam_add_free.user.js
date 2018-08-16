@@ -6,7 +6,7 @@
 // @grant unsafeWindow
 // @updateURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
-// @version     2018.05.23.1
+// @version     2018.08.16.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @connect     steamdb.info
@@ -134,16 +134,16 @@ unsafeWindow.free = function(){
             $(response.responseText).find('.package').each(function(){
                 var b = parseInt($(this).attr('data-subid'));
                 var c = parseInt($(this).attr('data-appid'));
-                //var m = /Trailer|Demo|Trial/ig.exec($(this).html());
+                var m = /Trailer|Demo|Trial/ig.exec($(this).html());
                 //if (a.length>100)
                 //    return false;
-                //if (!m){
+                if (!m){
                     var t = $.trim($(this).text());
                 if ($.inArray(c, ownedApps) > -1 ||$.inArray(b, ownedPackages) > -1)
                     $('#su').append(`<p><span style="color:white;">${t}</span></p>`);
                 else
                    a.push(b);
-                //}
+                }
             });
 
             $.each(a, function (k, v) {

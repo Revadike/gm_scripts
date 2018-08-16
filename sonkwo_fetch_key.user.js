@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         sonkwo_fetch_key
 // @namespace    http://tampermonkey.net/
-// @version      2018.07.12.2
+// @version      2018.07.24.1
 // @description  sonkwo fetch key
 // @author       jacky
 // @match        https://www.sonkwo.com/products/*
@@ -21,11 +21,11 @@ GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
 GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-family:simsun !important;}");
 GM_addStyle(".d{font-size:20px;color:white !important;}");
 
-var u = "rusania@gmail.com";
-var p = "11111122a";
-var access_token = GM_getValue("access_token");
-
-var m = /game_id=(\d+)/.exec(document.URL);
+var access_token = '';
+var m = /access_token=([0-9a-f]+)/.exec(document.cookie);
+if (m)
+    access_token = m[1];
+m = /game_id=(\d+)/.exec(document.URL);
 var g = '';
 if (m){
     g = m[1];
@@ -121,7 +121,6 @@ unsafeWindow.getOrder = function(g){
 }
 
 unsafeWindow.getKey = function(g){
-    access_token = GM_getValue("access_token");
     var resp = '';
     if (access_token) {
         $.ajax({
