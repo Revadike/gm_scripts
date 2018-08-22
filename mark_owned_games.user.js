@@ -10,13 +10,14 @@
 // @include     http*://*steamcn.com/t*
 // @include     http*://*steamcn.com/forum.php?mod=viewthread*
 // @include     https://steamcommunity.com/sharedfiles/filedetails/?id=*
+// @include     https://store.steampowered.com/cart/*
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http://wtfprice.ru*
 // @include     http://167.88.168.94/*
 // @include     http://steamcn.edu.pl/*
 // @include     http://bundle.ccyycn.com/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.08.09.1
+// @version     2018.08.22.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -48,6 +49,7 @@ const decommissionedIcon = "&#128465;"; // HTML entity code for '🗑' (default)
 const decommissionedColor = "initial"; // Color of the icon for removed or delisted apps and subs.
 const cardIcon = "&#x1F0A1"; // HTML entity code for '🂡' (default).
 const cardColor = "DodgerBlue"; // Color of the icon for cards.
+const dbIcon = "&#8505;"; // HTML entity code for 'ℹ' (default).
 const userRefreshInterval = 60 * 24; // Number of minutes to wait to refesh cached userdata. 0 = always stay up-to-date.
 const decommissionedRefreshInterval = 60 * 24; // Number of minutes to wait to refesh cached userdata. 0 = always stay up-to-date.
 const cardRefreshInterval = 60 * 24 * 7; // Number of minutes to wait to refesh cached trading card data. 0 = always stay up-to-date.
@@ -181,17 +183,17 @@ function mark(a){
                     icon = wishlistIcon;
                 }
                 if (wantCards && r2.hasOwnProperty(id)){
-                    card = `<span class="ruc" style="color: ${cardColor}; cursor: help;">&nbsp${cardIcon}</span>`;
+                    card = ` <span class="ruc" style="color: ${cardColor}; cursor: help;">${cardIcon}</span>`;
                     $(this).after(card);
                 }
             } else if ($.inArray(id, ownedPackages) > -1){
                 color = ownedColor;
                 icon = ownedIcon;
             }
-            html = `<span class="ruc" style="color: ${color}; cursor: help;">&nbsp${icon}</span>`;
+            html = ` <span class="ruc" style="color: ${color}; cursor: help;">${icon}</span>`;
             var ma = /steamdb.info/.exec(h);
             if (!ma)
-                $(this).after(`<a class="dbc" target=_blank href="https://steamdb.info/${m[0]}/" target=_blank>&#8684;</a>`);
+                $(this).after(` <a class="dbc" target=_blank href="https://steamdb.info/${m[0]}/" target=_blank>${dbIcon}</a>`);
             $(this).after(html);
         }
     });
