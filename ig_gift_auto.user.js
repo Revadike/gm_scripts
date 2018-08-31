@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         ig_gift_auto
 // @namespace    http://tampermonkey.net/
-// @version      2018.05.23.1
+// @version      2018.08.31.1
 // @description  ig gift auto
 // @author       jacky
-// @include       http://steamcn.edu.pl/ig_sale.html
+// @include     http://167.88.168.94/ig_sale.html
+// @include     http://steamcn.edu.pl/ig_sale.html
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_gift_auto.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_gift_auto.user.js
 // @run-at      document-end
@@ -16,23 +17,33 @@
 // @grant       GM_addStyle
 // @grant       GM_getValue
 // @grant       GM_setValue
+// @grant       GM_setClipboard
 // ==/UserScript==
 
-$('#btn').after('&#9;<input id="gift" type="button" value="GIFT">');
-$('#3').after('<table id="area"></table><div id="area2"></div>');
+$('#btn').after('&#9;<input id="gift" type="button" value="gift">&#9;<input id="copy" type="button" value="copy">');
+$('#3').after('<table id="a"></table><div id="b"></div><div id="c"></div>');
 
 $('#gift').click(function(){
     var text = $('#in').val();
     var m = /gift_id=([0-9a-f]+)/.exec(text);
     if (m){
         var id = m[1];
-        m = /密码：([A-Z0-9]{6})/.exec(text);
+        m = /密码.*([A-Z0-9]{6})/.exec(text);
         if (m){
-            $('#area').empty();
-            $('#area2').empty();
+            $('#a').empty();
+            $('#b').empty();
+            $('#c').empty();
             getkey(id, m[1]);
         }
     }
+});
+
+$('#copy').click(function(){
+    var txt = $('#area2').text();
+    $('#b div').each(function(){
+        txt += $(this).text() + '\n';
+    });
+    GM_setClipboard(txt);
 });
 
 unsafeWindow.getkey = function(id, pwd){
@@ -62,8 +73,8 @@ unsafeWindow.getkey = function(id, pwd){
                             var k = $(this).find('.input-block-level')[0];
                             var key = k.value;
                             keys.push(key);
-                            $('#area').append('<tr><td><a href="http://store.steampowered.com/'+ ma[0] +'/">' + steam.text() + '</a></td><td id="' + id + '">' + key + '</td><td>' + i + '</td><td>' + t + '</td></tr>');
-                            $('#area2').append('<div>【' + (i++) + '】【' + steam.text() + '】&nbsp;<span id="' + id + '">' + key+'</span></div>');
+                            $('#a').append('<tr><td><a href="http://store.steampowered.com/'+ ma[0] +'/">' + steam.text() + '</a></td><td id="' + id + '">' + key + '</td><td>' + i + '</td><td>' + t + '</td></tr>');
+                            $('#b').append('<div>【' + (i++) + '】【' + steam.text() + '】 <span id="' + id + '">' + key+'</span></div>');
                             var code = '';
                             var m = /serial_n_([A-F0-9]+)/.exec(k.id);
                             if (m){
@@ -93,8 +104,8 @@ unsafeWindow.getkey = function(id, pwd){
                                 }
                             }
                         });
-                        var asf = '<div>********************{r}【ASF格式】{r}{r}!redeem&nbsp;' + keys.join(',') + '</div>';
-                        $('#area2').append(asf);
+                        var asf = '<div>********************{r}【ASF格式】{r}{r}!redeem ' + keys.join(',') + '</div>';
+                        $('#c').append(asf);
                     }
                 },
                 onerror:  function(response) {

@@ -10,7 +10,7 @@
 // @include     http*://gamazavr.ru/orders/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
-// @version     2018.06.24.1
+// @version     2018.08.30.1
 // @run-at      document-end
 // @connect     free.currencyconverterapi.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
@@ -62,7 +62,7 @@ if (match) {
         var f = function () {
             $('.ru').remove();
             $('.price').each(function () {
-                var pr = (/(\d+)\s*<sp/.exec($(this).html())) [1];
+                var pr = (/(\d+)\s*руб/.exec($(this).text())) [1];
                 var q = (pr * r).toFixed(2);
                 $(this).append('<span class="ru" style="color:red; font-weight: bold;">&yen;' + q + '</span>');
             });
