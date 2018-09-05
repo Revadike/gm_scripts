@@ -7,7 +7,7 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.07.08.1
+// @version     2018.09.05.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -44,7 +44,7 @@ if (m){
         $('#reg').empty();
         $('#reg2').empty();
         $('#info2').empty();
-        $('#reg').append('<tr><td>App</td><td>machineName</td><td>app</td><td>sub</td><td>exclusive</td><td>disallowed</td></tr>');
+        $('#reg').append('<tr><td>App</td><td>machineName</td><td>app</td><td>sub</td><td>exclusive</td><td>disallowed</td><td>store</td></tr>');
 
         $.ajax({
             url: url,
@@ -56,31 +56,36 @@ if (m){
                 $('#info2').append(data.created + '<br>');
                 $('#info2').append(`<a target=_blank href="${url}">JSON</a><br>`);
                 $.each(data.tpkd_dict.all_tpks, function (i, item) {
-                    var app = '<td></td>';
+                    var app = '';
                     id = item.steam_app_id;
                     if (id)
-                        app = `<td><a target=_blank href="https://steamdb.info/app/${id}/">${id}</a></td>`;
-                    var sub = '<td></td>';
+                        app = `<a target=_blank href="https://steamdb.info/app/${id}/">${id}</a>`;
+                    var sub = '';
+                    var region = item.key_type;
                     id = item.steam_package_id;
-                    if (item.steam_package_id)
-                        sub = `<td><a target=_blank href="https://steamdb.info/sub/${id}/">${id}</a></td>`;
+                    if (item.steam_package_id){
+                        sub = `<a target=_blank href="https://steamdb.info/sub/${id}/">${id}</a>`;
+                        region = 'WW,';
+                    }
                     var exc = '<td>-</td>';
                     if (item.exclusive_countries.length){
                         id = item.exclusive_countries;
                         exc = `<td title="${id}">List</td>`;
+                        region += '+,';
                     }
                     var dis = '<td>-</td>';
                     if (item.disallowed_countries.length){
                         id = item.disallowed_countries;
                         dis = `<td title="${id}">List</td>`;
+                        region += '-,';
                     }
                     var j = ++i;
                     id = item.machine_name;
-                    $('#reg').append(`<tr><td>${j}</td><td>${id}</td>${app}${sub}${exc}${dis}</tr>`);
+                    var king = item.human_name.replace(/ /g, '+').replace(/[^a-z0-9+]/ig, '');
+                    $('#reg').append(`<tr><td>${j}</td><td>${id}</td><td>${app}</td><td>${sub}</td>${exc}${dis}<td><a target=_blank href="http://steamcn.edu.pl/king.php?q=${king}">KING</a></td></tr>`);
                     var key = item.redeemed_key_val ? item.redeemed_key_val : '';
                     var human = item.human_name;
-                    var king = item.human_name.replace(/ /g, '+').replace(/[^a-z0-9+]/ig, '');
-                    $('#reg2').append(`<tr><td>${i}</td><td>${human}</td><td>${key}</td>${sub}<td><a target=_blank href="http://steamcn.edu.pl/king.php?q=${king}">KING</a></td></tr>`);
+                    $('#reg2').append(`<tr><td>${i}</td><td>${human}</td><td>${key}</td><td></td><td></td><td>${region}${sub}</td></tr>`);
                 });
             },
             error: function(data){
