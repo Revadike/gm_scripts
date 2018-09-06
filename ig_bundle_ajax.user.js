@@ -7,13 +7,14 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2018.04.27.1
+// @version     2018.09.06.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
 // @grant       GM_addStyle
 // @grant       GM_getValue
 // @grant       GM_setValue
+// @grant       GM_setClipboard
 // ==/UserScript==
 
 GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
@@ -25,9 +26,28 @@ if(how.length == 0)
     how = $('.left');
 if (how.length > 0){
     how.after('<table id="area"></table><div id="area2"></div>');
+    how.after('<button id="cpasf">COPY ASF</button>');
+    how.after('<button id="cpgrid">COPY GRID</button>');
     how.after('<button id="redeem">KEYS</button>');
     $('#redeem').click(function () {
         showkey();
+    });
+    $('#cpgrid').click(function () {
+        var txt = '';
+        $('#area tr').each(function(){
+            $(this).children('td').each(function(){
+                txt += $(this).text() + '\t';
+            });
+            txt += '\n';
+        });
+        GM_setClipboard(txt);
+    });
+    $('#cpasf').click(function () {
+        var txt = '';
+        $('#area2').children('div').each(function(){
+            txt += $(this).text() + '\n';
+        });
+        GM_setClipboard(txt);
     });
 }
 
@@ -37,6 +57,7 @@ if(bk.length > 0){
     if (dv.length == 0)
         dv = $('.title-bundle-kind');
     dv.after('<table id="area_gifts"></table><table id="area_na"></table>');
+    dv.after('<button id="cpgift">COPY GIFT</button>');
     dv.after('<button id="gift_btn">GIFTS</button>');
     dv.after('<button id="rest">RESTORE</button>');
     showgift();
@@ -45,6 +66,16 @@ if(bk.length > 0){
     });
     $('#rest').click(function () {
         restore();
+    });
+    $('#cpgift').click(function () {
+        var txt = '';
+        $('#area_gifts tr').each(function(){
+            $(this).children('td').each(function(){
+                txt += $(this).text() + '\t';
+            });
+            txt += '\n';
+        });
+        GM_setClipboard(txt);
     });
 }
 
@@ -71,28 +102,28 @@ function showkey()
         var k = $(this).find('.input-block-level')[0];
         var key = k.value;
         keys.push(key);
-        $('#area').append('<tr><td><a href="http://store.steampowered.com/'+ ma[0] +'/">' + steam.text() + '</a></td><td id="' + id + '">' + key + '</td><td>' + i + '</td><td>' + t + '</td></tr>');
-        $('#area2').append('<div>【' + (i++) + '】【' + steam.text() + '】&nbsp;<span id="' + id + '">' + key+'</span></div>');
+        $('#area').append(`<tr><td><a href="http://store.steampowered.com/${ma[0]}/">${steam.text()}</a></td><td class="${id}">${key}</td><td>${i}</td><td>${t}</td></tr>`);
+        $('#area2').append(`<div>【${i++}】【${steam.text()}】 <span class="${id}">${key}</span></div>`);
         var code = '';
         var m = /serial_n_([A-F0-9]+)/.exec(k.id);
         if (m){
             code = m[1];
-            var link = 'https://www.indiegala.com/myserials/syncget?code=' + code + '&cache=false&productId=' + id;
+            var link = `https://www.indiegala.com/myserials/syncget?code=${code}&cache=false&productId=${id}`;
             if (key.length == 0) {
                 $.getJSON(link, function (data) {
                     if (data.status == 'success') {
                         keys.push(key);
                         k.value = data.serial_number;
-                        document.getElementById(id).innerHTML = data.serial_number;
+                        $('.'+id).append(data.serial_number);
                         $('<input value=' + data.entity_id + '/>').insertAfter($(input));
                     } else {
-                        alert('redeem error');
+                        $('.'+id).append(data.status);
                     }
                 });
             }
         }
     });
-    var asf = '<div>********************{r}【ASF格式】{r}{r}!redeem&nbsp;' + keys.join(',') + '</div>';
+    var asf = `<div>********************{r}【ASF格式】{r}{r}!redeem ${keys.join(',')}</div>`;
     $('#area2').append(asf);
 }
 
@@ -115,7 +146,7 @@ function showgift()
         else {
             pwd = $.trim(p.text());
             var color = link.substr( - 6, 6);
-            link = '<tr style="color:#' + color + '"><td>www.indiegala.com' + link + '</td><td>' + pwd + '</td><td>' + num + '</td></tr>';
+            link = `<tr style="color:#${color}"><td>www.indiegala.com${link}</td><td>${pwd}</td><td>${num}</td></tr>`;
             gifts.push(link);
             //$('#area_gifts').append('<tr><td>' + num + '</td><td>' + link + '</td><td>' + pwd + '</td></tr>');
         }
@@ -126,7 +157,7 @@ function showgift()
         document.cookie = 'auth=""';
         $.each(na, function(k, v){
             var i = k;
-            $('#area_na').append('<tr><td>' + v + '</td><td id="' + i + '">-</td></tr>');
+            $('#area_na').append(`<tr><td>${v}</td><td id="${i}">-</td></tr>`);
             $.ajax({
                 url: v,
                 type: "GET",
@@ -144,10 +175,10 @@ function showgift()
         });
         var dt = $('.profile_list').attr('id');
         var s = '';
-        m = /id=(\d+)/.exec(document.URL);
+        var m = /id=(\d+)/.exec(document.URL);
         if (m)
             s = m[1];
-        bk.append('<form id="f" action="http://167.88.168.94/ig_sale.php?c=gift&s=' + s + '&d=' + dt + '" method="post" target="_blank"></form>');
+        bk.append(`<form id="f" action="http://167.88.168.94/ig_sale.php?c=gift&s=${s}&d=${dt}" method="post" target="_blank"></form>`);
         $('#area_gifts tr').each(function () {
             var t = $(this).find('td');
             var g = '';
@@ -156,7 +187,7 @@ function showgift()
                 g = m[1];
             var pwd = $(t[1]).text();
             var dx = $(t[2]).text();
-            $('#f').append('<input type="hidden" name="' + g + '" value="' + pwd + ',' + dx + '" />');
+            $('#f').append(`<input type="hidden" name="${g}" value="${pwd},${dx}" />`);
         });
         $('#f').append('<input type="submit" value="Submit" />');
         setTimeout(function () {
@@ -166,7 +197,8 @@ function showgift()
 }
 
 function restore(){
-    document.cookie = 'auth="' + GM_getValue("cookie", '') + '"';
+    var ck = GM_getValue("cookie", '');
+    document.cookie = `auth="${ck}"`;
     setTimeout(function () {
         window.location.reload();
     },1000);
