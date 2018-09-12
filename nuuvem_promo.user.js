@@ -3,37 +3,73 @@
 // @namespace   http://tampermonkey.net/
 // @description nuuvem promo info
 // @include     https://www.nuuvem.com/catalog/*promo*
-// @match        file:///E:/nuuvem.html
 // @include     https://www.nuuvem.com/promo*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/nuuvem_promo.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/nuuvem_promo.user.js
-// @version     2018.02.09.1
+// @version     2018.09.12.1
 // @run-at      document-end
 // @require     https://code.jquery.com/jquery-3.3.1.min.js
-// @grant       GM_xmlhttpRequest
 // @grant       GM_addStyle
+// @grant       GM_setClipboard
 // ==/UserScript==
 
 GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
 GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px !important;}");
 
-$('#nvm-content').after('<div id="g"><a id="btn">BTN</a>&nbsp;<a id="info">INFO</a></div>');
+$('#catalog').before('<a id="btn">BTN</a>&nbsp;<a id="info">INFO</a>&nbsp;<a id="cpitem">CPITEM</a>&nbsp;<a id="cpsale">CPSALE</a><div id="g">');
+$('#nvm-content').after('<div id="item"></div><div id="sale"></div><table id="tb"></table>');
 // {&quot;current_page&quot;:1,&quot;total_pages&quot;:59,&quot;total_count&quot;:1173}"
 
+var pages = 0;
+var games = 0;
+
+$('#cpitem').click(function () {
+    var txt = $('#item').text();
+    GM_setClipboard(txt);
+});
+
+$('#cpsale').click(function () {
+    var txt = $('#sale').text();
+    GM_setClipboard(txt);
+});
+
 $('#btn').click(function(){
+    $('#g').empty();
     var pg = $('#catalog').attr('data-pager');
     var r = /total_pages":(\d+),"total_count":(\d+)/.exec(pg);
     if (r){
-        var pages = r[1];
-        var games = r[2];
-        $('#g').append(games);
-        for(var i=1;i<=pages;i++)
-            $('#g').append('&nbsp;&nbsp;&nbsp;<a target=_blank href="/catalog/price/promo/page/' + i + '.html">' + i + '</a>');
+        pages = r[1];
+        games = r[2];
+        for(var i=2;i<=pages;i++){
+            var k = i;
+            fetch(k);
+        }
     }
 });
 
-$('#g').append('<table id="tb"></table>');
+function fetch(i)
+{
+    $('#g').append(`<td id=${i}>${i}</td>`)
+    var url = `/catalog/price/promo/page/${i}.html`;
+    setTimeout(function () {
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function( data, status, xhr ){
+                $('#'+i).css('color', 'green');
+                $('.products-dock--main').append(data);
+            },
+            fail: function( data, status, xhr ){
+                $('#'+i).css('color', 'red');
+            }
+        });
+
+    },i * 1000);
+}
+
 $('#info').click(function(){
+    $('#item').empty();
+    $('#sale').empty();
     var ar = new Array();
     var ar2 = new Array();
     $('.product-card--grid').each(function(){
@@ -71,7 +107,6 @@ $('#info').click(function(){
         var r2 = [sku,price,sale];
         ar2.push(r2.join());
     });
-    $('#g').append(JSON.stringify(ar));
-    $('#g').append('<br>');
-    $('#g').append(ar2.join(';'));
+    $('#item').append(JSON.stringify(ar));
+    $('#sale').append(ar2.join(';'));
 });
