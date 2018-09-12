@@ -7,11 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-<<<<<<< HEAD
-// @version     2018.09.12.1
-=======
-// @version     2018.09.06.1
->>>>>>> 1c2b554ad46809898f489c8a2399c460d88a2c70
+// @version     2018.09.12.2
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -30,16 +26,10 @@ var how = $('#header-title');
 if(how.length == 0)
     how = $('.left');
 if (how.length > 0){
-<<<<<<< HEAD
     how.after('<table id="area"></table><div id="area2">');
     how.after('&#9;<button id="cpasf2">CPASF2</button>');
     how.after('&#9;<button id="cpasf">AGISO</button>');
     how.after('&#9;<button id="cpgrid">CPGRID</button>');
-=======
-    how.after('<table id="area"></table><div id="area2"></div>');
-    how.after('<button id="cpasf">COPY ASF</button>');
-    how.after('<button id="cpgrid">COPY GRID</button>');
->>>>>>> 1c2b554ad46809898f489c8a2399c460d88a2c70
     how.after('<button id="redeem">KEYS</button>');
     $('#redeem').click(function () {
         showkey();
@@ -56,7 +46,6 @@ if (how.length > 0){
     });
     $('#cpasf').click(function () {
         var txt = '';
-<<<<<<< HEAD
         $('#area2 div').each(function(){
             txt += $(this).text() + '\n';
         });
@@ -69,11 +58,6 @@ if (how.length > 0){
             txt += $(this).text() + '\n';
         });
         txt += `\n【ASF格式】\n!redeem ${keys.join(',')}`;;
-=======
-        $('#area2').children('div').each(function(){
-            txt += $(this).text() + '\n';
-        });
->>>>>>> 1c2b554ad46809898f489c8a2399c460d88a2c70
         GM_setClipboard(txt);
     });
 }
@@ -84,11 +68,7 @@ if(bk.length > 0){
     if (dv.length == 0)
         dv = $('.title-bundle-kind');
     dv.after('<table id="area_gifts"></table><table id="area_na"></table>');
-<<<<<<< HEAD
     dv.after('<button id="cpgift">CPGIFT</button>');
-=======
-    dv.after('<button id="cpgift">COPY GIFT</button>');
->>>>>>> 1c2b554ad46809898f489c8a2399c460d88a2c70
     dv.after('<button id="gift_btn">GIFTS</button>');
     dv.after('<button id="rest">RESTORE</button>');
     showgift();
@@ -153,11 +133,6 @@ function showkey()
             }
         }
     });
-<<<<<<< HEAD
-=======
-    var asf = `<div>********************{r}【ASF格式】{r}{r}!redeem ${keys.join(',')}</div>`;
-    $('#area2').append(asf);
->>>>>>> 1c2b554ad46809898f489c8a2399c460d88a2c70
 }
 
 function showgift()
