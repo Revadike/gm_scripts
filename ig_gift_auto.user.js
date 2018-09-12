@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ig_gift_auto
 // @namespace    http://tampermonkey.net/
-// @version      2018.08.31.1
+// @version      2018.09.12.1
 // @description  ig gift auto
 // @author       jacky
 // @include     http://167.88.168.94/ig_sale.html
@@ -20,9 +20,10 @@
 // @grant       GM_setClipboard
 // ==/UserScript==
 
-$('#btn').after('&#9;<input id="gift" type="button" value="gift">&#9;<input id="copy" type="button" value="copy">');
+$('#btn').after('&#9;<input id="gift" type="button" value="gift">&#9;<input id="cpgrid" type="button" value="CPGRID">&#9;<input id="cpasf" type="button" value="CPASF">');
 $('#3').after('<table id="a"></table><div id="b"></div><div id="c"></div>');
 
+var keys = Array();
 $('#gift').click(function(){
     var text = $('#in').val();
     var m = /gift_id=([0-9a-f]+)/.exec(text);
@@ -38,11 +39,23 @@ $('#gift').click(function(){
     }
 });
 
-$('#copy').click(function(){
-    var txt = $('#area2').text();
+$('#cpgrid').click(function () {
+    var txt = '';
+    $('#a tr').each(function(){
+        $(this).children('td').each(function(){
+            txt += $(this).text() + '\t';
+        });
+        txt += '\n';
+    });
+    GM_setClipboard(txt);
+});
+
+$('#cpasf').click(function () {
+    var txt = '';
     $('#b div').each(function(){
         txt += $(this).text() + '\n';
     });
+    txt += `\n【ASF格式】\n!redeem ${keys.join(',')}`;;
     GM_setClipboard(txt);
 });
 
@@ -62,7 +75,7 @@ unsafeWindow.getkey = function(id, pwd){
                     var r = JSON.parse(response.responseText);
                     if (r && r.status == 200){
                         var i = 1;
-                        var keys = Array();
+                        keys = Array();
 
                         var t = $(r.contents).find('#indie_gala_2 div:first').text();
                         $(r.contents).find('.game-key-string').each(function () {
@@ -73,13 +86,13 @@ unsafeWindow.getkey = function(id, pwd){
                             var k = $(this).find('.input-block-level')[0];
                             var key = k.value;
                             keys.push(key);
-                            $('#a').append('<tr><td><a href="http://store.steampowered.com/'+ ma[0] +'/">' + steam.text() + '</a></td><td id="' + id + '">' + key + '</td><td>' + i + '</td><td>' + t + '</td></tr>');
-                            $('#b').append('<div>【' + (i++) + '】【' + steam.text() + '】 <span id="' + id + '">' + key+'</span></div>');
+                            $('#a').append(`<tr><td><a href="http://store.steampowered.com/${ma[0]}/">${steam.text()}</a></td><td id="${id}">${key}</td><td>${i}</td><td>${t}</td></tr>`);
+                            $('#b').append(`<div>【${(i++)}】【${steam.text()}】 <span id="${id}">${key}</span></div>`);
                             var code = '';
                             var m = /serial_n_([A-F0-9]+)/.exec(k.id);
                             if (m){
                                 code = m[1];
-                                var link = 'https://www.indiegala.com/myserials/syncget?code=' + code + '&cache=false&productId=' + id;
+                                var link = `https://www.indiegala.com/myserials/syncget?code=${code}&cache=false&productId=${id}`;
                                 if (key.length == 0) {
                                     var gi = id;
                                     GM_xmlhttpRequest({
@@ -104,8 +117,6 @@ unsafeWindow.getkey = function(id, pwd){
                                 }
                             }
                         });
-                        var asf = '<div>********************{r}【ASF格式】{r}{r}!redeem ' + keys.join(',') + '</div>';
-                        $('#c').append(asf);
                     }
                 },
                 onerror:  function(response) {
