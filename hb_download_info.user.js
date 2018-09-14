@@ -7,11 +7,12 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.09.05.1
+// @version     2018.09.14.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_addStyle
+// @grant       GM_setClipboard
 // ==/UserScript==
 
 GM_addStyle("table{border:solid 1px;border-collapse:collapse;font-size:16px !important;}");
@@ -25,6 +26,10 @@ if (m) {
 
 m = /downloads/.exec(document.URL);
 if (m){
+    $('.js-cross-promo-whitebox-holder').hide();
+    $('.download-mosaic').hide();
+    $('.site-footer').hide();
+    $('#spiel').hide();
     $('#headertext').append('<table id="reg"></table>');
     $('#headertext').append('<table id="reg2"></table>');
     $('#headertext').append('<div id="info2" class="d"></div>');
@@ -34,6 +39,7 @@ if (m){
     $('#headertext').append('<div><a id="gift">GIFT</a></div>');
     $('#headertext').append('<table id="info"></table>');
     $('#headertext').append('<div id="info3" class-"d"></div>');
+    $('#headertext').append('<div><a id="p">COPY</a></div>');
 
     m = /key=([0-9A-Z]+)/i.exec(document.URL);
     var id = m[1];
@@ -64,7 +70,7 @@ if (m){
                     var region = item.key_type;
                     id = item.steam_package_id;
                     if (item.steam_package_id){
-                        sub = `<a target=_blank href="https://steamdb.info/sub/${id}/">${id}</a>`;
+                        sub = `<a target=_blank href="https://steamdb.info/sub/${id}/info">${id}</a>`;
                         region = 'WW,';
                     }
                     var exc = '<td>-</td>';
@@ -92,6 +98,17 @@ if (m){
                 alert('error-key');
             }
         });
+    });
+
+    $('#p').click(function(){
+        var txt = '';
+        $('#reg2 tr').each(function(){
+            $(this).children('td').each(function(){
+                txt += $(this).text() + '\t';
+            });
+            txt += '\n';
+        });
+        GM_setClipboard(txt);
     });
 
     $('#btn').click(function () {
