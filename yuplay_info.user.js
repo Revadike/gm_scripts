@@ -10,7 +10,7 @@
 // @include     http*://gamazavr.ru/orders/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
-// @version     2018.08.30.1
+// @version     2018.10.15.1
 // @run-at      document-end
 // @connect     free.currencyconverterapi.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
@@ -19,6 +19,7 @@
 // @grant       GM_addStyle
 // @grant       GM_getValue
 // @grant       GM_setValue
+// @grant       GM_setClipboard
 // ==/UserScript==
 
 //GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
@@ -46,7 +47,7 @@ if (match) {
                 var p = /(\d+) руб/.exec($(this).text()) [1];
                 var p2 = (p * r).toFixed(2);
                 var discount = Math.round(((1 - p / del).toFixed(2)) * 100);
-                $('#info').append('<tr><td>' + (++i) + '</td><td><a href="' + link + '" target="_blank">' + title + '</a></td><td>&#8381;' + del + '</td><td>&#8381;' + p + '</td><td>&yen;' + p2 + '</td><td>-' + discount + '%</td></tr>');
+                $('#info').append(`<tr><td>${(++i)}</td><td><a href="${link}" target="_blank">${title}</a></td><td>&#8381;${del}</td><td>&#8381;${p}</td><td>&yen;${p2}</td><td>-${discount}%</td></tr>`);
             });
         };
         getRatio('RUB', 'CNY', f);
@@ -64,11 +65,11 @@ if (match) {
             $('.price').each(function () {
                 var pr = (/(\d+)\s*руб/.exec($(this).text())) [1];
                 var q = (pr * r).toFixed(2);
-                $(this).append('<span class="ru" style="color:red; font-weight: bold;">&yen;' + q + '</span>');
+                $(this).append(`<span class="ru" style="color:red; font-weight: bold;">&yen;${q}</span>`);
             });
             var p = $(":contains('SUB_ID') > span");
             if (p.length > 0)
-                p.after('<a class="ru" target="_blank" href="http://steamdb.info/sub/' + p.text() + '/">API</a>');
+                p.after(`<a class="ru" target="_blank" href="http://steamdb.info/sub/${p.text()}/">API</a>`);
         };
         getRatio('RUB', 'CNY', f);
     });
@@ -84,8 +85,8 @@ $('#ru').click(function(){
             action: "cart_add"
         },
         headers: {
-            "X-Forwarded-For":"37.0.123.66",
-            "CLIENT-IP":"37.0.123.66"
+            "X-Forwarded-For":"84.52.99.227",
+            "CLIENT-IP":"84.52.99.227"
         },
         success: function( data, status, xhr ){
             if (/form-cart/.exec(data))
@@ -101,22 +102,47 @@ $('#ru').click(function(){
 match = /orders/.exec(document.URL);
 if (match) {
     $('div.orders_id').after('<table id="t"></table>');
+    $('div.orders_id').after('<div id="c"></div>');
     $('div.orders_id').after('<div id="b"></div>');
-    $('#b').append('<p>' + $.trim($('td.total').text()) + '<br>' + $('.number small').text() + '<br>' + $('.number b').text() + '</p>');
+    $('div.orders_id').after('<a id="key">KEY</a>&#09;<a id="grid">GRID</a>');
+    var total = $.trim($('td.total').text()).replace('pуб', 'RUB');
+    var date = $('.number small').text();
+    var d = new Date(`${date} GMT+0300`).toLocaleString();
+    var id = $('.number b').text();
+    $('#b').append(`<p>${total}<br>${date}<br>${d}<br>${id}</p>`);
     $('.product-info').each(function(i, v){
         var t = $.trim($(v).find('.name').text());
         var k = $(v).next('.keys').find('input').val();
-        $('#t').append('<tr><td>' + i + '</td><td>' + t + '</td><td>' + k + '</td></tr>');
-        $('#b').append('<p>' + t + '<br>' + k + '</p>');
+        $('#t').append(`<tr><td>${i}</td><td>${t}</td><td>${k}</td><td>#${id}</td><td>${total}</td></tr>`);
+        $('#c').append(`<p>${t}<br>${k}</p>`);
     });
 
     $('div.orders_id').children('.gameHead').each(function(i, v){
         var t = $.trim($(v).text().replace(/–\s1\sшт./, ''));
         var k = $(v).next('.messageContent').find('input').val();
-        $('#t').append('<tr><td>' + i + '</td><td>' + t + '</td><td>' + k + '</td></tr>');
-        $('#b').append('<p>' + t + '<br>' + k + '</p>');
+        $('#t').append(`<tr><td>${i}</td><td>${t}</td><td>${k}</td><td>#${id}</td><td>${total}</td></tr>`);
+        $('#c').append(`<p>${t}<br>${k}</p>`);
     });
 }
+
+$('#key').click(function () {
+    var txt = '';
+    $('#c p').each(function(){
+        txt += $(this).html().replace('<br>', '\n') + '\n';
+    });
+    GM_setClipboard(txt);
+});
+
+$('#grid').click(function () {
+    var txt = '';
+    $('#t tr').each(function(){
+        $(this).children('td').each(function(){
+            txt += $(this).text() + '\t';
+        });
+        txt += '\n';
+    });
+    GM_setClipboard(txt);
+});
 
 var getRatio = function (a, b, f) {
     if (Date.now() - dt > 60 * 6 * 60000 || r === 0.0)

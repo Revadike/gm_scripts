@@ -11,13 +11,14 @@
 // @include     http*://*steamcn.com/forum.php?mod=viewthread*
 // @include     https://steamcommunity.com/sharedfiles/filedetails/?id=*
 // @include     https://store.steampowered.com/cart/*
+// @include     https://www.fanatical.com/en/bundle/*
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http://wtfprice.ru*
 // @include     http://167.88.168.94/*
 // @include     http://steamcn.edu.pl/*
 // @include     http://bundle.ccyycn.com/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.08.22.1
+// @version     2018.10.15.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -117,9 +118,9 @@ setTimeout(function() {
 function update(){
     GM_xmlhttpRequest({
         method: "GET",
-        url: "http://store.steampowered.com/dynamicstore/userdata/?l=english",
+        url: "https://store.steampowered.com/dynamicstore/userdata/?l=english",
         onload: function(response) {
-            if (/rgWishlist/.exec(response.responseText)){
+            if (response.responseText.length > 1000 && /rgWishlist/.exec(response.responseText)){
                 GM_setValue("steam_info", response.responseText);
                 GM_setValue("last_upd", Date.now());
                 r = JSON.parse(response.responseText);
