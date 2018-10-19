@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ig_gift_auto
 // @namespace    http://tampermonkey.net/
-// @version      2018.09.12.1
+// @version      2018.10.16.1
 // @description  ig gift auto
 // @author       jacky
 // @include     http://167.88.168.94/ig_sale.html
@@ -77,7 +77,7 @@ unsafeWindow.getkey = function(id, pwd){
                         var i = 1;
                         keys = Array();
 
-                        var t = $(r.contents).find('#indie_gala_2 div:first').text();
+                        var t = $.trim($(r.contents).find('#indie_gala_2 div:first').text());
                         $(r.contents).find('.game-key-string').each(function () {
                             var steam = $(this).find('.game-steam-url');
                             var href = steam.attr('href');
