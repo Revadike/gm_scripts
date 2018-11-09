@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         otk_gg_game_keys
 // @namespace    http://tampermonkey.net/
-// @version      2018.08.09.1
+// @version      2018.11.09.1
 // @description  otk_gg_game_keys
 // @author       jacky
 // @match        http*://*gogobundle.com/*/order/show/*
@@ -13,58 +13,73 @@
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/otk_gg_game_keys.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/otk_gg_game_keys.user.js
 // @grant       GM_setClipboard
+// @grant       unsafeWindow
+// @grant       GM_addStyle
 // ==/UserScript==
 
-$('legend').each(function(){
-    if ($(this).text()=='Serials'){
-        var t = $(this).next().find('tbody tr');
-        var a = [];
-        var b = [];
+GM_addStyle("td{font-size:12px !important;}");
 
-        $(this).after('<table id="b"></table>');
-        $(this).after('<div id="c"></div');
-        $(this).after('<a id="p">COPY</a>');
-        $('#p').click(function(){
-            var txt = '';
-            $('#b tr').each(function(){
-                $(this).children('td').each(function(){
-                    txt += $(this).text() + '\t';
-                });
-                txt += '\n';
-            });
-            GM_setClipboard(txt);
+$('.header').append('<a href="javascript:void(0);" onclick="list();">LIST</a>');
+$('.header').append('<textarea id="ta"></textarea>');
+$('.header').append('<a id="p" href="javascript:void(0);" onclick="cpkey();">COPY</a>');
+$('.header').append('<table id="b"></table>');
+$('.header').append('<div id="c"></div');
+
+unsafeWindow.cpkey = function(){
+    var txt = '';
+    $('#b tr').each(function(){
+        $(this).children('td').each(function(){
+            txt += $(this).text() + '\t';
         });
-        t.each(function(){
-            var d = $(this).find('td');
-            var n = $(d[0]).text();
-            var s = $(d[1]).text();
-            var m = /Coupon/.exec(n);
-            if (m){
-                $('#b').before(`<span style="color:red">${n}：${s}</span>`);
-            } else {
-                if ($.inArray(n, a) < 0){
-                    a.push(n);
-                    b[n]= [];
+        txt += '\n';
+    });
+    GM_setClipboard(txt);
+}
+
+unsafeWindow.list = function(){
+    var text = $.trim($('#ta').val());
+    var ta = text.split('\n');
+
+    $('legend').each(function(){
+        if ($(this).text()=='Serials'){
+            var t = $(this).next().find('tbody tr');
+            var a = [];
+            var b = [];
+            $('#b').empty();
+
+            t.each(function(){
+                var d = $(this).find('td');
+                var n = $(d[0]).text();
+                var s = $(d[1]).text();
+                var m = /Coupon/.exec(n);
+                if($.inArray(n, ta) < 0){
+                    if (m){
+                        $('#b').before(`<span style="color:red">${n}：${s}</span>`);
+                    } else {
+                        if ($.inArray(n, a) < 0){
+                            a.push(n);
+                            b[n]= [];
+                        }
+                        b[n].push(s);
+                    }
                 }
-                b[n].push(s);
-            }
-        });
+            });
 
-        var ks = b[a[0]].length;
-        var js = a.length;
-        var l = 0;
-        var asf = '';
-        for (var i=0; i < ks; i++) {
-            var c = [];
-            for (var j=0; j < js; j++) {
-                var k = b[a[j]][i];
-                c.push(k);
-                var name = a[j];
-                l = j+1;
-                $('#b').append(`<tr><td>${name}</td><td>${k}</td><td>【${l}】【${name}】 ${k}</td></tr>`);
-            }
+            var ks = b[a[0]].length;
+            var js = a.length;
+            var l = 0;
+            var asf = '';
+            for (var i=0; i < ks; i++) {
+                var c = [];
+                for (var j=0; j < js; j++) {
+                    var k = b[a[j]][i];
+                    c.push(k);
+                    var name = a[j];
+                    l = j+1;
+                    $('#b').append(`<tr><td>${name}</td><td>${k}</td><td>【${l}】【${name}】 ${k}</td></tr>`);
+                }
 
-            /*
+                /*
             if (c.length > 10) {
                 var n = 0;
                 var size = 8;
@@ -84,9 +99,10 @@ $('legend').each(function(){
                 c[0] = `<div>ASF格式：{r}!redeem&nbsp;${asf}`;
             }
             */
-            l = i+1;
-            asf = c.join(',');
-            $('#b').append(`<tr><td>${l}</td><td>-</td><td>********************{r}【ASF格式】{r}{r}!redeem ${asf}</td></tr>`);
+                l = i+1;
+                asf = c.join(',');
+                $('#b').append(`<tr><td>${l}</td><td>-</td><td>********************{r}【ASF格式】{r}{r}!redeem ${asf}</td></tr>`);
+            }
         }
-    }
-});
+    });
+}

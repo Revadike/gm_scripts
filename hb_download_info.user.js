@@ -4,10 +4,11 @@
 // @description hb download info
 // @include     http*://www.humblebundle.com/*
 // @include     http*://www.humblebundle.com/games/*
+// @include     http*://www.humblebundle.com/software/*
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.09.14.1
+// @version     2018.10.31.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -131,13 +132,14 @@ if (m){
     });
 }
 
-m = /games|mobile/.exec(document.URL);
+m = /games|mobile|software/.exec(document.URL);
 if (m){
     $('.base-main-wrapper').before('<div class="d" id="a1"></div>');
-    m = /BundleMain.init\(({.*}), {"CHANNEL_PREAMBLE"/.exec(document.body.innerHTML);
+    m = $('#webpack-bundle-data').html();
     if (m){
-        var j = JSON.parse(m[1]);
-        if (j) {
+        var j = JSON.parse(m);
+        if (j && j.bundleVars) {
+            j = j.bundleVars;
             $('#a1').append('<p>' + j.product_human_name + '</p>');
             $('#a1').append('<p>' + j.hero_tile.machine_name + '</p>');
             $('#a1').append('<p>' + j.hero_tile.tile_stamp + '</p>');
