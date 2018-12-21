@@ -7,7 +7,7 @@
 // @icon        http://steamcommunity.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_game_cards.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_game_cards.user.js
-// @version     2018.12.10.1
+// @version     2018.12.17.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_addStyle
@@ -59,7 +59,7 @@ if (m){
             $('.profile_xp_block').before('<table id="b"></table>');
             $('.badge_craft_button').each(function(k, v){
                 m = /gamecards\/(\d+)/.exec($(v).attr('href'));
-                $('#b').append(`<tr><td>${k}</td><td>${m[1]}</td></tr>`);
+                $('#b').append(`<tr><td>${k}</td><td><a href="javascript:void(0);" onclick="craftcard(${m[1]});">${m[1]}</a></td><td id="${m[1]}"></td></tr>`);
             });
         }
     }
@@ -151,7 +151,7 @@ unsafeWindow.getcardprice = function(k, hash){
             var l = data.lowest_price;
             if (l){
                 var m = /(\d+)\.(\d+)/.exec(l);
-                var p = parseInt(m[1], 10) * 100 + parseInt(m[2], 10);
+                var p = parseInt(m[1], 10) * 100 + parseInt(m[2], 10) + 5;
                 hash = decodeURIComponent(hash);
                 $(id).append(`<a href="javascript:void(0);" onclick="createbuyorder('${hash}',${p},${k});">${l}</a>`);
                 $(id).after(`<td id="c${k}"></td>`);
@@ -236,14 +236,20 @@ unsafeWindow.craftcard = function(id){
     }).done(function (data) {
         if (data.success === 1)
         {
-            var buy_orderid = data.buy_orderid;
-            setTimeout(getbuyorderstatus(buy_orderid, w), 3000);
+            var d = data.Badge.unlocked_time;
+            $(w).append(`<div>${data.Badge.title} (${data.Badge.game})</div><div>${data.Badge.xp}</div><div><img src="${data.Badge.image}" /></div>`);
+            $.each(data.rgDroppedItems, function (i, item) {
+                if (item.level)
+                    $(w).append(`<div><span style="color:green;">${item.level} (${item.type})</span></div>`);
+                else
+                    $(w).append(`<div>${item.title} (${item.label})</div>`);
+            });
         }
         else
         {
             $(w).append(data.message);
         }
     }).fail(function (xhr) {
-        $('#'+id).append(xhr);
+        $(w).append(xhr);
     });
 }
