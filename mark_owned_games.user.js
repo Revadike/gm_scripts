@@ -10,7 +10,7 @@
 // @include     http*://*steamcn.com/t*
 // @include     http*://*steamcn.com/forum.php?mod=viewthread*
 // @include     https://steamcommunity.com/sharedfiles/filedetails/?id=*
-// @include     https://store.steampowered.com/cart/*
+// @include     https://store.steampowered.com/cart*
 // @include     https://www.fanatical.com/en/bundle/*
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http://wtfprice.ru*
@@ -18,7 +18,7 @@
 // @include     http://steamcn.edu.pl/*
 // @include     http://bundle.ccyycn.com/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.10.15.1
+// @version     2018.12.26.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
