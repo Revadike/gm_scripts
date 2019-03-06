@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2018.09.12.2
+// @version     2019.02.12.01
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -108,28 +108,30 @@ function showkey()
         var steam = $(this).find('.game-steam-url');
         var href = steam.attr('href');
         var ma = /(app|sub)\/(\d+)/.exec(href);
-        var id = ma[2];
-        var k = $(this).find('.input-block-level')[0];
-        var key = k.value;
-        keys.push(key);
-        $('#area').append(`<tr><td><a href="http://store.steampowered.com/${ma[0]}/">${steam.text()}</a></td><td class="${id}">${key}</td><td>${i}</td><td>${t}</td></tr>`);
-        $('#area2').append(`<div>【${i++}】【${steam.text()}】 <span class="${id}">${key}</span></div>`);
-        var code = '';
-        var m = /serial_n_([A-F0-9]+)/.exec(k.id);
-        if (m){
-            code = m[1];
-            var link = `https://www.indiegala.com/myserials/syncget?code=${code}&cache=false&productId=${id}`;
-            if (key.length == 0) {
-                $.getJSON(link, function (data) {
-                    if (data.status == 'success') {
-                        keys.push(key);
-                        k.value = data.serial_number;
-                        $('.'+id).append(data.serial_number);
-                        $('<input value=' + data.entity_id + '/>').insertAfter($(input));
-                    } else {
-                        $('.'+id).append(data.status);
-                    }
-                });
+        if (ma){
+            var id = ma[2];
+            var k = $(this).find('.input-block-level')[0];
+            var key = k.value;
+            keys.push(key);
+            $('#area').append(`<tr><td><a href="http://store.steampowered.com/${ma[0]}/">${steam.text()}</a></td><td class="${id}">${key}</td><td>${i}</td><td>${t}</td></tr>`);
+            $('#area2').append(`<div>【${i++}】【${steam.text()}】 <span class="${id}">${key}</span></div>`);
+            var code = '';
+            var m = /serial_n_([A-F0-9]+)/.exec(k.id);
+            if (m){
+                code = m[1];
+                var link = `https://www.indiegala.com/myserials/syncget?code=${code}&cache=false&productId=${id}`;
+                if (key.length == 0) {
+                    $.getJSON(link, function (data) {
+                        if (data.status == 'success') {
+                            keys.push(key);
+                            k.value = data.serial_number;
+                            $('.'+id).append(data.serial_number);
+                            $('<input value=' + data.entity_id + '/>').insertAfter($(input));
+                        } else {
+                            $('.'+id).append(data.status);
+                        }
+                    });
+                }
             }
         }
     });

@@ -4,9 +4,11 @@
 // @include     http*://store.steampowered.com/cart*
 // @updateURL 	https://github.com/rusania/gm_scipts/raw/master/bl2_dlc_add_to_cart.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/bl2_dlc_add_to_cart.user.js
-// @version     2018.08.22.1
+// @version     2019.01.22.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
+// @connect     steamdb.info
+// @grant       GM_xmlhttpRequest
 // @grant       GM_addStyle
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -60,34 +62,78 @@ unsafeWindow.dlc = function() {
         url: `/dlc/${id}`,
         method: 'GET',
         success: function (d) {
-            var i = 1;
-            d = d.replace(/<img[^<>]*>/g, '');
-            var a = [];
-            $(d).find('.dlc_page_purchase_dlc').each(function(){
-                var id = $(this).attr('data-ds-appid');
-                var t = $.trim($(this).find('.dlc_page_name_link').text())
-                var dt = $(this).find('.dlc_page_release_date').text();
-                var v = $(this).find('.discount_block');
-                var p = '';
-                var s = '';
-                var d = '';
-                if (v.length > 0){
-                    d = $(v[0]).find('.discount_pct').text();
-                    p = $(v[0]).find('.discount_original_price').text();
-                    s = $(v[0]).find('.discount_final_price').text();
-                } else {
-                    p = $.trim($(this).find('.game_purchase_price').text());
-                }
-                a.push(`<tr title="${d}"><td><a target=_blank href="/app/${id}/">${t}</a><br>${dt}</td><td>${p}</td><td>${s}</td><td>${d}</td></tr>`);
-            });
-            a.sort().reverse();
-            $.each(a, function(k, v){
-               $('#b').append(v);
-            });
+            var g = new RegExp(`${id}\\/([^\\/]+)\\/list`, 'g');;
+            var m = g.exec(d);
+            if (m)
+                list(id, m[1]);
         },
         error: function () {
             alert('fail');
         }
+    });
+}
+
+unsafeWindow.list = function(app, name) {
+    var da = {
+        query: '',
+        count: 1000,
+        tagids: '',
+        sort: 'discounted',
+        app_types: '',
+        curations: '',
+        reset: true
+    };
+    var url  = `https://store.steampowered.com/dlc/${app}/${name}/ajaxgetfilteredrecommendations/render/`;
+    $.ajax({
+        url: url,
+        method: 'GET',
+        dataType: 'json',
+        data: da,
+        success: function (d) {
+            if (d.success){
+                var html = d.results_html;
+                var i = 1;
+                html = html.replace(/<img[^<>]*>/g, '');
+                $(html).find('.recommendation').each(function(){
+                    var a = $(this).find('a');
+                    var id = $(a[0]).attr('data-ds-appid');
+                    var t = $.trim($(a[1]).find('.color_created').text());
+                    var dt = $.trim($(a[1]).find('.curator_review_date').text());
+                    var v = $(this).find('.discount_block');
+                    var p = '';
+                    var s = '';
+                    var d = '';
+                    if (v.length > 0){
+                        d = $(v[0]).find('.discount_pct').text();
+                        p = $(v[0]).find('.discount_original_price').text();
+                        s = $(v[0]).find('.discount_final_price').text();
+                    } else {
+                        p = $.trim($(this).find('.game_purchase_price').text());
+                    }
+                    $('#b').append(`<tr title="${d}"><td><a target=_blank href="/app/${id}/">${t}</a><br>${dt}</td><td>${p}</td><td>${s}</td><td>${d}</td><td id="${id}"><a href="javascript:void(0);" onclick="getlow(${id});">check</a></td></tr>`);
+                });
+            }
+        },
+        error: function () {
+            alert('fail');
+        }
+    });
+}
+
+unsafeWindow.getlow = function(app) {
+    GM_xmlhttpRequest({
+        method: "GET",
+        url: `https://steamdb.info/api/ExtensionGetPrice/?appid=${app}&currency=CNY`,
+        onload: function(response) {
+            var r = JSON.parse(response.responseText);
+            var id = `#${app}`;
+            var l = r.data.lowest;
+            $(id).append(`<div>${l.price}</div><div>-${l.discount}%</div><div>${l.date}</div>`);
+        },
+        onerror:  function(response) {
+        },
+        ontimeout:  function(response) {
+        },
     });
 }
 

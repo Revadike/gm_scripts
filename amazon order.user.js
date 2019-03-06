@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         amazon order
 // @namespace    http://tampermonkey.net/
-// @version      2019.01.08
+// @version      2019.03.06.1
 // @description  amazon order info
 // @author       jacky
 // @match        https://www.amazon.com/gp/*/your-account/manage-downloads.html*
@@ -16,6 +16,7 @@ $('.dsv-active-downloads-title').append('<table class="b"></table>');
 
 var t = $('.dsv-whiteBox').find("div[name*='B']");
 if (t.length > 0){
+    var d = [];
     t.each(function(){
         var id = $(this).attr('name');
         var a = $(this).find('a');
@@ -39,6 +40,8 @@ if (t.length > 0){
             if (m)
                 order = m[1];
         }
-        $('.b').append(`<tr><td class="d"><a target=_blank href="/dp/${id}/">${name}</a></td><td class="d">${key}</td><td class="d"><a target=_blank href="${href}">#${order}</a></td><td class="d">${info}</td></tr>`);
+        d.push(`<tr><td class="d"><a target=_blank href="/dp/${id}/">${name}</a></td><td class="d">${key}</td><td class="d"><a target=_blank href="${href}">#${order}</a></td><td class="d">${info}</td></tr>`);
     });
+    d.reverse();
+    $('.b').append(d.join());
 }

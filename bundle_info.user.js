@@ -6,7 +6,6 @@
 // @include     http*://www.sonkwo.com/operation_activities*/*
 // @include     http*://www.sonkwo.com/store/search*
 // @include     http*://*.activity.sonkwo.com/*/index.html
-// @include     http*://www.bunchkeys.com*
 // @include     http*://directg.net/event/event.html
 // @include     http*://directg.net/game/game_page.html?product_code=*
 // @include     http*://*otakumaker.com/index.php/account/admin/deal/view/*
@@ -18,12 +17,17 @@
 // @exclude     https://tryit-forfree.rhcloud.com/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2018.05.23.1
+// @version     2019.02.19.1
 // @run-at      document-end
+// @connect     free.currencyconverterapi.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
+// @grant       GM_log
 // @grant       GM_addStyle
+// @grant       GM_getValue
+// @grant       GM_setValue
 // ==/UserScript==
+
 var colors = [
     '#32cd32',
     '#ff6a00',
@@ -72,37 +76,6 @@ if (match) {
         });
     });
 } //steam sale
-
-match = /bunchkeys/.exec(document.URL);
-if (match) {
-    GM_addStyle(".r{font-size:16px !important;}");
-    $('#SITE_CONTAINER').after('<a class="r" id="a">INFO</a>');
-    $('#a').click(function(){
-        $('#a').before('<div class="r info"></div>');
-        $('#a').before('<div class="r info2"></div>');
-        var bundle = $($('h4')[0]).text();
-        $('#b').append('<p>' + bundle + '</p>');
-        getGridHead(bundle);
-        var i = 0;
-        var k = 0;
-        $('.info').append('<div>[quote]获得以下游戏：[/b]<br><span id=' + i + '></span>[/quote]</div>');
-        $(".wp2link[href*='/app/'],[href*='/sub/']").each(function(){
-            var h = $(this).attr('href');
-            var m = /(app|sub)\/(\d+)/.exec(h);
-            if (m){
-                h = 'http://store.steampowered.com/' + m[1] + '/' + m[2] + '/';
-                var t = $($(this).find('img')[0]).attr('alt');
-                m2 = /(.*)\s*game/i.exec(t);
-                if (m2){
-                    getGridContent(m[2], m[1], m2[1], '#' + i, ++k);
-                    //$('#b').append('<p>' + (i++) + '.&nbsp;' + m2[1] + '<br>&nbsp;&nbsp;&nbsp;' + h +'</p>');
-                }
-            }
-        });
-        $('.g').append(k);
-    });
-}
-
 
 match = /operation_activities\/(\d+)/.exec(document.URL);
 if (match) {
@@ -198,7 +171,7 @@ if (match) {
         if (k)
             q = '&g=' + k[1];
         else {
-          k = /keyword=([^=&?]+)/.exec(document.URL);
+            k = /keyword=([^=&?]+)/.exec(document.URL);
             if (k)
                 q = '&q=' + k[1];
         }
@@ -441,21 +414,24 @@ if (match) {
 } //indiegala bundle
 
 var getRatio = function (a, b, f) {
+    var c = `${a}_${b}`;
+    var url = `https://free.currencyconverterapi.com/api/v5/convert?compact=ultra&q=${c}`;
     GM_xmlhttpRequest({
         method: 'GET',
-        url: 'https://api.fixer.io/latest?base=' + a + '&symbols=' + b,
+        url: url,
         onload: function (response) {
-            var rate = 0;
             if (response.responseText){
                 var j = JSON.parse(response.responseText);
-                rate = j.rates[b];
+                var r = j[c];
             }
-            $('#ratio').empty();
-            $('#ratio').append(rate);
+            $('#r').empty();
+            $('#r').append(r);
             f();
         }
     });
 }; //KRWCNY,RUBCNY
+
+
 var getGridHead = function (title) {
     $('.info').append('<div><span id="time"></span>' + title + '上线，<span id="early"></span><span id="p"></span>刀可获完整内容<br>[b]购买地址：<br>' + document.URL + '<br><br>包含<span class="g"></span>款游戏：[/b]</div>');
     $('.info2').append('<div>&lt;FONT size=2 face=黑体&gt;&lt;P&gt;' + title + '&amp;nbsp;慈善包&lt;/P&gt;&lt;P&gt;&lt;FONT color=#ff0000&gt;发货方式为激活码/礼物链接/包含ASF格式&lt;/FONT&gt;&lt;/P&gt;&lt;P&gt;包含<span class="g"></span>款STEAM游戏：&lt;/P&gt;&lt;P&gt;<span class="tb"></span>&lt;/P&gt;&lt;P&gt;&lt;/P&gt;&lt;/FONT&gt;</div>');
