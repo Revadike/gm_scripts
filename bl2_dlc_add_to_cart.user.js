@@ -4,7 +4,7 @@
 // @include     http*://store.steampowered.com/cart*
 // @updateURL 	https://github.com/rusania/gm_scipts/raw/master/bl2_dlc_add_to_cart.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/bl2_dlc_add_to_cart.user.js
-// @version     2019.01.22.1
+// @version     2019.03.13.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @connect     steamdb.info
@@ -94,6 +94,7 @@ unsafeWindow.list = function(app, name) {
                 var html = d.results_html;
                 var i = 1;
                 html = html.replace(/<img[^<>]*>/g, '');
+                var l = [];
                 $(html).find('.recommendation').each(function(){
                     var a = $(this).find('a');
                     var id = $(a[0]).attr('data-ds-appid');
@@ -110,8 +111,10 @@ unsafeWindow.list = function(app, name) {
                     } else {
                         p = $.trim($(this).find('.game_purchase_price').text());
                     }
-                    $('#b').append(`<tr title="${d}"><td><a target=_blank href="/app/${id}/">${t}</a><br>${dt}</td><td>${p}</td><td>${s}</td><td>${d}</td><td id="${id}"><a href="javascript:void(0);" onclick="getlow(${id});">check</a></td></tr>`);
+                    l.push(`<tr title="${d}"><td><a target=_blank href="/app/${id}/">${t}</a><br>${dt}</td><td>${p}</td><td>${s}</td><td>${d}</td><td id="${id}"><a href="javascript:void(0);" onclick="getlow(${id});">check</a></td></tr>`);
                 });
+                l.sort();
+                $('#b').append(l.join());
             }
         },
         error: function () {

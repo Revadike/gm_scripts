@@ -15,10 +15,10 @@
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http://wtfprice.ru*
 // @include     http://167.88.168.94/*
-// @include     http://steamcn.edu.pl/*
+// @include     https://www.youshangames.com/wholesale-center.html*
 // @include     http://bundle.ccyycn.com/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2018.12.26.1
+// @version     2019.03.12.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net
@@ -82,6 +82,8 @@ $('#mark').click(function(){
     $('.dbc').remove();
     var b = $("a:not(.db)[href*='/app/'],[href*='/sub/'],[href*='-appid-']");
     mark(b);
+    b = $("button[data-img*='/apps/'],[data-img*='/subs/']");
+    mark2(b);
 });
 
 $('#umark').click(function(){
@@ -195,6 +197,44 @@ function mark(a){
             var ma = /steamdb.info/.exec(h);
             if (!ma)
                 $(this).after(` <a class="dbc" target=_blank href="https://steamdb.info/${m[0]}/" target=_blank>${dbIcon}</a>`);
+            $(this).after(html);
+        }
+    });
+}
+
+function mark2(a){
+    a.each(function(i, v){
+        var h = $(this).attr('data-img');
+        var m = /(apps|subs)\/(\d+)/.exec(h);
+        if (m){
+            var id = parseInt(m[2]);
+            var html = '';
+            var card = '';
+            var color = unownedColor;
+            var icon = unownedIcon;
+            var tp = 'app';
+            if (m[1]=='apps') {
+                if ($.inArray(id, ownedApps) > -1){
+                    color = ownedColor;
+                    icon = ownedIcon;
+                }
+                else if ($.inArray(id, wishlist) > -1){
+                    color = wishlistColor;
+                    icon = wishlistIcon;
+                }
+                if (wantCards && r2.hasOwnProperty(id)){
+                    card = ` <span class="ruc" style="color: ${cardColor}; cursor: help;">${cardIcon}</span>`;
+                    $(this).after(card);
+                }
+            } else if ($.inArray(id, ownedPackages) > -1){
+                color = ownedColor;
+                icon = ownedIcon;
+                tp = 'sub';
+            }
+            html = ` <span class="ruc" style="color: ${color}; cursor: help;">${icon}</span>`;
+            var ma = /steamdb.info/.exec(h);
+            if (!ma)
+                $(this).after(` <a class="dbc" target=_blank href="https://steamdb.info/${tp}/${id}/" target=_blank>${dbIcon}</a>`);
             $(this).after(html);
         }
     });

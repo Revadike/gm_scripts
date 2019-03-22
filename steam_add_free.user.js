@@ -6,7 +6,7 @@
 // @grant unsafeWindow
 // @updateURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
-// @version     2019.03.05.1
+// @version     2019.03.13.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @connect     steamdb.info
@@ -134,8 +134,8 @@ unsafeWindow.free = function(){
 unsafeWindow.free = function(){
     $('#su').empty();
     $('#su').append('<table id="b"></table>');
-    var txt = GM_getValue("error", "[]");
-    error = JSON.parse(txt);
+    //var txt = GM_getValue("error", "[]");
+    //error = JSON.parse(txt);
     GM_xmlhttpRequest({
         method: "GET",
         url: "https://steamdb.info/freepackages/",
@@ -150,17 +150,20 @@ unsafeWindow.free = function(){
                     return false;
                 if (!m){
                     var t = $.trim($(this).text());
-                    if ($.inArray(c, ownedApps) > -1 ||$.inArray(b, ownedPackages) > -1 || $.inArray(b, error) > -1)
+                    if ($.inArray(c, ownedApps) > -1 ||$.inArray(b, ownedPackages) > -1)
                     {
                         //$('#su').append(`<p><span style="color:white;">${t}</span></p>`);
                     }
                     else{
                         a.push(b);
-                        $('#b').append(`<tr><td>${j++}</td><td><a href="https://steamdb.info/sub/${b}/">${t}</a></td><td id="${b}"></td></tr>`);
+                        //$('#b').append(`<tr><td>${j++}</td><td><a href="https://steamdb.info/sub/${b}/">${t}</a></td><td id="${b}"></td></tr>`);
                     }
                 }
             });
 
+            $('#su').append(a.join(','));
+
+            /*
             $.each(a, function (k, v) {
                 var j = k;
                 var b = v;
@@ -189,6 +192,7 @@ unsafeWindow.free = function(){
                 });
 
             });
+            */
         },
         onerror:  function(response) {
             alert(response.statusText);

@@ -9,10 +9,17 @@
 // @match        http*://steamdb.info/search/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
-// @version     2018.05.10.01
-// @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
+// @grant       unsafeWindow
+// @version     2019.03.18.1
+// @run-at      document-end
+// @grant       GM_getValue
+// @grant       GM_setValue
 // ==/UserScript==
+
+var rgWishlist = GM_getValue("rgWishlist", "[]");
+var rgOwnedPackages = GM_getValue("rgOwnedPackages", "[]");
+var rgOwnedApps = GM_getValue("rgOwnedApps", "[]");
 
 if (/freepackages/.exec(document.URL)){
     $('h1').after('<table id="b"></table>');
@@ -26,31 +33,193 @@ if (/freepackages/.exec(document.URL)){
         });
     });
 } else {
-var m = /(sub|app)\/(\d+)/.exec(document.URL);
-var p = $('.package');
-if (p.length > 0){
-    $('.app-links').append('<a id="cmp">Cmp</a>');
-    $('.app-links').append('<a id="pkg" target="_target" href="http://167.88.168.94/package.php?id=' + m[2] + '">Pkg</a>');
-    $('.app-links').append('<a id="help" target="_target" href="https://help.steampowered.com/en/wizard/HelpWithGameIssue/?issueid=123&appid=' + m[2] + '">Help</a>');
-    p.each(function(){
-        var id = $(this).attr('data-subid');
-        $(this).append('<td><input type="checkbox" value="' + id + '">sub/' + id + '</td>');
-    });
-
-    $('#cmp').click(function(){
-        var a = [];
-        $(":checkbox").each(function(){
-            if ($(this).prop("checked"))
-                a.push($(this).val());
+    var m = /(sub|app)\/(\d+)/.exec(document.URL);
+    var p = $('.package');
+    if (p.length > 0){
+        $('.app-links').append('<a id="cmp">Cmp</a>');
+        $('.app-links').append('<a id="pkg" target="_target" href="http://167.88.168.94/package.php?id=' + m[2] + '">Pkg</a>');
+        $('.app-links').append('<a id="help" target="_target" href="https://help.steampowered.com/en/wizard/HelpWithGameIssue/?issueid=123&appid=' + m[2] + '">Help</a>');
+        p.each(function(){
+            var id = $(this).attr('data-subid');
+            $(this).append('<td><input type="checkbox" value="' + id + '">sub/' + id + '</td>');
         });
-        if (a.length > 0)
-            window.open('http://167.88.168.94/sub.php?cc=cn&o=1&q=' + a.join(','));
+        $('.tab-content').after('<table class="table table-bordered" id="g"></table>');
+        $('.tab-content').after('<table class="table table-bordered" id="b"></table>');
+        $('.tab-content').after('<table class="table table-bordered" id="p"></table>');
+    }
+
+    $('.app').each(function(){
+        var id = $(this).attr('data-appid');
+        $(this).append('<td>app/' + id + '</td>');
     });
 }
 
-
-$('.app').each(function(){
-    var id = $(this).attr('data-appid');
-    $(this).append('<td>app/' + id + '</td>');
+$('#cmp').click(function(){
+    var a = [];
+    $(":checkbox").each(function(){
+        if ($(this).prop("checked"))
+            a.push($(this).val());
+    });
+    if (a.length > 0){
+        comp(a);
+    }
 });
+
+unsafeWindow.comp = function(a) {
+    $('#b').empty();
+    $('#g').empty();
+    $('#p').empty();
+    //window.open('http://167.88.168.94/sub.php?cc=cn&o=1&q=' + a.join(','));
+    var d = {};
+    var f = [];
+    var g = {};
+    $('#b').append('<tr id="c"><td>Id</td><td>Type</td><td>Name</td><td>Price</td></tr>');
+    $('#g').append('<tr id="h"><td>Id</td><td>Name</td><td>Update</td></tr>');
+    $('#p').append('<tr><td>Id</td><td>Name</td><td>Low</td><td>Cut</td><td>Time</td></tr>');
+
+    $.each(a, function(i, v){
+        var c = v;
+        f.push(c);
+        $('#c').append(`<td>${c}</td>`);
+        $('#h').append(`<td>${c}</td>`);
+        $.ajax({
+            url: `/sub/${c}/`,
+            type: 'GET',
+            async: false,
+        }).done(function (data) {
+            var h = $(data).find('.package-title')[0];
+            $(h).children().first().remove();
+            var t = $.trim($(h).text());
+            var l = sublow(c, 'sub');
+            var n = '';
+            $.each(l.n, function(j, item){
+                n += '<div>' + tm(item) + '</div>';
+            });
+            var p = $('<tr></tr>');
+            if ($.inArray(c*1, rgOwnedPackages) > -1)
+                p.addClass('package owned');
+            p.append(`<td>${c}</td><td><a target=_blank href="/sub/${c}/">${t}</a></td><td>${l.l}</td><td>-${l.c}%</td><td>${n}</td>`);
+            $('#p').append(p);
+            var apps = $(data).find('.app');
+            $.each(apps, function(j,item){
+                var td = $(item).children('td');
+                var id = $(td[0]).text();
+                var mark = $(item).attr('class');
+                if (d.hasOwnProperty(id)){
+                    d[id]['sub'].push(c);
+                }
+                else {
+                    var tp = $.trim($(td[1]).text());
+                    var name = $.trim($(td[2]).text()).replace('(', '<br>(');
+                    var store = $(td[2]).children('a').length > 0 ? `<a class="pull-right" target=_blank href="https://store.steampowered.com/app/${id}/"><span class="octicon octicon-globe"></span></a>` : '';
+                    var price = $(td[3]).text();
+                    var time = $(td[4]).text();
+                    var sub = '';
+                    d[id] = {'mark':mark,'type':tp,'name':name,'store':store,'price':price,'time':time,'sub':[c]};
+                }
+            });
+
+            var depots = $(data).find('tr[data-depotid]');
+            $.each(depots, function(j,item){
+                var td = $(item).children('td');
+                var id = $(td[0]).text();
+                if (g.hasOwnProperty(id)){
+                    g[id]['sub'].push(c);
+                }
+                else {
+                    var name = $.trim($(td[1]).text());
+                    var time = $(td[2]).text();
+                    var sub = '';
+                    g[id] = {'name':name,'time':time,'sub':[c]};
+                }
+            });
+
+        }).fail(function (xhr) {
+        });
+    });
+
+    $.each(d, function(i, v){
+        var cp ='';
+        $.each(f, function(j, item){
+            if ($.inArray(item, v['sub']) > -1){
+                cp += '<td>&#10004;</td>';
+            } else
+                cp += '<td></td>';
+        });
+        var p = $(`<tr id="${i}"></tr>`);
+        if ($.inArray(i*1, rgOwnedApps) > -1)
+            p.addClass('app owned');
+        else if ($.inArray(i*1, rgWishlist) > -1)
+            p.addClass('app wished');
+        else
+            p.addClass(v.mark);
+        p.append(`<td>${i}</td><td>${v.type}</td><td><a target=_blank href="/app/${i}/">${v.name}</a>${v.store}</td><td>${v.price}</td>`);
+        p.append(cp);
+        $('#b').append(p);
+    });
+
+    $.each(g, function(i, v){
+        var cp ='';
+        $.each(f, function(j, item){
+            if ($.inArray(item, v['sub']) > -1){
+                cp += '<td>&#10004;</td>';
+            } else
+                cp += '<td></td>';
+        });
+        $('#g').append(`<tr><td>${i}</td><td><a target=_blank href="/depot/${i}/">${v.name}</a></td><td>${v.time}</td>${cp}</tr>`);
+    });
+}
+
+unsafeWindow.tm = function(dt) {
+    dt = new Date(dt);
+    var y = dt.getFullYear();
+    var m = dt.getMonth() +1;
+    m = m > 9 ? m : '0' + m;
+    var d = dt.getDate();
+    d = d > 9 ? d : '0' + d;
+    var h = dt.getHours();
+    h = h > 9 ? h : '0' + h;
+    var i = dt.getMinutes();
+    i = i > 9 ? i : '0' + i;
+    var s = dt.getSeconds();
+    s = s > 9 ? s : '0' + s;
+    return `${y}-${m}-${d} ${h}:${i}:${s}`;
+}
+
+unsafeWindow.sublow = function(id, tp) {
+    var r = {'l':-1,'c':0,'n':[]};
+    $.ajax({
+        url: `/api/GetPriceHistory/?${tp}id=${id}&cc=cn`,
+        type: 'GET',
+        async: false,
+    }).done(function (data) {
+        var id = `#${id}`;
+        if (data.success){
+            var a = {};
+            if (data.data.final.length > 0){
+                $.each(data.data.final, function(i, v){
+                    if (a.hasOwnProperty(v[1])){
+                        a[v[1]].push(v[0]);
+                    } else {
+                        a[v[1]] = [v[0]];
+                    }
+                });
+                var c = Object.getOwnPropertyNames(a);
+                var l = c[0];
+                if (l == 0)
+                    l = c[1];
+                var d = a[l];
+                d.reverse();
+                r.n = d;
+                if (data.data.formatted.hasOwnProperty(d[0]))
+                {
+                    d = data.data.formatted[d[0]];
+                    r.c = d.discount;
+                    r.l = l;
+                }
+            }
+        }
+    }).fail(function (xhr) {
+    });
+    return r;
 }
