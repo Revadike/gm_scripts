@@ -8,7 +8,8 @@
 // @include     http*://www.humblebundle.com/*?key=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
-// @version     2018.10.31.1
+// @connect     steamdb.info
+// @version     2019.03.28.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -41,6 +42,7 @@ if (m){
     $('#headertext').append('<table id="info"></table>');
     $('#headertext').append('<div id="info3" class-"d"></div>');
     $('#headertext').append('<div><a id="p">COPY</a></div>');
+    $('#headertext').append('<div><a id="region">REGION</a></div>');
 
     m = /key=([0-9A-Z]+)/i.exec(document.URL);
     var id = m[1];
@@ -92,7 +94,12 @@ if (m){
                     $('#reg').append(`<tr><td>${j}</td><td>${id}</td><td>${app}</td><td>${sub}</td>${exc}${dis}<td><a target=_blank href="http://steamcn.edu.pl/king.php?q=${king}">KING</a></td></tr>`);
                     var key = item.redeemed_key_val ? item.redeemed_key_val : '';
                     var human = item.human_name;
-                    $('#reg2').append(`<tr><td>${i}</td><td>${human}</td><td>${key}</td><td></td><td></td><td>${region}${sub}</td></tr>`);
+                    sub = '';
+                    if (item.steam_package_id)
+                        sub = `<td class="db" id="${item.steam_package_id}">${region}${item.steam_package_id}</td>`;
+                    else
+                        sub = '<td></td>';
+                    $('#reg2').append(`<tr><td>${i}</td><td>${human}</td><td>${key}</td><td></td><td></td>${sub}</tr>`);
                 });
             },
             error: function(data){
@@ -131,6 +138,47 @@ if (m){
         $('.giftfield').click();
     });
 }
+
+
+$('#region').click(function () {
+    $('.db').each(function(){
+        var id = $(this).attr("id");
+        var url = `https://steamdb.info/sub/${id}/`;
+        $(`#${id}`).empty();
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: url,
+            onload: function(response) {
+                if (response.status == 503)
+                    alert('Just a moment');
+                else {
+                    var cl = '';
+                    var s = $(response.responseText).find('.countries-list');
+                    if (s.length > 0){
+                        cl += $(s[0]).text();
+                        if (s.length > 1)
+                            cl += ' +';
+                    }
+                    if (cl){
+                        if ((/is only purchasable in specified/.exec(response.responseText)))
+                            cl = `<span style="color:red">${cl}</span>`;
+                        if ((/can NOT be purchased in specified/.exec(response.responseText)))
+                            cl = `<span style="color:red">- ${cl}</span>`;
+                    } else {
+                        cl = 'WW';
+                    }
+                    $(`#${id}`).append(`${cl},${id}`);
+                }
+            },
+            onerror:  function(response) {
+                //alert(response.statusText);
+            },
+            ontimeout:  function(response) {
+                //alert(response.statusText);
+            },
+        });
+    });
+});
 
 m = /games|mobile|software/.exec(document.URL);
 if (m){

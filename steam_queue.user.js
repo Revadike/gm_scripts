@@ -1,16 +1,106 @@
 // ==UserScript==
 // @name        steam_queue
-// @namespace    http://tampermonkey.net/
+// @namespace   http://tampermonkey.net/
 // @include     http*://store.steampowered.com/app/*
 // @include		http*://store.steampowered.com/agecheck/app/*
 // @include		http*://store.steampowered.com/explore*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_queue.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_queue.user.js
-// @version     2018.12.21.1
+// @version     2019.03.25.01
+// @connect     steamdb.info
+// @grant       unsafeWindow
+// @grant       GM_xmlhttpRequest
+// @grant       GM_addStyle
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
-// @grant       none
 // ==/UserScript==
+
+GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
+GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px !important;}");
+
+function info(id){
+    var url = `https://steamdb.info/app/${id}/subs/`;
+    GM_xmlhttpRequest({
+        method: "GET",
+        url: url,
+        onload: function(response) {
+            if (response.status == 503)
+                alert('Just a moment');
+            else {
+                var p = $(response.responseText).find("#subs table tbody");
+                var c = [];
+                if (p.length > 0){
+                    $(p[0]).children('tr').each(function(){
+                        var d = $(this).children('td');
+                        var sub = $(d[0]).text();
+                        var name = $(d[1]).text();
+                        var cut = $(d[2]).text();
+                        var to =  $(d[3]).text();
+                        var t = $(d[4]).attr('data-sort');
+                        t = tm(t * 1000);
+                        c.push(sub);
+                        $('#b').append(`<tr><td>${sub}</td><td><a target=_blank href="https://steamdb.info/bundle/${sub}/">${name}</a></td><td>${cut} ${to}</td><td>${t}</td></tr>`);
+                    });
+                }
+                var b = [];
+                $(response.responseText).find('.package').each(function(){
+                    var d = $(this).children('td');
+                    var sub = $(d[0]).text();
+                    var name = $(d[1]).text();
+                    if ($(d[1]).children('a').length > 0){
+                        name =  `<a target=_blank href="https://steamdb.info/sub/${sub}/">${name}</a>`;
+                        b.push(sub);
+                    }
+                    var tp = $(d[2]).text();
+                    var t = $(d[3]).attr('data-sort');
+                    t = tm(t * 1000);
+                    $('#b').append(`<tr><td>${sub}</td><td>${name}</td><td>${tp}</td><td>${t}</td></tr>`);
+                });
+            }
+        },
+        onerror:  function(response) {
+            //alert(response.statusText);
+        },
+        ontimeout:  function(response) {
+            //alert(response.statusText);
+        },
+    });
+}
+
+function tm(dt) {
+    dt = new Date(dt);
+    var y = dt.getFullYear();
+    var m = dt.getMonth() +1;
+    m = m > 9 ? m : '0' + m;
+    var d = dt.getDate();
+    d = d > 9 ? d : '0' + d;
+    var h = dt.getHours();
+    h = h > 9 ? h : '0' + h;
+    var i = dt.getMinutes();
+    i = i > 9 ? i : '0' + i;
+    var s = dt.getSeconds();
+    s = s > 9 ? s : '0' + s;
+    return `${y}-${m}-${d} ${h}:${i}:${s}`;
+}
+
+unsafeWindow.list = function() {
+    var m = /app\/(\d+)/.exec(document.URL);
+    if (m){
+        var id = m[1];
+        if ($('#b').length > 0){
+            $('#b').empty();
+        }
+        else{
+            $('.apphub_AppName').after('<table id="b"></table>');
+        }
+        info(id);
+    }
+}
+
+var ap = $('.apphub_OtherSiteInfo');
+if (ap.length > 0){
+    ap.append('<a class="btnv6_blue_hoverfade btn_medium" href="javascript:void(0);" onclick="list($);"><span>Info</span></a>');
+}
 
 var m = /back tomorrow to earn more/.exec(document.body.innerHTML);
 if (m){

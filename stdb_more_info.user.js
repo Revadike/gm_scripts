@@ -11,7 +11,7 @@
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       unsafeWindow
-// @version     2019.03.18.1
+// @version     2019.03.26.1
 // @run-at      document-end
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -75,7 +75,7 @@ unsafeWindow.comp = function(a) {
     var g = {};
     $('#b').append('<tr id="c"><td>Id</td><td>Type</td><td>Name</td><td>Price</td></tr>');
     $('#g').append('<tr id="h"><td>Id</td><td>Name</td><td>Update</td></tr>');
-    $('#p').append('<tr><td>Id</td><td>Name</td><td>Low</td><td>Cut</td><td>Time</td></tr>');
+    $('#p').append('<tr><td>Id</td><td>Name</td><td>Price</td><td>Low</td><td>Cut</td><td>Time</td></tr>');
 
     $.each(a, function(i, v){
         var c = v;
@@ -90,15 +90,35 @@ unsafeWindow.comp = function(a) {
             var h = $(data).find('.package-title')[0];
             $(h).children().first().remove();
             var t = $.trim($(h).text());
+
+            var p = $(data).find("td.price-line[data-cc*='cn']");
+            var np = '';
+            if (p.length > 0){
+                np = $(p[0]).next('td').text();
+            }
             var l = sublow(c, 'sub');
             var n = '';
             $.each(l.n, function(j, item){
                 n += '<div>' + tm(item) + '</div>';
             });
-            var p = $('<tr></tr>');
+
+            var cl = '';
+            var s = $(data).find('.countries-list');
+            if (s.length > 0){
+                cl += $(s[0]).text();
+                if (s.length > 1)
+                    cl += ' +';
+            }
+            if (cl){
+                if ((/is only purchasable in specified/.exec(data)))
+                    cl = `<br><span style="color:red">${cl}</span>`;
+                if ((/can NOT be purchased in specified/.exec(data)))
+                    cl = `<br><span style="color:red"><s>${cl}</s></span>`;
+            }
+            p = $('<tr></tr>');
             if ($.inArray(c*1, rgOwnedPackages) > -1)
                 p.addClass('package owned');
-            p.append(`<td>${c}</td><td><a target=_blank href="/sub/${c}/">${t}</a></td><td>${l.l}</td><td>-${l.c}%</td><td>${n}</td>`);
+            p.append(`<td>${c}</td><td><a target=_blank href="/sub/${c}/">${t}</a>${cl}</td><td>${np}</td><td>${l.l}</td><td>-${l.c}%</td><td>${n}</td>`);
             $('#p').append(p);
             var apps = $(data).find('.app');
             $.each(apps, function(j,item){
