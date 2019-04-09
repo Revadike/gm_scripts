@@ -9,7 +9,7 @@
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @connect     steamdb.info
-// @version     2019.03.28.1
+// @version     2019.04.03.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -34,13 +34,14 @@ if (m){
     $('#spiel').hide();
     $('#headertext').append('<table id="reg"></table>');
     $('#headertext').append('<table id="reg2"></table>');
+    $('#headertext').append('<table id="reg3"></table>');
     $('#headertext').append('<div id="info2" class="d"></div>');
     $('#headertext').append('<div><a id="r">LOCK</a></div>');
     $('#headertext').append('<div><a id="btn">INFO</a></div>');
     $('#headertext').append('<div><a id="key">KEYS</a></div>');
     $('#headertext').append('<div><a id="gift">GIFT</a></div>');
     $('#headertext').append('<table id="info"></table>');
-    $('#headertext').append('<div id="info3" class-"d"></div>');
+    $('#headertext').append('<div id="info3" class="d"></div>');
     $('#headertext').append('<div><a id="p">COPY</a></div>');
     $('#headertext').append('<div><a id="region">REGION</a></div>');
 
@@ -91,7 +92,7 @@ if (m){
                     var j = ++i;
                     id = item.machine_name;
                     var king = item.human_name.replace(/ /g, '+').replace(/[^a-z0-9+]/ig, '');
-                    $('#reg').append(`<tr><td>${j}</td><td>${id}</td><td>${app}</td><td>${sub}</td>${exc}${dis}<td><a target=_blank href="http://steamcn.edu.pl/king.php?q=${king}">KING</a></td></tr>`);
+                    $('#reg').append(`<tr><td>${j}</td><td>${id}</td><td>${app}</td><td>${sub}</td>${exc}${dis}<td><a target=_blank href="http://167.88.168.94/king.php?q=${king}">KING</a></td></tr>`);
                     var key = item.redeemed_key_val ? item.redeemed_key_val : '';
                     var human = item.human_name;
                     sub = '';
@@ -139,8 +140,8 @@ if (m){
     });
 }
 
-
 $('#region').click(function () {
+    $('#reg3').empty();
     $('.db').each(function(){
         var id = $(this).attr("id");
         var url = `https://steamdb.info/sub/${id}/`;
@@ -152,6 +153,23 @@ $('#region').click(function () {
                 if (response.status == 503)
                     alert('Just a moment');
                 else {
+                    var h = $(response.responseText).find('.package-title')[0];
+                    $(h).children().first().remove();
+                    var t = $.trim($(h).text());
+                    var d = {};
+                    var apps = '';
+                    $.each($(response.responseText).find('.app'), function(j,item){
+                        var td = $(item).children('td');
+                        var ap = $(td[0]).text();
+                        var mark = $(item).attr('class');
+                        var tp = $.trim($(td[1]).text());
+                        var name = $.trim($(td[2]).text()).replace('(', '<br>(');
+                        var store = $(td[2]).children('a').length > 0 ? `<a class="pull-right" target=_blank href="https://store.steampowered.com/app/${id}/"><span class="octicon octicon-globe"></span></a>` : '';
+                        var price = $(td[3]).text();
+                        var time = $(td[4]).text();
+                        d[ap] = {'mark':mark,'type':tp,'name':name,'store':store,'price':price,'time':time};
+                        apps += `<div>${name} [${tp}]</div>`;
+                    });
                     var cl = '';
                     var s = $(response.responseText).find('.countries-list');
                     if (s.length > 0){
@@ -168,6 +186,7 @@ $('#region').click(function () {
                         cl = 'WW';
                     }
                     $(`#${id}`).append(`${cl},${id}`);
+                    $('#reg3').append(`<tr><td>${id}</td><td>${cl}</td><td>${t}</td><td>${apps}</td></tr>`);
                 }
             },
             onerror:  function(response) {
