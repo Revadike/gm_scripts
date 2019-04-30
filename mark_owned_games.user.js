@@ -14,11 +14,11 @@
 // @include     https://www.fanatical.com/en/bundle/*
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http://wtfprice.ru*
-// @include     http://167.88.168.94/*
+// @include     http://66.154.108.170/*
 // @include     https://www.youshangames.com/wholesale-center.html*
 // @include     http://bundle.ccyycn.com/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2019.03.12.1
+// @version     2019.04.30.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net

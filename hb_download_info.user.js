@@ -9,7 +9,7 @@
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @connect     steamdb.info
-// @version     2019.04.03.1
+// @version     2019.04.30.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -92,7 +92,7 @@ if (m){
                     var j = ++i;
                     id = item.machine_name;
                     var king = item.human_name.replace(/ /g, '+').replace(/[^a-z0-9+]/ig, '');
-                    $('#reg').append(`<tr><td>${j}</td><td>${id}</td><td>${app}</td><td>${sub}</td>${exc}${dis}<td><a target=_blank href="http://167.88.168.94/king.php?q=${king}">KING</a></td></tr>`);
+                    $('#reg').append(`<tr><td>${j}</td><td>${id}</td><td>${app}</td><td>${sub}</td>${exc}${dis}<td><a target=_blank href="http://66.154.108.170/king.php?q=${king}">KING</a></td></tr>`);
                     var key = item.redeemed_key_val ? item.redeemed_key_val : '';
                     var human = item.human_name;
                     sub = '';

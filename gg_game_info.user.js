@@ -4,7 +4,7 @@
 // @description gamersgate steam game info
 // @include     https://*.gamersgate.com/internal-apis/site/product_list*
 // @icon        http://steamcommunity.com/favicon.ico
-// @version     2017.11.28.1
+// @version     2019.04.30.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -22,8 +22,8 @@ if (/₽/.exec(document.body.innerText))
     cc= 'ru';
 $('.stdlist').before('<div id="g"></div>');
 var i = 1;
-$('#g').append('<form id="f" action="http://167.88.168.94/gg.php?q=list" method="post" target="_blank"></form>');
-$('#g').append('<form id="v" action="http://167.88.168.94/gg.php?q=sale&cc=' + cc + '" method="post" target="_blank"></form>');
+$('#g').append('<form id="f" action="http://66.154.108.170/gg.php?q=list" method="post" target="_blank"></form>');
+$('#g').append('<form id="v" action="http://66.154.108.170/gg.php?q=sale&cc=' + cc + '" method="post" target="_blank"></form>');
 $('li').each(function(){
     var dv = $(this).find('div');
     var sale = -1;

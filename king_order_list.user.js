@@ -5,13 +5,13 @@
 // @include     https://www.kinguin.net/customer/operation/index/dir/desc/order/payout_availability/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/king_order_list.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/king_order_list.user.js
-// @version     2018.09.17.1
+// @version     2019.04.30.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_addStyle
 // ==/UserScript==
 
-$('#my-operations-table').before(`<form id="f" action="http://167.88.168.94/kod.php" method="post" target="_blank"></form>`);
+$('#my-operations-table').before(`<form id="f" action="http://66.154.108.170/kod.php" method="post" target="_blank"></form>`);
 $('#my-operations-table').before('<table id="a"></table><table id="b"></table>');
 var i = 1;
 

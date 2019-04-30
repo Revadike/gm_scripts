@@ -17,7 +17,7 @@
 // @exclude     https://tryit-forfree.rhcloud.com/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bundle_info.user.js
-// @version     2019.02.19.1
+// @version     2019.04.30.1
 // @run-at      document-end
 // @connect     free.currencyconverterapi.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
@@ -80,7 +80,7 @@ if (match) {
 match = /operation_activities\/(\d+)/.exec(document.URL);
 if (match) {
     $('#nav_bar').append('<li><a id="btn">INFO</a></li>');
-    $('#nav_bar').append('<li><a target="_blank" href="http://167.88.168.94/sonkwo.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a></li>');
+    $('#nav_bar').append('<li><a target="_blank" href="http://66.154.108.170/sonkwo.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a></li>');
     $('.firm-game').after('<div id="limit"></div><br>');
     $('.firm-game').after('<table id="info"></table>');
     $('#btn').click(function () {
@@ -165,7 +165,7 @@ if (match) {
 match = /sonkwo.com\/store\/search/.exec(document.URL);
 if (match) {
     setTimeout(function () {
-        var url = 'http://167.88.168.94/sonkwo.php?o=html';
+        var url = 'http://66.154.108.170/sonkwo.php?o=html';
         var k = /tag%5B%5D=(\d+)/.exec(document.URL);
         var q = '';
         if (k)
@@ -191,7 +191,7 @@ match = /directg.net\/event/.exec(document.URL);
 if (match) {
     $('.navbar-nav').append('<li class="mega" data-level="1"><a itemprop="url" id="btn">INFO</a></li>');
     $('#system-message-container').append('<div>实时汇率：<span id="ratio">0</ratio></div>');
-    $('#system-message-container').append('<a target="_blank" href="http://167.88.168.94/dg.php?v=0">TRY IT</a>');
+    $('#system-message-container').append('<a target="_blank" href="http://66.154.108.170/dg.php?v=0">TRY IT</a>');
     $('#system-message-container').append('<table id="info"></table>');
     $('#btn').click(function () {
         $('#info').empty();

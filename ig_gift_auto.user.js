@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         ig_gift_auto
 // @namespace    http://tampermonkey.net/
-// @version      2018.10.16.1
+// @version      2019.04.30.1
 // @description  ig gift auto
 // @author       jacky
-// @include     http://167.88.168.94/ig_sale.html
+// @include     http://66.154.108.170/ig_sale.html
 // @include     http://steamcn.edu.pl/ig_sale.html
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_gift_auto.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_gift_auto.user.js

@@ -156,14 +156,13 @@ unsafeWindow.free = function(){
                     }
                     else{
                         a.push(b);
-                        //$('#b').append(`<tr><td>${j++}</td><td><a href="https://steamdb.info/sub/${b}/">${t}</a></td><td id="${b}"></td></tr>`);
+                        $('#b').append(`<tr><td>${j++}</td><td><a href="https://steamdb.info/sub/${b}/">${t}</a></td><td id="${b}"></td></tr>`);
                     }
                 }
             });
 
-            $('#su').append(a.join(','));
-
-            /*
+            a.slice(0, 49);
+            //$('#su').append(a.join(','));
             $.each(a, function (k, v) {
                 var j = k;
                 var b = v;
@@ -190,9 +189,7 @@ unsafeWindow.free = function(){
                         $(`#${b}`).append(status);
                     }
                 });
-
             });
-            */
         },
         onerror:  function(response) {
             alert(response.statusText);

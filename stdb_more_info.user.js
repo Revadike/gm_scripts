@@ -11,7 +11,7 @@
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       unsafeWindow
-// @version     2019.03.26.1
+// @version     2019.04.30.1
 // @run-at      document-end
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -37,7 +37,7 @@ if (/freepackages/.exec(document.URL)){
     var p = $('.package');
     if (p.length > 0){
         $('.app-links').append('<a id="cmp">Cmp</a>');
-        $('.app-links').append('<a id="pkg" target="_target" href="http://167.88.168.94/package.php?id=' + m[2] + '">Pkg</a>');
+        $('.app-links').append('<a id="pkg" target="_target" href="http://66.154.108.170/package.php?id=' + m[2] + '">Pkg</a>');
         $('.app-links').append('<a id="help" target="_target" href="https://help.steampowered.com/en/wizard/HelpWithGameIssue/?issueid=123&appid=' + m[2] + '">Help</a>');
         p.each(function(){
             var id = $(this).attr('data-subid');
@@ -69,7 +69,7 @@ unsafeWindow.comp = function(a) {
     $('#b').empty();
     $('#g').empty();
     $('#p').empty();
-    //window.open('http://167.88.168.94/sub.php?cc=cn&o=1&q=' + a.join(','));
+    //window.open('http://66.154.108.170/sub.php?cc=cn&o=1&q=' + a.join(','));
     var d = {};
     var f = [];
     var g = {};

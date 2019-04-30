@@ -10,7 +10,7 @@
 // @include     http*://gamazavr.ru/orders/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/yuplay_info.user.js
-// @version     2018.10.15.1
+// @version     2019.04.30.1
 // @run-at      document-end
 // @connect     free.currencyconverterapi.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
@@ -32,7 +32,7 @@ var match = /ru\/news\/(\d+)/.exec(document.URL);
 if (match) {
     $($('.navi').children() [0]).append('<li><a id="btn">INFO</a></li>');
     $('.section-main').append('<div>实时汇率：<span id="r"></ratio></div>');
-    $('.section-main').append('<a target="_blank" href="http://167.88.168.94/yuplay.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a>');
+    $('.section-main').append('<a target="_blank" href="http://66.154.108.170/yuplay.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a>');
     $('.section-main').append('<table id="info"></table>');
     $('#btn').click(function () {
         $('#info').empty();
