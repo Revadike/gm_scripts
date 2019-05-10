@@ -11,7 +11,7 @@
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       unsafeWindow
-// @version     2019.04.30.1
+// @version     2019.05.10.1
 // @run-at      document-end
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -46,6 +46,7 @@ if (/freepackages/.exec(document.URL)){
         $('.tab-content').after('<table class="table table-bordered" id="g"></table>');
         $('.tab-content').after('<table class="table table-bordered" id="b"></table>');
         $('.tab-content').after('<table class="table table-bordered" id="p"></table>');
+        $('.tab-content').after('<div id="l"></div>');
     }
 
     $('.app').each(function(){
@@ -69,7 +70,8 @@ unsafeWindow.comp = function(a) {
     $('#b').empty();
     $('#g').empty();
     $('#p').empty();
-    //window.open('http://66.154.108.170/sub.php?cc=cn&o=1&q=' + a.join(','));
+    $('#l').empty();
+    $('#l').append(`<a target=_blank href="http://66.154.108.170/sub.php?cc=cn&o=1&q=${a.join(',')}">cmp</a>`);
     var d = {};
     var f = [];
     var g = {};

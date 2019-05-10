@@ -9,7 +9,7 @@
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/hb_download_info.user.js
 // @connect     steamdb.info
-// @version     2019.04.30.1
+// @version     2019.05.10.1
 // @run-at      document-end
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @grant       GM_xmlhttpRequest
@@ -32,18 +32,19 @@ if (m){
     $('.download-mosaic').hide();
     $('.site-footer').hide();
     $('#spiel').hide();
-    $('#headertext').append('<table id="reg"></table>');
-    $('#headertext').append('<table id="reg2"></table>');
-    $('#headertext').append('<table id="reg3"></table>');
-    $('#headertext').append('<div id="info2" class="d"></div>');
-    $('#headertext').append('<div><a id="r">LOCK</a></div>');
-    $('#headertext').append('<div><a id="btn">INFO</a></div>');
-    $('#headertext').append('<div><a id="key">KEYS</a></div>');
-    $('#headertext').append('<div><a id="gift">GIFT</a></div>');
-    $('#headertext').append('<table id="info"></table>');
-    $('#headertext').append('<div id="info3" class="d"></div>');
-    $('#headertext').append('<div><a id="p">COPY</a></div>');
-    $('#headertext').append('<div><a id="region">REGION</a></div>');
+    $('.papers-content').append('<div id="zo"></div>');
+    $('#zo').append('<table id="reg"></table>');
+    $('#zo').append('<table id="reg2"></table>');
+    $('#zo').append('<table id="reg3"></table>');
+    $('#zo').append('<div id="info2" class="d"></div>');
+    $('#zo').append('<div><a id="r">LOCK</a></div>');
+    $('#zo').append('<div><a id="btn">INFO</a></div>');
+    $('#zo').append('<div><a id="key">KEYS</a></div>');
+    $('#zo').append('<div><a id="gift">GIFT</a></div>');
+    $('#zo').append('<table id="info"></table>');
+    $('#zo').append('<div id="info3" class="d"></div>');
+    $('#zo').append('<div><a id="p">COPY</a></div>');
+    $('#zo').append('<div><a id="region">REGION</a></div>');
 
     m = /key=([0-9A-Z]+)/i.exec(document.URL);
     var id = m[1];
