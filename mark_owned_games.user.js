@@ -17,8 +17,9 @@
 // @include     http://66.154.108.170/*
 // @include     https://www.youshangames.com/wholesale-center.html*
 // @include     http://bundle.ccyycn.com/*
+// @include     https://www.steamgifts.com/discussion/Infm8/*
 // @exclude     https://steamcn.com/forum.php
-// @version     2019.04.30.1
+// @version     2019.05.11.1
 // @run-at      document-end
 // @connect     store.steampowered.com
 // @connect     steamcardexchange.net

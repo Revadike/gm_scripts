@@ -5,7 +5,7 @@
 // @include     https://help.steampowered.com/en/wizard/HelpWithGame/*appid=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_package.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_package.user.js
-// @version     2019.05.10.1
+// @version     2019.05.11.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant unsafeWindow
@@ -14,7 +14,8 @@
 var m = /appid=(\d+)/.exec(document.URL);
 var app = m[1];
 $('.help_purchase_detail_box').after('<div><a href="javascript:void(0);" onclick="addman();">ADD</a></div>');
-$('.help_purchase_detail_box').after('<div><a href="javascript:void(0);" onclick="rmman();">RMV</a></div>');
+$('.help_purchase_detail_box').after('<div><a href="javascript:void(0);" onclick="rmman();">REMOVE</a></div>');
+$('.help_purchase_detail_box').after('<div><a href="javascript:void(0);" onclick="rmman();">RESTORE</a></div>');
 var hp = $('#wizard_perf_data');
 if (hp.length > 0){
     $('.help_section_medium_header').after('<div id="a"></div>');
@@ -119,6 +120,35 @@ unsafeWindow.rmman = function() {
                 sessionid: g_sessionID,
                 wizard_ajax: 1
             },
+            success: function( data, status, xhr ){
+                // {"success":false,"errorMsg":"There was an unexpected error removing this product from your account."}
+                // {"success":true,"hash":"HelpPackageRemoved?appid=15700&packageid=88110"}
+                if (data.success){
+                    alert(data.hash);
+                } else {
+                    alert(data.errorMsg);
+                }
+            },
+            fail: function( data, status, xhr ){
+                alert(status);
+            }
+        });
+    };
+};
+
+unsafeWindow.restoreman = function() {
+    var sub = prompt( 'Enter subID that you want to restore:' );
+    if ( sub !== null ) {
+        $.ajax({
+            url: '/en/wizard/AjaxDoPackageRestore',
+            type: "POST",
+            dataType : 'json',
+        data: {
+            packageid: a,
+            appid: app,
+            sessionid: g_sessionID,
+            wizard_ajax: 1
+        },
             success: function( data, status, xhr ){
                 // {"success":false,"errorMsg":"There was an unexpected error removing this product from your account."}
                 // {"success":true,"hash":"HelpPackageRemoved?appid=15700&packageid=88110"}

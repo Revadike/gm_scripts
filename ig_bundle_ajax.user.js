@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2019.04.30.1
+// @version     2019.05.11.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
@@ -15,6 +15,7 @@
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_setClipboard
+// @grant unsafeWindow
 // ==/UserScript==
 
 GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
@@ -31,9 +32,13 @@ if (how.length > 0){
     how.after('&#9;<button id="cpasf">AGISO</button>');
     how.after('&#9;<button id="cpgrid">CPGRID</button>');
     how.after('<button id="redeem">KEYS</button>');
+    how.after('<div><input id="p" type=text /></div>');
+    showkey();
+
     $('#redeem').click(function () {
-        showkey();
+        $('.fn').click();
     });
+
     $('#cpgrid').click(function () {
         var txt = '';
         $('#area tr').each(function(){
@@ -44,6 +49,7 @@ if (how.length > 0){
         });
         GM_setClipboard(txt);
     });
+
     $('#cpasf').click(function () {
         var txt = '';
         $('#area2 div').each(function(){
@@ -52,6 +58,7 @@ if (how.length > 0){
         txt += `********************{r}【ASF格式】{r}{r}!redeem ${keys.join(',')}`;;
         GM_setClipboard(txt);
     });
+
     $('#cpasf2').click(function () {
         var txt = '';
         $('#area2 div').each(function(){
@@ -113,27 +120,59 @@ function showkey()
             var k = $(this).find('.input-block-level')[0];
             var key = k.value;
             keys.push(key);
-            $('#area').append(`<tr><td><a href="http://store.steampowered.com/${ma[0]}/">${steam.text()}</a></td><td class="${id}">${key}</td><td>${i}</td><td>${t}</td></tr>`);
-            $('#area2').append(`<div>【${i++}】【${steam.text()}】 <span class="${id}">${key}</span></div>`);
             var code = '';
             var m = /serial_n_([A-F0-9]+)/.exec(k.id);
-            if (m){
+            if (m)
                 code = m[1];
-                var link = `https://www.indiegala.com/myserials/syncget?code=${code}&cache=false&productId=${id}`;
-                if (key.length == 0) {
-                    $.getJSON(link, function (data) {
-                        if (data.status == 'success') {
-                            keys.push(key);
-                            k.value = data.serial_number;
-                            $('.'+id).append(data.serial_number);
-                            $('<input value=' + data.entity_id + '/>').insertAfter($(input));
-                        } else {
-                            $('.'+id).append(data.status);
-                        }
-                    });
-                }
+            $('#area').append(`<tr><td><a href="http://store.steampowered.com/${ma[0]}/">${steam.text()}</a></td><td class="${id}">${key}</td><td><a class="fn" href="javascript:void(0);" onclick="fetchkey(\'${code}\', ${id}, \'${key}\', '');">${i}</a></td><td>${t}</td></tr>`);
+            $('#area2').append(`<div>【${i++}】【${steam.text()}】 <span class="${id}">${key}</span></div>`);
+            /*
+            if (key.length == 0)
+                fetchkey(code, id, '');
+            */
+        }
+    });
+}
+
+unsafeWindow.fetchkey = function(code, id, key, pass)
+{
+    pass = $('#p').val();
+    $('.'+id).empty();
+    if (key)
+        return;
+    // {"status": "passcheck", "serial_number": ""}
+    // {"status": "passcheck_failed", "serial_number": ""}
+    $.ajax({
+        url: '/myserials/syncget',
+        type: "GET",
+        dataType : 'json',
+        data: {code: code,
+               cache: false,
+               productId: id,
+               passCode: pass
+              },
+    }).done(function(data){
+        if(data.status){
+            switch (data.status){
+                case 'success':
+                    $('#p').val('');
+                    //keys.push(key);
+                    //k.value = data.serial_number;
+                    $('.'+id).append(data.serial_number);
+                    //$('<input value=' + data.entity_id + '/>').insertAfter($(input));
+                    break;
+                case 'passcheck':
+                    break;
+                case 'passcheck_failed':
+                    $('.'+id).append(data.status);
+                    break;
+                default:
+                    $('.'+id).append(data.status);
+                    break;
             }
         }
+    }).fail(function(data){
+        alert('error-key');
     });
 }
 

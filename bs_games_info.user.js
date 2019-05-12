@@ -4,9 +4,10 @@
 // @description bs_games_info
 // @include     https://www.fanatical.com/en/game/*
 // @include     https://www.fanatical.com/en/bundle/*
+//@include      https://www.fanatical.com/en/pick-and-mix/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/bs_games_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/bs_games_info.user.js
-// @version     2018.09.18.1
+// @version     2019.03.30.1
 // @run-at      document-end
 // @connect     free.currencyconverterapi.com
 // @require     http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
@@ -183,6 +184,50 @@ unsafeWindow.api = function(){
                         });
                     });
                 }
+            },
+            error: function(data){
+            }
+        });
+    }
+
+    m = /pick-and-mix\/([^\/]+)/.exec(document.URL);
+    if (m) {
+        if ($('#b').length > 0)
+            $('#b').empty();
+        else{
+            d = $('.pnm-details-container');
+            if (d.length == 0)
+                d = $('.product-commerce-container');
+            $(d[0]).append('<div class="col-12 col-md-6 col-lg-12"><div class="p-3 pl-md-1 pl-lg-3 card-body"><table><tr id="b"></tr></table></div></div>');
+        }
+        $.ajax({
+            url: `/api/promotions/${m[1]}`,
+            type: "GET",
+            success: function(data){
+                $.each(data, function(key, val) {
+                    $('#b').append(`<td id="${key}"></td>`);
+                    var kv = `#${key}`;
+                    var t = (new Date(val.valid_from)).toLocaleString();
+                    $(kv).append(`<div>起始：${t}</div>`);
+                    t = (new Date(val.valid_until)).toLocaleString();
+                    $(kv).append(`<div>截止：${t}</div>`);
+
+                    $.each(val.products, function(k, v) {
+                        if (v.steam){
+                            var sub = v.steam.sub ? 'sub' : 'app';
+                            var id = v.steam.id;
+                            $(kv).append(`<div>${k+1}.&nbsp;<a target=_blank href="https://steamdb.info/${sub}/${id}/">${v.name}</a>&nbsp;<a target=_blank href="https://steamdb.info/${sub}/${id}/">i</a></div>`);
+                        } else
+                            $(kv).append(`<div>${k+1}.&nbsp;${v.name}</div>`);
+                    });
+                    $(kv).append(`<table id="c${key}" style="text-align:right"><tr><td>货币</td><td>现价</td><td>折算</td></tr></table>`);
+                    $.each(val.price, function(k, v) {
+                        var s = v / 100;
+                        var l = ratio(k, 'CNY');
+                        l = (s * l).toFixed(2);
+                        $('#c'+key).append(`<tr><td>${k}</td><td>${s}</td><td>${l}</td></tr>`);
+                    });
+                });
             },
             error: function(data){
             }
