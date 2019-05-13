@@ -6,7 +6,7 @@
 // @grant unsafeWindow
 // @updateURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
-// @version     2019.03.13.1
+// @version     2019.05.13.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @connect     steamdb.info
@@ -22,7 +22,8 @@ $('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascrip
 $('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:void(0);" onclick="free();" style="float: right;"><span>Free</span></a>');
 $('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:void(0);" onclick="err();" style="float: right;"><span>Err</span></a>');
 $('#box').append('<a class="btnv6_blue_hoverfade btn_small_tall" href="javascript:void(0);" onclick="userdata();" style="float: right;"><span>USER</span></a>');
-$('#box').append('<span id="su"></span>');
+$('#box').append('<div id="su"></div>');
+$('#box').append('<table id="info"></table>');
 
 var ignoredApps = {};
 var ownedApps = {};
@@ -32,26 +33,32 @@ var success = {};
 var error = [];
 
 unsafeWindow.addman = function() {
-    var sID = prompt( 'Enter Free subID to add to account:' );
-    if ( sID !== null ) {
-        $.ajax( {
-            type: 'POST',
-            dataType: 'text',
-            url: '//store.steampowered.com/checkout/addfreelicense',
-            data: {
-                action: 'add_to_cart',
-                sessionid: g_sessionID,
-                subid: sID
-            },
-            success:function(result){
-                var r = $(result).find('.add_free_content_success_area p:first,.error');
-                if (r.length > 0) {
-                    alert($(r).text());
+    $('#info').empty();
+    var text = prompt( 'Enter Free SUBs to add to account:' );
+    if ( text !== null ) {
+        $.each(text.split(','), function (k, v) {
+            var id = v;
+            if (k > 49)
+                return false;
+            $('#info').append(`<tr><td>${k}</td><td>${id}</td><td id="${id}"></td></tr>`);
+            $.ajax( {
+                type: 'POST',
+                dataType: 'text',
+                url: '//store.steampowered.com/checkout/addfreelicense',
+                data: {
+                    action: 'add_to_cart',
+                    sessionid: g_sessionID,
+                    subid: id
+                },
+                success:function(result){
+                    var r = $(result).find('.add_free_content_success_area p:first,.error');
+                    if (r.length > 0)
+                        $('#'+id).append($(r).text());
+                },
+                error:function(xhr,status,error){
+                    $('#'+id).append(status);
                 }
-            },
-            error:function(xhr,status,error){
-                alert(status);
-            }
+            });
         });
     };
 };

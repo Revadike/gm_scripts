@@ -11,7 +11,7 @@
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       unsafeWindow
-// @version     2019.05.10.1
+// @version     2019.05.13.1
 // @run-at      document-end
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -22,13 +22,15 @@ var rgOwnedPackages = GM_getValue("rgOwnedPackages", "[]");
 var rgOwnedApps = GM_getValue("rgOwnedApps", "[]");
 
 if (/freepackages/.exec(document.URL)){
-    $('h1').after('<table id="b"></table>');
+    $('h1').after('<div id="b"></div>');
     $('h1').after('<a id="rm">REMOVE</a>');
     $('#rm').click(function(){
         $('.package').each(function(){
             //$('#b').append('<tr><td>'+ $(this).attr('data-subid') + '</td><td>' + $(this).attr('data-appid') + '</td><td>' +  '</td></tr>');
             if (/Trailer|Demo|Trial/ig.exec($(this).html())){
                 $(this).children('button').click();
+            } else {
+                $('#b').append($(this).attr('data-subid')+',');
             }
         });
     });
