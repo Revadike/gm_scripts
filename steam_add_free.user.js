@@ -6,7 +6,7 @@
 // @grant unsafeWindow
 // @updateURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
 // @downloadURL https://github.com/rusania/gm_scipts/raw/master/steam_add_free.user.js
-// @version     2019.05.13.1
+// @version     2019.05.14.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @connect     steamdb.info
@@ -33,12 +33,26 @@ var success = {};
 var error = [];
 
 unsafeWindow.addman = function() {
+    var n = Date.now();
+    var d = GM_getValue("last_upd", 0) + 61 * 60 * 1000;
+    var q = GM_getValue("last_add", 0);
+    if (n < d){
+        if (q > 49){
+            alert(new Date(d));
+            return;
+        }
+    } else {
+        q = 0;
+        GM_setValue("last_add", 0);
+    }
     $('#info').empty();
     var text = prompt( 'Enter Free SUBs to add to account:' );
     if ( text !== null ) {
+        GM_setValue("last_upd", n);
         $.each(text.split(','), function (k, v) {
             var id = v;
-            if (k > 49)
+            GM_setValue("last_add", q++);
+            if (k > 49 || q > 50)
                 return false;
             $('#info').append(`<tr><td>${k}</td><td>${id}</td><td id="${id}"></td></tr>`);
             $.ajax( {
@@ -62,6 +76,7 @@ unsafeWindow.addman = function() {
         });
     };
 };
+
 
 unsafeWindow.userdata = function() {
     $.ajax( {
