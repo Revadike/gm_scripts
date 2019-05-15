@@ -11,7 +11,7 @@
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       unsafeWindow
-// @version     2019.05.13.1
+// @version     2019.05.15.1
 // @run-at      document-end
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -22,17 +22,29 @@ var rgOwnedPackages = GM_getValue("rgOwnedPackages", "[]");
 var rgOwnedApps = GM_getValue("rgOwnedApps", "[]");
 
 if (/freepackages/.exec(document.URL)){
+    $('h1').after('<form id="f" action="http://66.154.108.170/dbfree.php" method="post" target="_blank"></form>');
     $('h1').after('<div id="b"></div>');
+    $('h1').after('<div id="c"></div>');
+    $('h1').after('<table id="d"></table>');
     $('h1').after('<a id="rm">REMOVE</a>');
+
     $('#rm').click(function(){
+        $('#b').empty();
+        $('#c').empty();
+        $('#d').empty();
         $('.package').each(function(){
-            //$('#b').append('<tr><td>'+ $(this).attr('data-subid') + '</td><td>' + $(this).attr('data-appid') + '</td><td>' +  '</td></tr>');
+            var sub = $(this).attr('data-subid');
+            var app = $(this).attr('data-appid');
+            var parent = $(this).attr('data-parent');
+            $('#f').append(`<input type="hidden" name="${sub}" value="${app},${parent}" />`);
             if (/Trailer|Demo|Trial/ig.exec($(this).html())){
-                $(this).children('button').click();
+                $('#c').append(sub+',');
             } else {
+                $('#d').append(`<tr><td>${sub}</td><td>${app}</td><td>${parent}</td><td>${$(this).text()}</td></tr>`);
                 $('#b').append($(this).attr('data-subid')+',');
             }
         });
+        $('#f').append('<input type="submit" value="Submit" />');
     });
 } else {
     var m = /(sub|app)\/(\d+)/.exec(document.URL);
