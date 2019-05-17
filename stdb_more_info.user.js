@@ -11,7 +11,7 @@
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       unsafeWindow
-// @version     2019.05.15.1
+// @version     2019.05.16.1
 // @run-at      document-end
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -22,7 +22,6 @@ var rgOwnedPackages = GM_getValue("rgOwnedPackages", "[]");
 var rgOwnedApps = GM_getValue("rgOwnedApps", "[]");
 
 if (/freepackages/.exec(document.URL)){
-    $('h1').after('<form id="f" action="http://66.154.108.170/dbfree.php" method="post" target="_blank"></form>');
     $('h1').after('<div id="b"></div>');
     $('h1').after('<div id="c"></div>');
     $('h1').after('<table id="d"></table>');
@@ -32,18 +31,21 @@ if (/freepackages/.exec(document.URL)){
         $('#b').empty();
         $('#c').empty();
         $('#d').empty();
+        var ip = [];
         $('.package').each(function(){
             var sub = $(this).attr('data-subid');
             var app = $(this).attr('data-appid');
             var parent = $(this).attr('data-parent');
-            $('#f').append(`<input type="hidden" name="${sub}" value="${app},${parent}" />`);
+            ip.push(`${sub},${app},${parent}`);
             if (/Trailer|Demo|Trial/ig.exec($(this).html())){
                 $('#c').append(sub+',');
             } else {
-                $('#d').append(`<tr><td>${sub}</td><td>${app}</td><td>${parent}</td><td>${$(this).text()}</td></tr>`);
-                $('#b').append($(this).attr('data-subid')+',');
+                //$('#d').append(`<tr><td>${sub}</td><td>${app}</td><td>${parent}</td><td>${$(this).text()}</td></tr>`);
+                $('#b').append(sub+',');
             }
         });
+        $('h1').after('<form id="f" action="http://66.154.108.170/dbfree.php" method="post" target="_blank"></form>');
+        $('#f').append(`<input type="hidden" name="ip" value="${ip.join(';')}" />`);
         $('#f').append('<input type="submit" value="Submit" />');
     });
 } else {
@@ -51,8 +53,8 @@ if (/freepackages/.exec(document.URL)){
     var p = $('.package');
     if (p.length > 0){
         $('.app-links').append('<a id="cmp">Cmp</a>');
-        $('.app-links').append('<a id="pkg" target="_target" href="http://66.154.108.170/package.php?id=' + m[2] + '">Pkg</a>');
-        $('.app-links').append('<a id="help" target="_target" href="https://help.steampowered.com/en/wizard/HelpWithGameIssue/?issueid=123&appid=' + m[2] + '">Help</a>');
+        $('.app-links').append(`<a id="pkg" target="_target" href="http://66.154.108.170/package.php?id=${m[2]}">Pkg</a>`);
+        $('.app-links').append(`<a id="help" target="_target" href="https://help.steampowered.com/en/wizard/HelpWithGame/?appid=${m[2]}">Help</a>`);
         p.each(function(){
             var id = $(this).attr('data-subid');
             $(this).append('<td><input type="checkbox" value="' + id + '">sub/' + id + '</td>');

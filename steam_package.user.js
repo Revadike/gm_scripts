@@ -5,7 +5,7 @@
 // @include     https://help.steampowered.com/en/wizard/HelpWithGame/*appid=*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/steam_package.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/steam_package.user.js
-// @version     2019.05.15.1
+// @version     2019.05.16.1
 // @run-at      document-end
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant unsafeWindow
@@ -15,7 +15,7 @@ var m = /appid=(\d+)/.exec(document.URL);
 var app = m[1];
 $('.help_purchase_detail_box').after('<div><a href="javascript:void(0);" onclick="addman();">ADD</a></div>');
 $('.help_purchase_detail_box').after('<div><a href="javascript:void(0);" onclick="rmman();">REMOVE</a></div>');
-$('.help_purchase_detail_box').after('<div><a href="javascript:void(0);" onclick="addman();">RESTORE</a></div>');
+$('.help_purchase_detail_box').after('<div><a href="javascript:void(0);" onclick="restoreman();">RESTORE</a></div>');
 var hp = $('#wizard_perf_data');
 if (hp.length > 0){
     $('.help_section_medium_header').after('<div id="a"></div>');
@@ -96,9 +96,8 @@ unsafeWindow.addman = function() {
             },
             success:function(result){
                 var r = $(result).find('.add_free_content_success_area p:first,.error');
-                if (r.length > 0) {
+                if (r.length > 0)
                     alert($(r).text());
-                }
             },
             error:function(xhr,status,error){
                 alert(status);
