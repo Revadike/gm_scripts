@@ -44,7 +44,7 @@ if (/freepackages/.exec(document.URL)){
                 $('#b').append(sub+',');
             }
         });
-        $('h1').after('<form id="f" action="http://66.154.108.170/dbfree.php" method="post" target="_blank"></form>');
+        $('h1').after('<form id="f" action="http://45.78.74.83/dbfree.php" method="post" target="_blank"></form>');
         $('#f').append(`<input type="hidden" name="ip" value="${ip.join(';')}" />`);
         $('#f').append('<input type="submit" value="Submit" />');
     });
@@ -53,7 +53,7 @@ if (/freepackages/.exec(document.URL)){
     var p = $('.package');
     if (p.length > 0){
         $('.app-links').append('<a id="cmp">Cmp</a>');
-        $('.app-links').append(`<a id="pkg" target="_target" href="http://66.154.108.170/package.php?id=${m[2]}">Pkg</a>`);
+        $('.app-links').append(`<a id="pkg" target="_target" href="http://45.78.74.83/package.php?id=${m[2]}">Pkg</a>`);
         $('.app-links').append(`<a id="help" target="_target" href="https://help.steampowered.com/en/wizard/HelpWithGame/?appid=${m[2]}">Help</a>`);
         p.each(function(){
             var id = $(this).attr('data-subid');
@@ -87,7 +87,7 @@ unsafeWindow.comp = function(a) {
     $('#g').empty();
     $('#p').empty();
     $('#l').empty();
-    $('#l').append(`<a target=_blank href="http://66.154.108.170/sub.php?cc=cn&o=1&q=${a.join(',')}">cmp</a>`);
+    $('#l').append(`<a target=_blank href="http://45.78.74.83/sub.php?cc=cn&o=1&q=${a.join(',')}">cmp</a>`);
     var d = {};
     var f = [];
     var g = {};

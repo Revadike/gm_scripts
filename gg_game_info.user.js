@@ -22,8 +22,8 @@ if (/₽/.exec(document.body.innerText))
     cc= 'ru';
 $('.stdlist').before('<div id="g"></div>');
 var i = 1;
-$('#g').append('<form id="f" action="http://66.154.108.170/gg.php?q=list" method="post" target="_blank"></form>');
-$('#g').append('<form id="v" action="http://66.154.108.170/gg.php?q=sale&cc=' + cc + '" method="post" target="_blank"></form>');
+$('#g').append('<form id="f" action="http://45.78.74.83/gg.php?q=list" method="post" target="_blank"></form>');
+$('#g').append('<form id="v" action="http://45.78.74.83/gg.php?q=sale&cc=' + cc + '" method="post" target="_blank"></form>');
 $('li').each(function(){
     var dv = $(this).find('div');
     var sale = -1;

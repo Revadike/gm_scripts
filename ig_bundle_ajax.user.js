@@ -227,7 +227,7 @@ function showgift()
         var m = /id=(\d+)/.exec(document.URL);
         if (m)
             s = m[1];
-        bk.append(`<form id="f" action="http://66.154.108.170/ig_sale.php?c=gift&s=${s}&d=${dt}" method="post" target="_blank"></form>`);
+        bk.append(`<form id="f" action="http://45.78.74.83/ig_sale.php?c=gift&s=${s}&d=${dt}" method="post" target="_blank"></form>`);
         $('#area_gifts tr').each(function () {
             var t = $(this).find('td');
             var g = '';

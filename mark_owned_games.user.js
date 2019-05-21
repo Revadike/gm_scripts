@@ -14,7 +14,7 @@
 // @include     https://www.fanatical.com/en/bundle/*
 // @include     https://www.indiegala.com/gift?gift_id=*
 // @include     http://wtfprice.ru*
-// @include     http://66.154.108.170/*
+// @include     http://45.78.74.83/*
 // @include     https://www.youshangames.com/wholesale-center.html*
 // @include     http://bundle.ccyycn.com/*
 // @include     https://www.steamgifts.com/discussion/Infm8/*

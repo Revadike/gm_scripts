@@ -32,7 +32,7 @@ var match = /ru\/news\/(\d+)/.exec(document.URL);
 if (match) {
     $($('.navi').children() [0]).append('<li><a id="btn">INFO</a></li>');
     $('.section-main').append('<div>实时汇率：<span id="r"></ratio></div>');
-    $('.section-main').append('<a target="_blank" href="http://66.154.108.170/yuplay.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a>');
+    $('.section-main').append('<a target="_blank" href="http://45.78.74.83/yuplay.php?o=html&cc=cn&n='+ match[1] +'">TRY IT</a>');
     $('.section-main').append('<table id="info"></table>');
     $('#btn').click(function () {
         $('#info').empty();

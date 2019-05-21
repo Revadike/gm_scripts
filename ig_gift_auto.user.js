@@ -4,7 +4,7 @@
 // @version      2019.04.30.1
 // @description  ig gift auto
 // @author       jacky
-// @include     http://66.154.108.170/ig_sale.html
+// @include     http://45.78.74.83/ig_sale.html
 // @include     http://steamcn.edu.pl/ig_sale.html
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_gift_auto.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_gift_auto.user.js

@@ -40,7 +40,7 @@ if (nv.length > 0){
         bl.before('<table id="bl"></table>');
         bl.before('<div><a id="ajax">AJAX</a></div>');
         bl.before('<div><a id="lib">LIB</a></div>');
-        bl.before(`<form id="f" action="http://66.154.108.170/ig_sale.php?c=sale&u=${uid}" method="post" target="_blank"></form>`);
+        bl.before(`<form id="f" action="http://45.78.74.83/ig_sale.php?c=sale&u=${uid}" method="post" target="_blank"></form>`);
         nv.each(function () {
             var id = $(this).attr('id');
             text = $(this).text()
@@ -54,7 +54,7 @@ if (nv.length > 0){
 $('#lib').click(function(){
     GM_xmlhttpRequest({
         method: 'GET',
-        url: 'http://66.154.108.170/ig_sale.php?c=ss&p=pf&q=' + uid,
+        url: 'http://45.78.74.83/ig_sale.php?c=ss&p=pf&q=' + uid,
         onload: function (response) {
             var data = JSON.parse(response.responseText);
             $.each(data, function (i, g) {
