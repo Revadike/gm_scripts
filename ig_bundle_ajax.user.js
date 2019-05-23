@@ -7,8 +7,9 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2019.05.11.1
+// @version     2019.05.23.1
 // @run-at      document-end
+// @grant       unsafeWindow
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
 // @grant       GM_log
 // @grant       GM_addStyle
@@ -32,8 +33,13 @@ if (how.length > 0){
     how.after('&#9;<button id="cpasf">AGISO</button>');
     how.after('&#9;<button id="cpgrid">CPGRID</button>');
     how.after('<button id="redeem">KEYS</button>');
+    how.after('<button id="show">SHOW</button>');
     how.after('<div><input id="p" type=text /></div>');
     showkey();
+
+    $("body").on('click', '#show', function(){
+        showkey();
+    });
 
     $('#redeem').click(function () {
         $('.fn').click();
@@ -43,7 +49,7 @@ if (how.length > 0){
         var txt = '';
         $('#area tr').each(function(){
             $(this).children('td').each(function(){
-                txt += $(this).text() + '\t';
+                txt += $.trim($(this).text()) + '\t';
             });
             txt += '\n';
         });
@@ -227,7 +233,7 @@ function showgift()
         var m = /id=(\d+)/.exec(document.URL);
         if (m)
             s = m[1];
-        bk.append(`<form id="f" action="http://45.78.74.83/ig_sale.php?c=gift&s=${s}&d=${dt}" method="post" target="_blank"></form>`);
+        bk.append(`<form id="f" action="http://66.154.108.170/ig_sale.php?c=gift&s=${s}&d=${dt}" method="post" target="_blank"></form>`);
         $('#area_gifts tr').each(function () {
             var t = $(this).find('td');
             var g = '';

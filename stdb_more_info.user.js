@@ -5,12 +5,11 @@
 // @author       jacky
 // @match        http*://steamdb.info/app/*
 // @match        http*://steamdb.info/sub/*
-// @match        http*://steamdb.info/freepackages*
 // @match        http*://steamdb.info/search/*
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/stdb_more_info.user.js
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
-// @version     2019.05.22.1
+// @version     2019.05.23.1
 // @connect     store.steampowered.com
 // @grant       unsafeWindow
 // @grant       GM_xmlhttpRequest
@@ -23,132 +22,28 @@
 var rgWishlist = GM_getValue("rgWishlist", "[]");
 var rgOwnedPackages = GM_getValue("rgOwnedPackages", "[]");
 var rgOwnedApps = GM_getValue("rgOwnedApps", "[]");
-var demo = [];
-var free = [];
-var g = '20be07c7364ab228374aa6b7';
 
-if (/freepackages/.exec(document.URL)){
-    GM_addStyle("table{border:solid 1px;border-collapse:collapse !important;}");
-    GM_addStyle("td{border:solid 1px;border-collapse:collapse;padding-left:5px;padding-right:5px;font-size:16px !important;}");
-    $('#freepackages').before('<div id="b"></div>');
-    $('#freepackages').before('<div id="c"></div>');
-    $('#freepackages').before('<table id="d"></table>');
-    $('h1').after('<input id="a1" type="button" value="Add" />');
-    $('h1').after('<input id="f1" type="button" value="Filter" />');
-
-    document.getElementById ("f1").addEventListener (
-        "click", filter, false
-    );
-
-    function addfreelicense(id, g) {
-        GM_xmlhttpRequest({
-            method: "POST",
-            url: "https://store.steampowered.com/checkout/addfreelicense",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "Origin": "https://store.steampowered.com",
-                "Sec-Fetch-Site": "same-origin",
-                "Accept": "text/plain, */*",
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
-            },
-            data: `action=add_to_cart&sessionid=${g}&subid=${id}`,
-            onload: function(response) {
-                var r = $(response.responseText).find('.add_free_content_success_area p:first,.error');
-                if (r.length > 0)
-                    $('#'+id).append($(r).text());
-            },
-            onerror:  function(response) {
-                $('#'+id).append(response.statusText);
-            },
-            ontimeout:  function(response) {
-                $('#'+id).append(response.statusText);
-            },
-        });
-    }
-
-    $("body").on('click', '#a1', function(){
-        $('#d').empty();
-        if (g){
-            var i = 1;
-            $.each(free, function(k, v){
-                if (i++ > 50)
-                    return false;
-                $('#d').append(`<tr><td>${k}</td><td>${v}</td><td id="${v}"></td></tr>`);
-                addfreelicense(v, g);
-            });
-            $.each(demo, function(k, v){
-                if (i++ > 50)
-                    return false;
-                $('#d').append(`<tr><td>${k}</td><td>${v}</td><td id="${v}"></td></tr>`);
-                addfreelicense(v, g);
-            });
-        } else {
-            GM_xmlhttpRequest({
-                method: "GET",
-                url: "https://store.steampowered.com/account/licenses/",
-                onload: function(response) {
-                    var m = /g_sessionID = "([a-z0-9]+)";/.exec(response.responseText);
-                    if (m)
-                        alert(m[1]);
-                },
-                onerror:  function(response) {
-                    alert(response.statusText);
-                },
-                ontimeout:  function(response) {
-                    alert(response.statusText);
-                },
-            });
-        }
+var m = /(sub|app)\/(\d+)/.exec(document.URL);
+var p = $('.package');
+if (p.length > 0){
+    $('.app-links').append('<a id="cmp">Cmp</a>');
+    $('.app-links').append(`<a id="pkg" target="_target" href="http://45.78.74.83/package.php?id=${m[2]}">Pkg</a>`);
+    $('.app-links').append(`<a id="help" target="_target" href="https://help.steampowered.com/en/wizard/HelpWithGame/?appid=${m[2]}">Help</a>`);
+    p.each(function(){
+        var id = $(this).attr('data-subid');
+        $(this).append('<td><input type="checkbox" value="' + id + '">sub/' + id + '</td>');
     });
-
-    function filter() {
-        $('#b').empty();
-        $('#c').empty();
-        $('#d').empty();
-        $('#f').remove();
-        demo = [];
-        free = [];
-        var ip = [];
-        $('.package').each(function(){
-            var sub = $(this).attr('data-subid');
-            var app = $(this).attr('data-appid');
-            var parent = $(this).attr('data-parent');
-            ip.push(`${sub},${app},${parent}`);
-            if (/Trailer|Demo|Trial/ig.exec($(this).html())){
-                $('#c').append(sub+',');
-                demo.push(sub);
-            } else {
-                //$('#d').append(`<tr><td>${sub}</td><td>${app}</td><td>${parent}</td><td>${$(this).text()}</td></tr>`);
-                $('#b').append(sub+',');
-                free.push(sub)
-            }
-        });
-        $('h1').after('<form id="f" action="http://45.78.74.83/dbfree.php" method="post" target="_blank"></form>');
-        $('#f').append(`<input type="hidden" name="ip" value="${ip.join(';')}" />`);
-        $('#f').append('<input type="submit" value="Submit" />');
-    }
-} else {
-    var m = /(sub|app)\/(\d+)/.exec(document.URL);
-    var p = $('.package');
-    if (p.length > 0){
-        $('.app-links').append('<a id="cmp">Cmp</a>');
-        $('.app-links').append(`<a id="pkg" target="_target" href="http://45.78.74.83/package.php?id=${m[2]}">Pkg</a>`);
-        $('.app-links').append(`<a id="help" target="_target" href="https://help.steampowered.com/en/wizard/HelpWithGame/?appid=${m[2]}">Help</a>`);
-        p.each(function(){
-            var id = $(this).attr('data-subid');
-            $(this).append('<td><input type="checkbox" value="' + id + '">sub/' + id + '</td>');
-        });
-        $('.tab-content').after('<table class="table table-bordered" id="g"></table>');
-        $('.tab-content').after('<table class="table table-bordered" id="b"></table>');
-        $('.tab-content').after('<table class="table table-bordered" id="p"></table>');
-        $('.tab-content').after('<div id="l"></div>');
-    }
-
-    $('.app').each(function(){
-        var id = $(this).attr('data-appid');
-        $(this).append('<td>app/' + id + '</td>');
-    });
+    $('.tab-content').after('<table class="table table-bordered" id="g"></table>');
+    $('.tab-content').after('<table class="table table-bordered" id="b"></table>');
+    $('.tab-content').after('<table class="table table-bordered" id="p"></table>');
+    $('.tab-content').after('<div id="l"></div>');
 }
+
+$('.app').each(function(){
+    var id = $(this).attr('data-appid');
+    $(this).append('<td>app/' + id + '</td>');
+});
+
 
 $('#cmp').click(function(){
     var a = [];
