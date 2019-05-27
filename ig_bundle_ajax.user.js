@@ -7,7 +7,7 @@
 // @icon        http://www.indiegala.com/favicon.ico
 // @updateURL 	https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
 // @downloadURL https://github.com/rusania/gm_scripts/raw/master/ig_bundle_ajax.user.js
-// @version     2019.05.23.1
+// @version     2019.05.27.1
 // @run-at      document-end
 // @grant       unsafeWindow
 // @require     http://libs.baidu.com/jquery/1.10.1/jquery.min.js
@@ -29,12 +29,14 @@ if(how.length == 0)
     how = $('.left');
 if (how.length > 0){
     how.after('<table id="area"></table><div id="area2">');
+    how.after('&#9;<button id="btng"><span style="color:red;">GIFT</span></button>');
     how.after('&#9;<button id="cpasf2">CPASF2</button>');
     how.after('&#9;<button id="cpasf">AGISO</button>');
     how.after('&#9;<button id="cpgrid">CPGRID</button>');
-    how.after('<button id="redeem">KEYS</button>');
-    how.after('<button id="show">SHOW</button>');
+    how.after('&#9;<button id="redeem"><span style="color:red;">KEYS</span></button>');
+    how.after('&#9;<button id="show">SHOW</button>');
     how.after('<div><input id="p" type=text /></div>');
+    how.after('<textarea id="in" style="margin: 0px; width: 702px; height: 139px;"></textarea>');
     showkey();
 
     $("body").on('click', '#show', function(){
@@ -72,6 +74,23 @@ if (how.length > 0){
         });
         txt += `\n【ASF格式】\n!redeem ${keys.join(',')}`;;
         GM_setClipboard(txt);
+    });
+
+    $('#btng').click(function () {
+        $('#area').empty();
+        $('#area2').empty();
+        var text = $('#in').val();
+        var m = /gift_id=([0-9a-f]+)/.exec(text);
+        if (m){
+            var id = m[1];
+            m = /密码.*([A-Z0-9]{6})/.exec(text);
+            if (m){
+                $('#a').empty();
+                $('#b').empty();
+                $('#c').empty();
+                getkey(id, m[1]);
+            }
+        }
     });
 }
 
@@ -178,7 +197,7 @@ unsafeWindow.fetchkey = function(code, id, key, pass)
             }
         }
     }).fail(function(data){
-        alert('error-key');
+        $('.'+id).append('error-key');
     });
 }
 
@@ -233,7 +252,7 @@ function showgift()
         var m = /id=(\d+)/.exec(document.URL);
         if (m)
             s = m[1];
-        bk.append(`<form id="f" action="http://66.154.108.170/ig_sale.php?c=gift&s=${s}&d=${dt}" method="post" target="_blank"></form>`);
+        bk.append(`<form id="f" action="http://45.78.74.83/ig_sale.php?c=gift&s=${s}&d=${dt}" method="post" target="_blank"></form>`);
         $('#area_gifts tr').each(function () {
             var t = $(this).find('td');
             var g = '';
@@ -257,4 +276,47 @@ function restore(){
     setTimeout(function () {
         window.location.reload();
     },1000);
+}
+
+function getkey(id, pwd){
+    $.ajax({
+        url: `/gift?gift_id=${id}`,
+        type: "GET",
+    }).done(function(data){
+        var m = /gift-validation-token" value="([0-9a-f]+)/.exec(data);
+        var token = m[1];
+        var d = `{"gift_id":"${id}","gift_token":"${token}","gift_password":"${pwd}"}`;
+        $.ajax({
+            url: '/gift/verify',
+            type: "POST",
+            dataType : 'json',
+            data: d,
+        }).done(function(data){
+            if (data && data.status == 200){
+                var i = 1;
+                keys = Array();
+
+                var t = $.trim($(data.contents).find('#indie_gala_2 div:first').text());
+                $(data.contents).find('.game-key-string').each(function () {
+                    var steam = $(this).find('.game-steam-url');
+                    var href = steam.attr('href');
+                    var ma = /(app|sub)\/(\d+)/.exec(href);
+                    var id = ma[2];
+                    var k = $(this).find('.input-block-level')[0];
+                    var key = k.value;
+                    keys.push(key);
+                    var code = '';
+                    var m = /serial_n_([A-F0-9]+)/.exec(k.id);
+                    if (m)
+                        code = m[1];
+                    $('#area').append(`<tr><td><a href="http://store.steampowered.com/${ma[0]}/">${steam.text()}</a></td><td class="${id}">${key}</td><td><a class="fn" href="javascript:void(0);" onclick="fetchkey(\'${code}\', ${id}, \'${key}\', '');">${i}</a></td><td>${t}</td></tr>`);
+                    $('#area2').append(`<div>【${i++}】【${steam.text()}】 <span class="${id}">${key}</span></div>`);
+                });
+            }
+        }).fail(function(data){
+            alert('error-2');
+        });
+    }).fail(function(data){
+        alert('error-1');
+    });
 }
